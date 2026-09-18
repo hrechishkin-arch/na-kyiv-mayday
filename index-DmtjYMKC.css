@@ -57,10 +57,10 @@
 
 @import url("https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&display=swap");
 .hero .button.light{
-  font-family:"Sora",Manrope,system-ui,sans-serif;
+  font-family:"IBM Plex Sans",Arial,Helvetica,sans-serif;
   font-weight:800;
   font-size:15px;
-  letter-spacing:.02em;
+  letter-spacing:.01em;
   border-radius:999px;
   background:linear-gradient(180deg,#ffffff 0%,#eef3ff 100%);
   color:#0b1220;
