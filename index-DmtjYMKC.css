@@ -54,3 +54,30 @@
 
 .brand img{max-width:88px;max-height:88px}
 @media (max-width:760px){.brand img{max-width:68px;max-height:68px}}
+
+@import url("https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&display=swap");
+.hero .button.light{
+  font-family:"Sora",Manrope,system-ui,sans-serif;
+  font-weight:800;
+  font-size:15px;
+  letter-spacing:.02em;
+  border-radius:999px;
+  background:linear-gradient(180deg,#ffffff 0%,#eef3ff 100%);
+  color:#0b1220;
+  box-shadow:0 12px 28px rgba(0,0,0,.32),0 0 0 1px rgba(255,255,255,.35) inset;
+  padding:8px 18px 8px 8px;
+  gap:10px;
+  min-height:48px;
+}
+.hero .button.light:hover{filter:brightness(1.04);transform:translateY(-1px)}
+.hero-cta-mark{width:30px;height:30px;object-fit:contain;display:block;flex-shrink:0}
+@media (max-width:760px){
+  .hero{background:#000 !important}
+  .hero-inner{
+    background:linear-gradient(180deg,rgba(0,0,0,0) 0%,#000 36px,#000 100%);
+    margin-top:-20px;
+    padding-top:36px !important;
+    position:relative;
+    z-index:1;
+  }
+}
