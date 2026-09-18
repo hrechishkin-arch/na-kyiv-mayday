@@ -34590,7 +34590,7 @@ function Site({ section, editor = false, authenticated = false, userId }) {
 										href: "https://t.me/mayday_NA_online",
 										target: "_blank",
 										rel: "noopener noreferrer",
-										children: [t.read, /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArrowUpRight, { size: 20 })]
+										children: ["Mayday online", /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArrowUpRight, { size: 20 })]
 									})]
 								})
 							]
