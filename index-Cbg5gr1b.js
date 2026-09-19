@@ -32736,13 +32736,11 @@ async function api(url, options = {}) {
 		return checked(await (method === "POST" ? db.from("mayday_news").insert(row) : db.from("mayday_news").update(row).eq("id", data.id)).select().single());
 	}
 	async function loadAudioBooks() {
-		const row = checked(await db.from("mayday_settings").select("value").eq("key", "audiobooks").maybeSingle());
-		return Array.isArray(row?.value) ? row.value : [];
+		const row = checked(await db.from("mayday_settings").select("value").eq("key", "content").maybeSingle());
+		return Array.isArray(row?.value?._audiobooks) ? row.value._audiobooks : [];
 	}
 	async function saveAudioBooks(list) {
-		const cur = checked(await db.from("mayday_settings").select("key").eq("key", "audiobooks").maybeSingle());
-		if (cur) checked(await db.from("mayday_settings").update({ value: list }).eq("key", "audiobooks"));
-		else checked(await db.from("mayday_settings").insert({ key: "audiobooks", value: list }));
+		await updateContent((old) => ({ ...old, _audiobooks: list }));
 	}
 	if (url.startsWith("/api/literature")) {
 		if (method === "GET") {
