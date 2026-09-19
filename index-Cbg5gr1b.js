@@ -32949,15 +32949,23 @@ function publicMediaUrl(url) {
 	return url.startsWith(client().storage.from("mayday-images").getPublicUrl("").data.publicUrl);
 }
 async function uploadProductImage(file) {
-	const db = client(), mime = await validateFile(file, "media"), path = crypto.randomUUID() + {
+	const db = client();
+	let mime = await validateFile(file, "media");
+	if (mime === "audio/mp3") mime = "audio/mpeg";
+	const ext = {
 		"image/png": ".png",
 		"image/jpeg": ".jpg",
 		"image/webp": ".webp",
 		"video/mp4": ".mp4",
-		"video/webm": ".webm"
+		"video/webm": ".webm",
+		"audio/mpeg": ".mp3",
+		"audio/mp4": ".m4a",
+		"audio/ogg": ".ogg"
 	}[mime];
-	if (!path) throw Error("invalid");
-	checked(await db.storage.from("mayday-images").upload(path, file, { contentType: mime }));
+	if (!ext) throw Error("invalid");
+	const path = crypto.randomUUID() + ext;
+	const up = await db.storage.from("mayday-images").upload(path, file, { contentType: mime });
+	if (up.error) throw Error(/size|maximum|exceed|large/i.test(String(up.error.message||"")) ? "too_large" : "unavailable");
 	return {
 		path,
 		url: db.storage.from("mayday-images").getPublicUrl(path).data.publicUrl,
