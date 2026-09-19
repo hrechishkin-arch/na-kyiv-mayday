@@ -111,3 +111,17 @@ video.product-video{
 .lit-block .subhead{margin-top:0}
 .lit-block .muted{color:#6b7568;margin:8px 0 0}
 .lit-block .resource-link{margin-top:12px}
+
+.header nav a[aria-current],
+.header nav a[aria-current=page]{
+  background:#000 !important;
+  color:#fff !important;
+  border-color:#000 !important;
+}
+@media (max-width:760px){
+  .header nav a[aria-current],
+  .header nav a[aria-current=page]{
+    background:#000 !important;
+    color:#fff !important;
+  }
+}
