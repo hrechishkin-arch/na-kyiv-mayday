@@ -10371,6 +10371,10 @@ var copy = {
 		admin: "Редактор новостей",
 		skip: "Перейти к содержимому",
 		download: "Скачать PDF",
+		digitalTitle: "Электронные материалы",
+		digitalText: "PDF-книги и аудиокниги — читать и слушать.",
+		printTitle: "Бумажные книги и атрибутика",
+		printText: "Заказ через Telegram — как в сувенирке.",
 		loading: "Загрузка…",
 		error: "Не удалось загрузить новости. Попробуйте ещё раз.",
 		retry: "Повторить",
@@ -10411,6 +10415,10 @@ var copy = {
 		admin: "Редактор новин",
 		skip: "Перейти до вмісту",
 		download: "Завантажити PDF",
+		digitalTitle: "Електронні матеріали",
+		digitalText: "PDF-книги та аудіокниги для читання і прослуховування.",
+		printTitle: "Паперові книги та атрибутика",
+		printText: "Замовлення через Telegram, як у сувенірці.",
 		loading: "Завантаження…",
 		error: "Не вдалося завантажити новини. Спробуйте ще раз.",
 		retry: "Повторити",
@@ -10451,6 +10459,10 @@ var copy = {
 		admin: "News editor",
 		skip: "Skip to content",
 		download: "Download PDF",
+		digitalTitle: "Digital materials",
+		digitalText: "PDF books and audiobooks to read and listen.",
+		printTitle: "Print books and items",
+		printText: "Order via Telegram, same as the shop.",
 		loading: "Loading…",
 		error: "News could not be loaded. Please try again.",
 		retry: "Try again",
@@ -32598,7 +32610,11 @@ var editableKeys = [
 	"emptyBooksText",
 	"emptyNews",
 	"emptyNewsText",
-	"download"
+	"download",
+	"digitalTitle",
+	"digitalText",
+	"printTitle",
+	"printText"
 ];
 var defaultContent = Object.fromEntries(Object.entries(copy).map(([lang, text]) => [lang, Object.fromEntries(editableKeys.map((key) => [key, text[key]]))]));
 var defaultAppearance = {
@@ -33645,7 +33661,11 @@ var contentLabels = {
 		"Библиотека: пояснение",
 		"Новости: пустое состояние",
 		"Новости: пояснение",
-		"Кнопка скачивания"
+		"Кнопка скачивания",
+		"Литература: заголовок электронных материалов",
+		"Литература: текст про PDF и аудио",
+		"Литература: заголовок бумажных книг",
+		"Литература: текст про заказ в Telegram"
 	],
 	uk: [
 		"Назва спільноти",
@@ -33665,7 +33685,11 @@ var contentLabels = {
 		"Бібліотека: пояснення",
 		"Новини: порожній стан",
 		"Новини: пояснення",
-		"Кнопка завантаження"
+		"Кнопка завантаження",
+		"Література: заголовок електронних матеріалів",
+		"Література: текст про PDF і аудіо",
+		"Література: заголовок паперових книг",
+		"Література: текст про замовлення в Telegram"
 	],
 	en: [
 		"Community name",
@@ -33685,7 +33709,11 @@ var contentLabels = {
 		"Empty library description",
 		"Empty news heading",
 		"Empty news description",
-		"Download button"
+		"Download button",
+		"Literature: digital heading",
+		"Literature: digital description",
+		"Literature: print heading",
+		"Literature: print description"
 	]
 };
 //#endregion
@@ -34748,8 +34776,8 @@ function Site({ section, editor = false, authenticated = false, userId }) {
 							})
 						]
 					}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
-						(0, import_jsx_runtime.jsx)("h2", { className: "subhead", children: lang==="uk"?"Електронні матеріали":lang==="en"?"Digital materials":"Электронные материалы" }),
-						(0, import_jsx_runtime.jsx)("p", { className: "page-intro", children: lang==="uk"?"PDF-книги та аудіокниги для читання і прослуховування.":lang==="en"?"PDF books and audiobooks to read and listen.":"PDF-книги и аудиокниги — читать и слушать." }),
+						(0, import_jsx_runtime.jsx)("h2", { className: "subhead", children: t.digitalTitle || (lang==="uk"?"Електронні матеріали":lang==="en"?"Digital materials":"Электронные материалы") }),
+						(0, import_jsx_runtime.jsx)("p", { className: "page-intro", children: t.digitalText || (lang==="uk"?"PDF-книги та аудіокниги для читання і прослуховування.":lang==="en"?"PDF books and audiobooks to read and listen.":"PDF-книги и аудиокниги — читать и слушать.") }),
 						materials.filter((b) => b.language === lang).length ? materials.filter((b) => b.language === lang).map((b) => {
 							const audio = /\.(mp3|m4a|aac|ogg|oga)$/i.test(b.object_key||"") || String(b.object_key||"").startsWith("audio-");
 							const src = audio ? client().storage.from("mayday-images").getPublicUrl(b.object_key).data.publicUrl : "";
@@ -34762,8 +34790,8 @@ function Site({ section, editor = false, authenticated = false, userId }) {
 								(0, import_jsx_runtime.jsx)(DownloadButton, { id: b.id, lang, title: audio ? (lang==="uk"?"Завантажити аудіо":lang==="en"?"Download audio":"Скачать аудио") : undefined })
 							] }, b.id);
 						}) : (0, import_jsx_runtime.jsx)(Empty, { icon: "book", title: t.emptyBooks, text: t.emptyBooksText }),
-						(0, import_jsx_runtime.jsx)("h2", { className: "subhead", children: lang==="uk"?"Паперові книги та атрибутика":lang==="en"?"Print books and items":"Бумажные книги и атрибутика" }),
-						(0, import_jsx_runtime.jsx)("p", { className: "page-intro", children: lang==="uk"?"Замовлення через Telegram, як у сувенірці.":lang==="en"?"Order via Telegram, same as the shop.":"Заказ через Telegram — как в сувенирке." }),
+						(0, import_jsx_runtime.jsx)("h2", { className: "subhead", children: t.printTitle || (lang==="uk"?"Паперові книги та атрибутика":lang==="en"?"Print books and items":"Бумажные книги и атрибутика") }),
+						(0, import_jsx_runtime.jsx)("p", { className: "page-intro", children: t.printText || (lang==="uk"?"Замовлення через Telegram, як у сувенірці.":lang==="en"?"Order via Telegram, same as the shop.":"Заказ через Telegram — как в сувенирке.") }),
 						(0, import_jsx_runtime.jsx)(Shop, { data: { ...settings.community, products: settings.community.printProducts || [] }, lang })
 					] })),
 					section === "schedule" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Schedule, {
