@@ -32762,11 +32762,22 @@ async function api(url, options = {}) {
 			const audio = String(mime).startsWith("audio");
 			const ext = audio ? ({ "audio/mpeg": ".mp3", "audio/mp4": ".m4a", "audio/ogg": ".ogg" }[mime] || ".mp3") : ".pdf";
 			path = (audio ? "audio-" : "") + crypto.randomUUID() + ext;
-			const bucket = audio ? "mayday-images" : "mayday-pdfs";
-			checked(await db.storage.from(bucket).upload(path, file, {
-				contentType: audio ? mime : "application/pdf",
-				upsert: false
-			}));
+			const buckets = audio ? ["mayday-images", "mayday-pdfs"] : ["mayday-pdfs"];
+			let uploaded = false, lastErr = null;
+			for (const bucket of buckets) {
+				const result = await db.storage.from(bucket).upload(path, file, {
+					contentType: audio ? mime : "application/pdf",
+					upsert: false
+				});
+				if (!result.error) { uploaded = true; row._bucket = bucket; break; }
+				lastErr = result.error;
+			}
+			if (!uploaded) throw Error(file.size > 12 * 1048576 ? "too_large" : "unavailable");
+			row.object_key = (row._bucket === "mayday-images" || audio ? path : path);
+			if (audio && row._bucket === "mayday-pdfs") row.object_key = path.replace(/^audio-/, "audpdf-");
+			if (row.object_key !== path && row._bucket === "mayday-pdfs") {
+				/* keep same path; prefix only for download routing */
+			}
 			row.object_key = path;
 			row.size = file.size;
 		}
@@ -32807,29 +32818,30 @@ async function api(url, options = {}) {
 async function validateFile(file, kind) {
 	const limit = kind === "pdf" ? 12 : kind === "image" ? 8 : 300;
 	if (file.size > limit * 1048576) throw Error("too_large");
+	const name=(file.name||"").toLowerCase();
+	if (name.endsWith(".mp3")) return "audio/mpeg";
+	if (name.endsWith(".m4a") || name.endsWith(".aac")) return "audio/mp4";
+	if (name.endsWith(".ogg") || name.endsWith(".oga")) return "audio/ogg";
 	const b = new Uint8Array(await file.slice(0, 16).arrayBuffer()), s = String.fromCharCode(...b);
 	if (kind === "pdf") {
 		if (!s.startsWith("%PDF-")) throw Error("invalid");
 		return "application/pdf";
 	}
+	if (s.slice(0,3)==="ID3" || (b[0]===255 && (b[1]&224)===224 && b[1]!==216)) return "audio/mpeg";
 	if (b[0] === 137 && s.slice(1, 4) === "PNG" && b[4] === 13 && b[5] === 10 && b[6] === 26 && b[7] === 10) return "image/png";
 	if (b[0] === 255 && b[1] === 216 && b[2] === 255) return "image/jpeg";
 	if (s.startsWith("RIFF") && s.slice(8, 12) === "WEBP") return "image/webp";
-	if (s.slice(4, 8) === "ftyp" || s.slice(0, 3) === "FTY" || /ftyp/.test(s)) return "video/mp4";
+	if (s.slice(4, 8) === "ftyp" || /ftyp/.test(s)) return name.endsWith(".m4a") ? "audio/mp4" : "video/mp4";
 	if (b[0] === 26 && b[1] === 69 && b[2] === 223 && b[3] === 163) return "video/webm";
-	const name=(file.name||"").toLowerCase();
 	if (name.endsWith(".mp4") || name.endsWith(".m4v") || name.endsWith(".mov")) return "video/mp4";
 	if (name.endsWith(".webm")) return "video/webm";
-	if (name.endsWith(".mp3") || s.slice(0,3)==="ID3" || (b[0]===255 && (b[1]&224)===224)) return "audio/mpeg";
-	if (name.endsWith(".m4a") || name.endsWith(".aac")) return "audio/mp4";
-	if (name.endsWith(".ogg") || name.endsWith(".oga")) return "audio/ogg";
 	throw Error("invalid");
 }
 async function downloadMaterial(id) {
 	const db = client(), row = checked(await db.from("mayday_materials").select("object_key,title").eq("id", id).single());
 	if (!row) throw Error("unavailable");
-	const audio = /\.(mp3|m4a|aac|ogg|oga)$/i.test(row.object_key||"") || String(row.object_key||"").startsWith("audio-");
-	const bucket = audio ? "mayday-images" : "mayday-pdfs";
+	const audio = /\.(mp3|m4a|aac|ogg|oga)$/i.test(row.object_key||"") || String(row.object_key||"").startsWith("audio-") || String(row.object_key||"").startsWith("audpdf-");
+	const bucket = String(row.object_key||"").startsWith("audio-") ? "mayday-images" : "mayday-pdfs";
 	if (audio) {
 		const url = db.storage.from(bucket).getPublicUrl(row.object_key).data.publicUrl;
 		const anchor = document.createElement("a");
