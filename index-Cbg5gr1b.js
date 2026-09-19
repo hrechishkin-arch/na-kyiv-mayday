@@ -10218,13 +10218,23 @@ var defaultLabels = () => ({
 	}
 });
 function withLabels(data) {
-	return {
-		...data,
-		labels: {
-			...defaultLabels(),
-			...data.labels || {}
-		}
-	};
+	const base = defaultLabels();
+	const incoming = data.labels || {};
+	const labels = {};
+	for (const key of Object.keys(base)) {
+		const val = incoming[key] || {};
+		const merged = { ...base[key], ...val };
+		const custom = languages.find((l) => (val[l] || "").trim() && (val[l] || "").trim() !== (base[key][l] || "").trim());
+		if (custom) {
+			labels[key] = {
+				ru: (val.ru || "").trim() === (base[key].ru || "").trim() ? "" : (val.ru || ""),
+				uk: (val.uk || "").trim() === (base[key].uk || "").trim() ? "" : (val.uk || ""),
+				en: (val.en || "").trim() === (base[key].en || "").trim() ? "" : (val.en || "")
+			};
+			labels[key][custom] = val[custom];
+		} else labels[key] = merged;
+	}
+	return { ...data, labels };
 }
 var defaultCommunity = {
 	labels: defaultLabels(),
