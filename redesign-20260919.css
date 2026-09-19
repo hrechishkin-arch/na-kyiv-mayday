@@ -75,3 +75,24 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 footer{margin:0 5%;padding:26px 0;gap:14px}
 }
 @media(prefers-reduced-motion:reduce){a,button{transition:none!important;transform:none!important}}
+
+.product-card .product-video,
+.news-media.product-video,
+video.product-video{
+  width:100%;
+  height:auto;
+  max-height:min(78vh,720px);
+  object-fit:contain;
+  object-position:center;
+  background:#111;
+  border-radius:16px 16px 0 0;
+  margin:0;
+  display:block;
+}
+.news-media{
+  width:100%;
+  height:auto;
+  max-height:min(80vh,760px);
+  object-fit:contain;
+  background:#111;
+}
