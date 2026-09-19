@@ -70,7 +70,7 @@
   min-height:48px;
 }
 .hero .button.light:hover{filter:brightness(1.04);transform:translateY(-1px)}
-.hero-cta-mark{width:30px;height:30px;object-fit:contain;display:block;flex-shrink:0}
+.hero-cta-mark{width:30px;height:30px;object-fit:contain;display:block;flex-shrink:0;filter:brightness(0)}
 @media (max-width:760px){
   .hero{background:#000 !important}
   .hero-inner{
