@@ -34841,11 +34841,12 @@ function Site({ section, editor = false, authenticated = false, userId }) {
 								children: c.retry
 							})
 						]
-					}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
-						(0, import_jsx_runtime.jsx)("h2", { className: "subhead", children: t.digitalTitle || (lang==="uk"?"Електронні матеріали":lang==="en"?"Digital materials":"Электронные материалы") }),
-						(0, import_jsx_runtime.jsx)("p", { className: "page-intro", children: t.digitalText || (lang==="uk"?"PDF-книги та аудіокниги для читання і прослуховування.":lang==="en"?"PDF books and audiobooks to read and listen.":"PDF-книги и аудиокниги — читать и слушать.") }),
-						materials.filter((b) => b.language === lang).length ? materials.filter((b) => b.language === lang).map((b) => {
-							const audio = /^https?:\/\//.test(b.object_key||"") || /\.(mp3|m4a|aac|ogg|oga)$/i.test(b.object_key||"") || String(b.object_key||"").startsWith("audio-");
+					}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "lit-page", children: (()=>{
+						const isAudio = (b) => b.kind==="audio" || /^https?:\/\//.test(b.object_key||"") || /\.(mp3|m4a|aac|ogg|oga)$/i.test(b.object_key||"") || String(b.object_key||"").startsWith("audio-");
+						const local = materials.filter((b) => b.language === lang);
+						const pdfs = local.filter((b) => !isAudio(b));
+						const audios = local.filter(isAudio);
+						const item = (b, audio) => {
 							const src = /^https?:\/\//.test(b.object_key||"") ? b.object_key : (audio ? client().storage.from("mayday-images").getPublicUrl(b.object_key).data.publicUrl : "");
 							return (0, import_jsx_runtime.jsxs)("div", { className: "resource-link", children: [
 								(0, import_jsx_runtime.jsx)(BookOpen, {}),
@@ -34855,11 +34856,25 @@ function Site({ section, editor = false, authenticated = false, userId }) {
 								] }),
 								(0, import_jsx_runtime.jsx)(DownloadButton, { id: b.id, lang, title: audio ? (lang==="uk"?"Завантажити аудіо":lang==="en"?"Download audio":"Скачать аудио") : undefined })
 							] }, b.id);
-						}) : (0, import_jsx_runtime.jsx)(Empty, { icon: "book", title: t.emptyBooks, text: t.emptyBooksText }),
-						(0, import_jsx_runtime.jsx)("h2", { className: "subhead", children: t.printTitle || (lang==="uk"?"Паперові книги та атрибутика":lang==="en"?"Print books and items":"Бумажные книги и атрибутика") }),
-						(0, import_jsx_runtime.jsx)("p", { className: "page-intro", children: t.printText || (lang==="uk"?"Замовлення через Telegram, як у сувенірці.":lang==="en"?"Order via Telegram, same as the shop.":"Заказ через Telegram — как в сувенирке.") }),
-						(0, import_jsx_runtime.jsx)(Shop, { data: { ...settings.community, products: settings.community.printProducts || [], labels: { ...(settings.community.labels||{}), emptyShop: { ru: t.printEmpty, uk: t.printEmpty, en: t.printEmpty } } }, lang })
-					] })),
+						};
+						return [
+							(0, import_jsx_runtime.jsxs)("section", { className: "lit-block", children: [
+								(0, import_jsx_runtime.jsx)("h2", { className: "subhead", children: lang==="uk"?"PDF-книги":lang==="en"?"PDF books":"Книги PDF" }),
+								(0, import_jsx_runtime.jsx)("p", { className: "page-intro", children: lang==="uk"?"Завантажити та читати на пристрої.":lang==="en"?"Download and read on your device.":"Скачать и читать на устройстве." }),
+								pdfs.length ? pdfs.map((b)=>item(b,false)) : (0, import_jsx_runtime.jsx)(Empty, { icon: "book", title: t.emptyBooks, text: t.emptyBooksText })
+							] }, "pdf"),
+							(0, import_jsx_runtime.jsxs)("section", { className: "lit-block", children: [
+								(0, import_jsx_runtime.jsx)("h2", { className: "subhead", children: lang==="uk"?"Аудіокниги":lang==="en"?"Audiobooks":"Аудиокниги" }),
+								(0, import_jsx_runtime.jsx)("p", { className: "page-intro", children: lang==="uk"?"Слухати онлайн або завантажити MP3.":lang==="en"?"Listen online or download MP3.":"Слушать онлайн или скачать MP3." }),
+								audios.length ? audios.map((b)=>item(b,true)) : (0, import_jsx_runtime.jsx)("p", { className: "muted", children: lang==="uk"?"Аудіокниг поки немає.":lang==="en"?"No audiobooks yet.":"Аудиокниг пока нет." })
+							] }, "audio"),
+							(0, import_jsx_runtime.jsxs)("section", { className: "lit-block", children: [
+								(0, import_jsx_runtime.jsx)("h2", { className: "subhead", children: t.printTitle || (lang==="uk"?"Паперові книги та атрибутика":lang==="en"?"Print books and items":"Бумажные книги и атрибутика") }),
+								(0, import_jsx_runtime.jsx)("p", { className: "page-intro", children: t.printText || (lang==="uk"?"Замовлення через Telegram.":lang==="en"?"Order via Telegram.":"Заказ через Telegram.") }),
+								(0, import_jsx_runtime.jsx)(Shop, { data: { ...settings.community, products: settings.community.printProducts || [], labels: { ...(settings.community.labels||{}), emptyShop: { ru: t.printEmpty, uk: t.printEmpty, en: t.printEmpty } } }, lang })
+							] }, "print")
+						];
+					})() })),
 					section === "schedule" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Schedule, {
 						data: settings.community,
 						lang
