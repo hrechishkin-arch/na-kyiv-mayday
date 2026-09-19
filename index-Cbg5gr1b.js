@@ -32690,9 +32690,12 @@ async function api(url, options = {}) {
 		for (const lang of languages) {
 			const item = data.translations?.[lang];
 			if (!item || typeof item.title !== "string" || typeof item.body !== "string") throw Error("invalid");
-			if (item.title.trim() || item.body.trim()) {
-				validText(item.title, 180);
-				validText(item.body, 2e4);
+			const hasMedia = typeof item.mediaUrl === "string" && item.mediaUrl.length > 0;
+			if (item.title.trim() || item.body.trim() || hasMedia) {
+				if (item.title.trim()) validText(item.title, 180);
+				if (item.body.trim()) validText(item.body, 2e4);
+				if (hasMedia && item.mediaUrl && !String(item.mediaUrl).includes("/storage/v1/object/public/mayday-images/")) throw Error("invalid");
+				if (item.mediaKind && !["image", "video"].includes(item.mediaKind)) throw Error("invalid");
 				filled++;
 			}
 		}
