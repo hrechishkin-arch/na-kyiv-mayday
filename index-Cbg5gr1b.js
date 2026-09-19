@@ -32780,8 +32780,11 @@ async function validateFile(file, kind) {
 	if (b[0] === 137 && s.slice(1, 4) === "PNG" && b[4] === 13 && b[5] === 10 && b[6] === 26 && b[7] === 10) return "image/png";
 	if (b[0] === 255 && b[1] === 216 && b[2] === 255) return "image/jpeg";
 	if (s.startsWith("RIFF") && s.slice(8, 12) === "WEBP") return "image/webp";
-	if (s.slice(4, 8) === "ftyp") return "video/mp4";
+	if (s.slice(4, 8) === "ftyp" || s.slice(0, 3) === "FTY" || /ftyp/.test(s)) return "video/mp4";
 	if (b[0] === 26 && b[1] === 69 && b[2] === 223 && b[3] === 163) return "video/webm";
+	const name=(file.name||"").toLowerCase();
+	if (name.endsWith(".mp4") || name.endsWith(".m4v") || name.endsWith(".mov")) return "video/mp4";
+	if (name.endsWith(".webm")) return "video/webm";
 	throw Error("invalid");
 }
 async function downloadMaterial(id) {
@@ -32922,7 +32925,7 @@ var words = {
 		add: "Добавить сувенир",
 		edit: "Редактировать",
 		remove: "Удалить из каталога",
-		photo: "Фото (PNG, JPG или WebP, до 8 МБ)",
+		photo: "Фото или видео (JPG, PNG, WebP, MP4, WebM)",
 		price: "Цена",
 		currency: "Валюта",
 		available: "В наличии",
@@ -32944,7 +32947,7 @@ var words = {
 		add: "Додати сувенір",
 		edit: "Редагувати",
 		remove: "Прибрати з каталогу",
-		photo: "Фото (PNG, JPG або WebP, до 8 МБ)",
+		photo: "Фото або відео (JPG, PNG, WebP, MP4, WebM)",
 		price: "Ціна",
 		currency: "Валюта",
 		available: "У наявності",
@@ -32966,7 +32969,7 @@ var words = {
 		add: "Add merchandise",
 		edit: "Edit",
 		remove: "Remove from catalogue",
-		photo: "Photo (PNG, JPG or WebP, up to 8 MB)",
+		photo: "Photo or video (JPG, PNG, WebP, MP4, WebM)",
 		price: "Price",
 		currency: "Currency",
 		available: "In stock",
