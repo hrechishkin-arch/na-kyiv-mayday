@@ -34799,7 +34799,7 @@ function Site({ section, editor = false, authenticated = false, userId }) {
 										href: (()=>{ const raw=(settings.community&&settings.community.groupContact)||settings.community.sellerContact||"https://t.me/mayday"; const v=String(raw).trim(); if(!v) return "https://t.me/mayday"; if(/^https?:\/\//i.test(v)) return v; return "https://t.me/"+v.replace(/^@/,""); })(),
 										target: "_blank",
 										rel: "noopener noreferrer",
-										children: [t.groupBtn || (lang==="uk"?"Зв’язок із групою":lang==="en"?"Contact the group":"Связь с группой"), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArrowUpRight, { size: 18 })]
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", { className: "hero-cta-mark", src: "./mayday-btn2.png", alt: "" }), t.groupBtn || (lang==="uk"?"Зв’язок із групою":lang==="en"?"Contact the group":"Связь с группой"), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArrowUpRight, { size: 18 })]
 									})
 									] })]
 								})
