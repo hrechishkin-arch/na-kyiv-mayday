@@ -32638,7 +32638,7 @@ var defaultAppearance = {
 //#endregion
 //#region src/api.ts
 function checked({ data, error }) {
-	if (error) throw Error("unavailable");
+	if (error) throw Error(String(error.message || error.code || "unavailable").slice(0, 180));
 	return data;
 }
 function validText(value, max) {
@@ -32996,7 +32996,7 @@ async function uploadProductImage(file) {
 	if (!ext) throw Error("invalid");
 	const path = crypto.randomUUID() + ext;
 	const up = await db.storage.from("mayday-images").upload(path, file, { contentType: mime });
-	if (up.error) throw Error(/size|maximum|exceed|large/i.test(String(up.error.message||"")) ? "too_large" : "unavailable");
+	if (up.error) throw Error(String(up.error.message || up.error.error || "unavailable").slice(0, 180));
 	return {
 		path,
 		url: db.storage.from("mayday-images").getPublicUrl(path).data.publicUrl,
