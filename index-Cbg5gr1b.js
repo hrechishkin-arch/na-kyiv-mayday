@@ -10267,6 +10267,7 @@ var defaultCommunity = {
 	mapQuery: "Київ, Круглоуніверситетська вулиця, 7",
 	sellerName: "",
 	sellerContact: "",
+	groupContact: "https://t.me/mayday",
 	products: [],
 	printProducts: []
 };
@@ -10378,6 +10379,7 @@ var copy = {
 		shopEmpty: "Сувениры скоро появятся",
 		printEmpty: "Бумажные книги скоро появятся",
 		printAdd: "Добавить книгу или атрибутику",
+		groupBtn: "Связь с группой",
 		loading: "Загрузка…",
 		error: "Не удалось загрузить новости. Попробуйте ещё раз.",
 		retry: "Повторить",
@@ -10425,6 +10427,7 @@ var copy = {
 		shopEmpty: "Сувеніри незабаром з’являться",
 		printEmpty: "Паперові книги незабаром з’являться",
 		printAdd: "Додати книгу або атрибутику",
+		groupBtn: "Зв’язок із групою",
 		loading: "Завантаження…",
 		error: "Не вдалося завантажити новини. Спробуйте ще раз.",
 		retry: "Повторити",
@@ -10472,6 +10475,7 @@ var copy = {
 		shopEmpty: "Merchandise is coming soon",
 		printEmpty: "Print items are coming soon",
 		printAdd: "Add book or item",
+		groupBtn: "Contact the group",
 		loading: "Loading…",
 		error: "News could not be loaded. Please try again.",
 		retry: "Try again",
@@ -32626,7 +32630,8 @@ var editableKeys = [
 	"printText",
 	"shopEmpty",
 	"printEmpty",
-	"printAdd"
+	"printAdd",
+	"groupBtn"
 ];
 var defaultContent = Object.fromEntries(Object.entries(copy).map(([lang, text]) => [lang, Object.fromEntries(editableKeys.map((key) => [key, text[key]]))]));
 var defaultAppearance = {
@@ -32905,6 +32910,7 @@ function validateCommunityPatch(data) {
 		"mapQuery",
 		"sellerName",
 		"sellerContact",
+		"groupContact",
 		"products",
 		"printProducts",
 		"labels"
@@ -33312,6 +33318,7 @@ function CommunityManager({ kind, initial, lang, reload }) {
 						await save({
 							sellerName: draft.sellerName,
 							sellerContact: draft.sellerContact,
+							groupContact: draft.groupContact,
 							labels: draft.labels
 						});
 					});
@@ -33399,6 +33406,15 @@ function CommunityManager({ kind, initial, lang, reload }) {
 						onChange: (e) => setDraft({
 							...draft,
 							sellerContact: e.target.value
+						})
+					})] }),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [lang==="uk"?"Telegram групи (кнопка на банері)":lang==="en"?"Group Telegram (banner button)":"Telegram группы (кнопка на баннере)", /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+						maxLength: 500,
+						placeholder: "@mayday или https://t.me/...",
+						value: draft.groupContact || "",
+						onChange: (e) => setDraft({
+							...draft,
+							groupContact: e.target.value
 						})
 					})] }),
 					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
@@ -33721,7 +33737,8 @@ var contentLabels = {
 		"Литература: текст про заказ в Telegram",
 		"Сувенирка: текст если товаров нет",
 		"Литература: текст если бумажных книг нет",
-		"Литература: кнопка добавления бумажной книги"
+		"Литература: кнопка добавления бумажной книги",
+		"Баннер: кнопка связи с группой"
 	],
 	uk: [
 		"Назва спільноти",
@@ -33748,7 +33765,8 @@ var contentLabels = {
 		"Література: текст про замовлення в Telegram",
 		"Сувенірка: текст якщо товарів немає",
 		"Література: текст якщо паперових книг немає",
-		"Література: кнопка додавання паперової книги"
+		"Література: кнопка додавання паперової книги",
+		"Банер: кнопка зв’язку з групою"
 	],
 	en: [
 		"Community name",
@@ -33775,7 +33793,8 @@ var contentLabels = {
 		"Literature: print description",
 		"Shop: empty catalog text",
 		"Literature: empty print catalog text",
-		"Literature: add print item button"
+		"Literature: add print item button",
+		"Banner: contact the group button"
 	]
 };
 //#endregion
@@ -34767,13 +34786,22 @@ function Site({ section, editor = false, authenticated = false, userId }) {
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", { children: t.hero }),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 									className: "hero-bottom",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { children: t.intro }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("a", {
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { children: t.intro }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "hero-actions", children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("a", {
 										className: "button light",
 										href: "https://t.me/mayday_NA_online",
 										target: "_blank",
 										rel: "noopener noreferrer",
 										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", { className: "hero-cta-mark", src: "./mayday-btn2.png", alt: "" }), "Mayday online", /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArrowUpRight, { size: 18 })]
-									})]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("a", {
+										className: "button light hero-group",
+										href: (()=>{ const raw=(settings.community&&settings.community.groupContact)||settings.community.sellerContact||"https://t.me/mayday"; const v=String(raw).trim(); if(!v) return "https://t.me/mayday"; if(/^https?:\/\//i.test(v)) return v; return "https://t.me/"+v.replace(/^@/,""); })(),
+										target: "_blank",
+										rel: "noopener noreferrer",
+										children: [t.groupBtn || (lang==="uk"?"Зв’язок із групою":lang==="en"?"Contact the group":"Связь с группой"), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArrowUpRight, { size: 18 })]
+									})
+									] })]
 								})
 							]
 						})]
