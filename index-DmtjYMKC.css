@@ -70,7 +70,7 @@
   min-height:48px;
 }
 .hero .button.light:hover{filter:brightness(1.04);transform:translateY(-1px)}
-.hero-cta-mark{width:34px;height:34px;padding:6px;object-fit:contain;display:block;flex-shrink:0;background:#111;border-radius:50%;filter:brightness(0) invert(1);box-sizing:border-box}
+.hero-cta-mark{width:36px;height:36px;padding:0;object-fit:cover;display:block;flex-shrink:0;background:transparent;border-radius:50%;filter:none}
 @media (max-width:760px){
   .hero{background:#000 !important}
   .hero-inner{
