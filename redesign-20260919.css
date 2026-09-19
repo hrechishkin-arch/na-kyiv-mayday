@@ -132,3 +132,11 @@ video.product-video{
   border-color:#000 !important;
   color:#fff !important;
 }
+
+.location-section .button,
+.home-location .button,
+.meeting-card .button{
+  background:#000 !important;
+  border-color:#000 !important;
+  color:#fff !important;
+}
