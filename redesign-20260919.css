@@ -1,0 +1,77 @@
+/* Mayday visual refresh. Remove this stylesheet link to restore baseline 0a950306. */
+:root{--background:#f6f5f2;--foreground:#232624;--primary:#25372f;--border:#dddeda;--muted-foreground:#626860}
+body{color:var(--foreground);background:var(--background);line-height:1.65}
+.header{max-width:1500px;padding:26px 3.5%;gap:24px}
+.header nav{gap:6px;font-size:14px}
+.header nav a{padding:10px 14px;border:0;border-radius:24px;font-weight:500}
+.header nav a:hover{background:#e8eae4}
+.header nav a[aria-current]{background:#25372f;color:white}
+.languages{background:#e9ebe5;border-radius:24px;padding:4px;gap:2px}
+.languages button{border-radius:20px;padding:8px 10px;color:#586056}
+.languages button[aria-pressed=true]{background:#fff;color:#25372f;border-radius:20px;box-shadow:0 2px 5px #24362e0c}
+.brand small{color:#666d65}
+.hero-surround{padding:0 2.5%;margin-top:4px;background:transparent}
+.hero-surround .hero{border-radius:22px;box-shadow:0 16px 40px #22372e18}
+.hero-inner{padding-left:4.5%;padding-right:4.5%}
+.hero h1{letter-spacing:-.045em}
+.hero .eyebrow{letter-spacing:.17em}
+.resources{max-width:1280px;padding:52px 3.5% 24px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto 1fr;gap:0 24px;align-items:stretch}
+.resources>.section-label{padding:24px 28px 0;background:#fff;border:1px solid #e0e4dc;border-bottom:0;border-radius:20px 20px 0 0;font-size:11px;font-weight:700;letter-spacing:.10em;color:#64725f;text-transform:uppercase}
+.resources>.section-label:nth-child(1){grid-column:1;grid-row:1}
+.resources>.section-label:nth-child(3){grid-column:2;grid-row:1}
+.resources>.resource-link{min-width:0;background:#fff;border:1px solid #e0e4dc;border-top:0;border-radius:0 0 20px 20px;padding:22px 28px 30px;gap:18px}
+.resources>.resource-link:nth-child(2){grid-column:1;grid-row:2}
+.resources>.resource-link:nth-child(4){grid-column:2;grid-row:2}
+.resources>.resource-link:hover{background:#fcfdf9;transform:none}
+.resource-link>svg{color:#5b725d;flex-shrink:0}
+.resource-link>svg:last-child{padding:8px;box-sizing:content-box;border:1px solid #dde5d9;border-radius:50%;width:16px;height:16px;margin-top:0}
+.resource-link h2{font-size:28px;font-weight:500;letter-spacing:-.035em;line-height:1.2;margin-bottom:14px}
+.resource-link p{font-size:15px;line-height:1.75;color:#61695f}
+.home-location{max-width:1280px;padding:0 3.5%;margin-bottom:64px}
+.location-section{background:#e9ede5;border:1px solid #dce3d6;border-radius:22px;padding:30px;gap:38px;margin-top:24px;grid-template-columns:1fr 1.2fr}
+.location-section .eyebrow{color:#64725f;letter-spacing:.13em;font-size:11px}
+.location-section h2{font-size:clamp(28px,3vw,40px);font-weight:500;letter-spacing:-.04em;margin:14px 0 20px}
+.location-section p{color:#4f5f51}
+.map-frame{border:1px solid #d0dac9;border-radius:16px;background:#dde5d7}
+.map-placeholder{background:linear-gradient(135deg,#f5f8f1,#dae4d2);color:#37563c}
+.map-placeholder span{color:#5d7a5b}
+.button{background:#25372f;border-radius:12px;padding:14px 22px;gap:16px;font-size:15px;font-weight:600}
+.page{max-width:1200px;padding:54px 5% 80px}
+.page>.eyebrow{color:#64725f;margin-bottom:20px;font-size:11px}
+.page>h1{font-size:clamp(38px,5.6vw,64px);font-weight:500;letter-spacing:-.045em}
+.page-intro{line-height:1.7;color:#626b60;max-width:700px;margin-bottom:36px}
+.meeting-card,.product-card,.seller-card{border-color:#e0e4dc;border-radius:20px;box-shadow:0 4px 18px #2a402b04}
+.meeting-card{border-top:4px solid #7f9774;padding:30px}
+.meeting-card h2{font-size:30px;font-weight:500;letter-spacing:-.03em}
+.meeting-card dt{font-size:11px;letter-spacing:.12em;color:#62725f}
+.meeting-card dd{font-size:17px}
+.product-card>img{background:#eeefe9}
+.product-card h2{font-weight:500}
+.seller-card{background:#e9ede5;padding:28px}
+.seller-card a{color:#365638}
+.article{background:#fff;border:1px solid #e0e4dc;border-radius:20px;padding:30px;margin-bottom:20px}
+.article h2{font-weight:500;letter-spacing:-.025em;font-size:30px;margin-top:12px}
+.article p{line-height:1.8}
+.article time{font-size:12px;color:#687361}
+.empty{background:#fff;border:1px dashed #c9d2c3;border-radius:20px;padding:44px 24px}
+.download-button{border-color:#c8d2c2;border-radius:10px;background:#f7f9f4;color:#314e34}
+footer{max-width:1190px;margin:0 auto;padding:30px 3.5% 36px;border-color:#d9ded5;color:#4c5a4c}
+footer span,footer a{color:#697266}
+.owner-toolbar{background:var(--background)}
+.owner-tabs button{border-radius:22px;border-color:#cbd5c4}
+.owner-tabs button[aria-pressed=true],.owner-panel button.button{background:#25372f;border-color:#25372f}
+.manage-form{border-radius:16px;border-color:#d8e0d2}
+.manage-form input,.manage-form textarea,.manage-form select{border-radius:8px;border-color:#b7c4b0}
+a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid #a96724;outline-offset:4px}
+@media(max-width:1200px){.header nav{justify-content:center}.header{gap:18px}.header nav a{padding:8px 14px}}
+@media(max-width:760px){
+.header{padding:20px 5%;gap:18px}.header nav{justify-content:flex-start;gap:4px}.header nav a{padding:8px 11px;font-size:13px}.languages{padding:3px}.languages button{padding:7px}
+.hero-surround{padding:0 3%;margin-top:0}.hero-surround .hero{border-radius:18px}.hero-inner{padding:30px 7% 34px}.hero h1{line-height:1.12}
+.resources{padding:28px 5% 12px;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto auto auto;gap:0}
+.resources>.section-label:nth-child(1){grid-column:1;grid-row:1}.resources>.resource-link:nth-child(2){grid-column:1;grid-row:2;margin-bottom:18px}.resources>.section-label:nth-child(3){grid-column:1;grid-row:3}.resources>.resource-link:nth-child(4){grid-column:1;grid-row:4}
+.resources>.section-label{padding:22px 22px 0}.resources>.resource-link{padding:18px 22px 26px;gap:14px}.resource-link h2{font-size:25px}.resource-link p{font-size:14px}
+.home-location{padding:0 5%;margin-bottom:36px}.location-section{padding:24px;gap:24px;grid-template-columns:1fr}.location-section h2{font-size:30px}.map-frame{height:270px}
+.page{padding:36px 5% 60px}.article{padding:24px}.article h2{font-size:26px}.meeting-card{padding:24px}.meeting-card h2{font-size:27px}.empty{padding:34px 20px}
+footer{margin:0 5%;padding:26px 0;gap:14px}
+}
+@media(prefers-reduced-motion:reduce){a,button{transition:none!important;transform:none!important}}
