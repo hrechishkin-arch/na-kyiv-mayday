@@ -10741,15 +10741,29 @@ function Shop({ data, lang }) {
 				poster: p.image ? imageUrl(p.image) : undefined,
 				controls: true,
 				playsInline: true,
-				preload: "auto",
-				muted: true,
-				onLoadedMetadata: (e) => {
-					const v = e.currentTarget;
-					try { if (v.currentTime < 0.05) v.currentTime = 0.15; } catch (err) {}
-				},
+				preload: "metadata",
+				crossOrigin: "anonymous",
 				onLoadedData: (e) => {
 					const v = e.currentTarget;
-					try { if (v.currentTime < 0.05) v.currentTime = 0.15; } catch (err) {}
+					if (v.dataset.shot || p.image) return;
+					const snap = () => {
+						if (v.dataset.shot || !v.videoWidth) return;
+						try {
+							const c = document.createElement("canvas");
+							c.width = v.videoWidth;
+							c.height = v.videoHeight;
+							c.getContext("2d").drawImage(v, 0, 0);
+							const url = c.toDataURL("image/jpeg", 0.7);
+							if (url.length > 200) {
+								v.setAttribute("poster", url);
+								v.dataset.shot = "1";
+							}
+						} catch (err) {}
+					};
+					if (v.currentTime > 0.05) { snap(); return; }
+					const onSeeked = () => { snap(); v.removeEventListener("seeked", onSeeked); };
+					v.addEventListener("seeked", onSeeked);
+					try { v.currentTime = 0.2; } catch (err) { snap(); }
 				}
 			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
 				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Field$1, {
