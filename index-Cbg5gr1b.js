@@ -34173,7 +34173,11 @@ function LiteratureManager({ lang, materials, reload }) {
 }
 function TextManager({ lang, initial, reload }) {
 	const t = cmsCopy[lang], b = copy[lang];
-	const [draft, setDraft] = (0, import_react.useState)(() => structuredClone(initial));
+	const [draft, setDraft] = (0, import_react.useState)(() => {
+		const d = structuredClone(initial || defaultContent);
+		for (const l of languages) d[l] = { ...defaultContent[l], ...(d[l] || {}) };
+		return d;
+	});
 	const [editLang, setEditLang] = (0, import_react.useState)(lang);
 	const state = useSave(lang, reload);
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", { children: [
@@ -34202,7 +34206,7 @@ function TextManager({ lang, initial, reload }) {
 				rows: key === "intro" ? 4 : 2,
 				required: true,
 				maxLength: 2e3,
-				value: draft[editLang][key],
+				value: draft[editLang][key] || "",
 				onChange: (e) => setDraft({
 					...draft,
 					[editLang]: {
