@@ -32762,7 +32762,7 @@ async function api(url, options = {}) {
 			if (isAudio) {
 				const uploaded = await uploadProductImage(file);
 				path = uploaded.path;
-				row.object_key = uploaded.url;
+				row.object_key = uploaded.path;
 				row.size = file.size;
 			} else {
 				await validateFile(file, "pdf");
