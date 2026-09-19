@@ -125,3 +125,10 @@ video.product-video{
     color:#fff !important;
   }
 }
+
+.product-card .button,
+.product-card a.button{
+  background:#000 !important;
+  border-color:#000 !important;
+  color:#fff !important;
+}
