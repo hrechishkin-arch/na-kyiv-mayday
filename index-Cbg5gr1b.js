@@ -10267,7 +10267,8 @@ var defaultCommunity = {
 	mapQuery: "Київ, Круглоуніверситетська вулиця, 7",
 	sellerName: "",
 	sellerContact: "",
-	products: []
+	products: [],
+	printProducts: []
 };
 var communityCopy = {
 	ru: {
@@ -32729,10 +32730,13 @@ async function api(url, options = {}) {
 			updated_at: (/* @__PURE__ */ new Date()).toISOString()
 		};
 		if (file instanceof File) {
-			await validateFile(file, "pdf");
-			path = crypto.randomUUID() + ".pdf";
-			checked(await db.storage.from("mayday-pdfs").upload(path, file, {
-				contentType: "application/pdf",
+			const mime = await validateFile(file, file.type && file.type.startsWith("audio") || /\.(mp3|m4a|aac|ogg|oga)$/i.test(file.name||"") ? "media" : "pdf");
+			const audio = String(mime).startsWith("audio");
+			const ext = audio ? ({ "audio/mpeg": ".mp3", "audio/mp4": ".m4a", "audio/ogg": ".ogg" }[mime] || ".mp3") : ".pdf";
+			path = (audio ? "audio-" : "") + crypto.randomUUID() + ext;
+			const bucket = audio ? "mayday-images" : "mayday-pdfs";
+			checked(await db.storage.from(bucket).upload(path, file, {
+				contentType: audio ? mime : "application/pdf",
 				upsert: false
 			}));
 			row.object_key = path;
@@ -32742,7 +32746,7 @@ async function api(url, options = {}) {
 		try {
 			return checked(await (id ? db.from("mayday_materials").update(row).eq("id", id) : db.from("mayday_materials").insert(row)).select().single());
 		} catch (e) {
-			if (path) await db.storage.from("mayday-pdfs").remove([path]);
+			if (path) await db.storage.from(path.startsWith("audio-") || /\.(mp3|m4a|ogg|aac)$/i.test(path) ? "mayday-images" : "mayday-pdfs").remove([path]);
 			throw e;
 		}
 	}
@@ -32788,12 +32792,26 @@ async function validateFile(file, kind) {
 	const name=(file.name||"").toLowerCase();
 	if (name.endsWith(".mp4") || name.endsWith(".m4v") || name.endsWith(".mov")) return "video/mp4";
 	if (name.endsWith(".webm")) return "video/webm";
+	if (name.endsWith(".mp3") || s.slice(0,3)==="ID3" || (b[0]===255 && (b[1]&224)===224)) return "audio/mpeg";
+	if (name.endsWith(".m4a") || name.endsWith(".aac")) return "audio/mp4";
+	if (name.endsWith(".ogg") || name.endsWith(".oga")) return "audio/ogg";
 	throw Error("invalid");
 }
 async function downloadMaterial(id) {
 	const db = client(), row = checked(await db.from("mayday_materials").select("object_key,title").eq("id", id).single());
 	if (!row) throw Error("unavailable");
-	const blob = checked(await db.storage.from("mayday-pdfs").download(row.object_key));
+	const audio = /\.(mp3|m4a|aac|ogg|oga)$/i.test(row.object_key||"") || String(row.object_key||"").startsWith("audio-");
+	const bucket = audio ? "mayday-images" : "mayday-pdfs";
+	if (audio) {
+		const url = db.storage.from(bucket).getPublicUrl(row.object_key).data.publicUrl;
+		const anchor = document.createElement("a");
+		anchor.href = url;
+		anchor.download = row.title.replace(/[<>:"/\\|?*]/g, "_") + (row.object_key.match(/\.[a-z0-9]+$/i)||[".mp3"])[0];
+		anchor.target = "_blank";
+		anchor.click();
+		return;
+	}
+	const blob = checked(await db.storage.from(bucket).download(row.object_key));
 	if (!blob) throw Error("unavailable");
 	const url = URL.createObjectURL(blob), anchor = document.createElement("a");
 	anchor.href = url;
@@ -32827,6 +32845,7 @@ function validateCommunityPatch(data) {
 		"sellerName",
 		"sellerContact",
 		"products",
+		"printProducts",
 		"labels"
 	].includes(k))) throw Error("invalid");
 	const text = (x, max = 3e3) => {
@@ -32877,6 +32896,17 @@ function validateCommunityPatch(data) {
 				"EUR",
 				"USD"
 			].includes(p.currency) || typeof p.available !== "boolean" || p.price !== "" && (!/^\d+(\.\d{1,2})?$/.test(p.price) || Number(p.price) > 1e7)) throw Error("invalid");
+			if (p.image && !publicMediaUrl(p.image)) throw Error("invalid");
+			if (p.video && !publicMediaUrl(p.video)) throw Error("invalid");
+		}
+	}
+	if (data.printProducts) {
+		if (data.printProducts.length > 100) throw Error("invalid");
+		for (const p of data.printProducts) {
+			validText(p.id, 100);
+			text(p.name, 180);
+			text(p.description);
+			if (!languages.some((l) => p.name[l].trim()) || !["UAH", "EUR", "USD"].includes(p.currency) || typeof p.available !== "boolean" || p.price !== "" && (!/^\d+(\.\d{1,2})?$/.test(p.price) || Number(p.price) > 1e7)) throw Error("invalid");
 			if (p.image && !publicMediaUrl(p.image)) throw Error("invalid");
 			if (p.video && !publicMediaUrl(p.video)) throw Error("invalid");
 		}
@@ -33042,7 +33072,7 @@ function CommunityManager({ kind, initial, lang, reload }) {
 		}
 	}
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", { children: [
-		/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", { children: kind === "schedule" ? ct.schedule : ct.shop }),
+		/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", { children: kind === "schedule" ? ct.schedule : kind === "print" ? (lang==="uk"?"Паперова література та сувеніри АН":lang==="en"?"Print literature and NA items":"Бумажная литература и атрибутика") : ct.shop }),
 		/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { children: t.hint }),
 		/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Languages, {
 			value: editLang,
@@ -33310,7 +33340,7 @@ function CommunityManager({ kind, initial, lang, reload }) {
 			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 				className: "manage-list",
-				children: draft.products.map((p) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				children: (kind==="print"?(draft.printProducts||[]):draft.products).map((p) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 					className: "manage-row",
 					children: [
 						p.image && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
@@ -33332,11 +33362,11 @@ function CommunityManager({ kind, initial, lang, reload }) {
 							disabled: busy,
 							onClick: () => {
 								if (confirm(t.delete)) run(async () => {
-									const products = draft.products.filter((x) => x.id !== p.id);
-									await save({ products });
+									const products = (kind==="print"?(draft.printProducts||[]):draft.products).filter((x) => x.id !== p.id);
+									await save({ [kind==="print"?"printProducts":"products"]: products });
 									setDraft({
 										...draft,
-										products
+										[kind==="print"?"printProducts":"products"]: products
 									});
 									if (product.id === p.id) setProduct(blank());
 								});
@@ -33368,11 +33398,11 @@ function CommunityManager({ kind, initial, lang, reload }) {
 								image: uploaded && uploaded.mime && uploaded.mime.startsWith("image") ? uploaded.url : product.image,
 								video: uploaded && uploaded.mime && uploaded.mime.startsWith("video") ? uploaded.url : (product.video || "")
 							};
-							const products = draft.products.some((p) => p.id === saved.id) ? draft.products.map((p) => p.id === saved.id ? saved : p) : [...draft.products, saved];
-							await save({ products });
+							const products = (kind==="print"?(draft.printProducts||[]):draft.products).some((p) => p.id === saved.id) ? (kind==="print"?(draft.printProducts||[]):draft.products).map((p) => p.id === saved.id ? saved : p) : [...(kind==="print"?(draft.printProducts||[]):draft.products), saved];
+							await save({ [kind==="print"?"printProducts":"products"]: products });
 							setDraft({
 								...draft,
-								products
+								[kind==="print"?"printProducts":"products"]: products
 							});
 							setProduct(saved);
 							setFile(null);
@@ -33777,11 +33807,10 @@ function OwnerPanel({ lang }) {
 					posts,
 					reload
 				}),
-				tab === "literature" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(LiteratureManager, {
-					lang,
-					materials,
-					reload
-				}),
+				tab === "literature" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+					(0, import_jsx_runtime.jsx)(LiteratureManager, { lang, materials, reload }),
+					settings && (0, import_jsx_runtime.jsx)(CommunityManager, { kind: "print", initial: settings.community, lang, reload })
+				] }),
 				(tab === "schedule" || tab === "shop") && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CommunityManager, {
 					kind: tab,
 					initial: settings.community,
@@ -34086,7 +34115,7 @@ function LiteratureManager({ lang, materials, reload }) {
 				})] }),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [t.file, /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
 					type: "file",
-					accept: "application/pdf,.pdf",
+					accept: "application/pdf,.pdf,audio/mpeg,audio/mp4,audio/ogg,.mp3,.m4a,.aac,.ogg",
 					required: !id,
 					onChange: (e) => setFile(e.target.files?.[0] || null)
 				}, fileKey)] }),
@@ -34718,21 +34747,25 @@ function Site({ section, editor = false, authenticated = false, userId }) {
 								children: c.retry
 							})
 						]
-					}) : materials.filter((b) => b.language === lang).length ? materials.filter((b) => b.language === lang).map((b) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						className: "resource-link",
-						children: [
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(BookOpen, {}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", { children: b.title }),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(DownloadButton, {
-								id: b.id,
-								lang
-							})
-						]
-					}, b.id)) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Empty, {
-						icon: "book",
-						title: t.emptyBooks,
-						text: t.emptyBooksText
-					})),
+					}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+						(0, import_jsx_runtime.jsx)("h2", { className: "subhead", children: lang==="uk"?"Електронні матеріали":lang==="en"?"Digital materials":"Электронные материалы" }),
+						(0, import_jsx_runtime.jsx)("p", { className: "page-intro", children: lang==="uk"?"PDF-книги та аудіокниги для читання і прослуховування.":lang==="en"?"PDF books and audiobooks to read and listen.":"PDF-книги и аудиокниги — читать и слушать." }),
+						materials.filter((b) => b.language === lang).length ? materials.filter((b) => b.language === lang).map((b) => {
+							const audio = /\.(mp3|m4a|aac|ogg|oga)$/i.test(b.object_key||"") || String(b.object_key||"").startsWith("audio-");
+							const src = audio ? client().storage.from("mayday-images").getPublicUrl(b.object_key).data.publicUrl : "";
+							return (0, import_jsx_runtime.jsxs)("div", { className: "resource-link", children: [
+								(0, import_jsx_runtime.jsx)(BookOpen, {}),
+								(0, import_jsx_runtime.jsxs)("div", { children: [
+									(0, import_jsx_runtime.jsx)("h2", { children: b.title }),
+									audio ? (0, import_jsx_runtime.jsx)("audio", { className: "audio-book", src, controls: true, preload: "metadata" }) : null
+								] }),
+								(0, import_jsx_runtime.jsx)(DownloadButton, { id: b.id, lang, title: audio ? (lang==="uk"?"Завантажити аудіо":lang==="en"?"Download audio":"Скачать аудио") : undefined })
+							] }, b.id);
+						}) : (0, import_jsx_runtime.jsx)(Empty, { icon: "book", title: t.emptyBooks, text: t.emptyBooksText }),
+						(0, import_jsx_runtime.jsx)("h2", { className: "subhead", children: lang==="uk"?"Паперові книги та атрибутика":lang==="en"?"Print books and items":"Бумажные книги и атрибутика" }),
+						(0, import_jsx_runtime.jsx)("p", { className: "page-intro", children: lang==="uk"?"Замовлення через Telegram, як у сувенірці.":lang==="en"?"Order via Telegram, same as the shop.":"Заказ через Telegram — как в сувенирке." }),
+						(0, import_jsx_runtime.jsx)(Shop, { data: { ...settings.community, products: settings.community.printProducts || [] }, lang })
+					] })),
 					section === "schedule" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Schedule, {
 						data: settings.community,
 						lang
