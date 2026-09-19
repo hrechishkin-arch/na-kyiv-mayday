@@ -99,3 +99,15 @@ video.product-video{
 
 .subhead{font-size:28px;font-weight:500;letter-spacing:-.03em;margin:36px 0 8px}
 .audio-book{width:100%;margin-top:10px}
+
+.lit-page{display:flex;flex-direction:column;gap:28px}
+.lit-block{
+  background:#fff;
+  border:1px solid #e4e7e0;
+  border-radius:20px;
+  padding:28px 24px 20px;
+  box-shadow:0 4px 18px #2a402b08;
+}
+.lit-block .subhead{margin-top:0}
+.lit-block .muted{color:#6b7568;margin:8px 0 0}
+.lit-block .resource-link{margin-top:12px}
