@@ -32770,7 +32770,7 @@ async function api(url, options = {}) {
 	throw Error("unavailable");
 }
 async function validateFile(file, kind) {
-	const limit = kind === "pdf" ? 12 : kind === "image" ? 8 : 40;
+	const limit = kind === "pdf" ? 12 : kind === "image" ? 8 : 300;
 	if (file.size > limit * 1048576) throw Error("too_large");
 	const b = new Uint8Array(await file.slice(0, 16).arrayBuffer()), s = String.fromCharCode(...b);
 	if (kind === "pdf") {
