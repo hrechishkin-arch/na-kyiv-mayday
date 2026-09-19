@@ -10377,6 +10377,7 @@ var copy = {
 		printText: "Заказ через Telegram — как в сувенирке.",
 		shopEmpty: "Сувениры скоро появятся",
 		printEmpty: "Бумажные книги скоро появятся",
+		printAdd: "Добавить книгу или атрибутику",
 		loading: "Загрузка…",
 		error: "Не удалось загрузить новости. Попробуйте ещё раз.",
 		retry: "Повторить",
@@ -10423,6 +10424,7 @@ var copy = {
 		printText: "Замовлення через Telegram, як у сувенірці.",
 		shopEmpty: "Сувеніри незабаром з’являться",
 		printEmpty: "Паперові книги незабаром з’являться",
+		printAdd: "Додати книгу або атрибутику",
 		loading: "Завантаження…",
 		error: "Не вдалося завантажити новини. Спробуйте ще раз.",
 		retry: "Повторити",
@@ -10469,6 +10471,7 @@ var copy = {
 		printText: "Order via Telegram, same as the shop.",
 		shopEmpty: "Merchandise is coming soon",
 		printEmpty: "Print items are coming soon",
+		printAdd: "Add book or item",
 		loading: "Loading…",
 		error: "News could not be loaded. Please try again.",
 		retry: "Try again",
@@ -32622,7 +32625,8 @@ var editableKeys = [
 	"printTitle",
 	"printText",
 	"shopEmpty",
-	"printEmpty"
+	"printEmpty",
+	"printAdd"
 ];
 var defaultContent = Object.fromEntries(Object.entries(copy).map(([lang, text]) => [lang, Object.fromEntries(editableKeys.map((key) => [key, text[key]]))]));
 var defaultAppearance = {
@@ -33407,7 +33411,7 @@ function CommunityManager({ kind, initial, lang, reload }) {
 					setFile(null);
 					setFileKey((k) => k + 1);
 				},
-				children: t.add
+				children: kind === "print" ? (copy[lang].printAdd || (lang==="uk"?"Додати книгу або атрибутику":lang==="en"?"Add book or item":"Добавить книгу или атрибутику")) : t.add
 			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
 				className: "manage-form",
@@ -33538,11 +33542,11 @@ var cmsCopy = {
 		restore: "Опубликовать снова",
 		published: "Опубликовано",
 		archived: "Снято с публикации",
-		newPdf: "Добавить PDF",
+		newPdf: "Добавить PDF или аудиокнигу",
 		title: "Название",
 		language: "Язык материала",
-		file: "PDF-файл",
-		pdfHint: "PDF до 12 МБ. При изменении можно заменить файл или оставить прежний.",
+		file: "Файл PDF или аудио",
+		pdfHint: "PDF до 12 МБ или аудиокнига MP3/M4A/OGG до 40 МБ. При изменении можно заменить файл или оставить прежний.",
 		upload: "Сохранить материал",
 		edit: "Изменить",
 		download: "Скачать",
@@ -33581,11 +33585,11 @@ var cmsCopy = {
 		restore: "Опублікувати знову",
 		published: "Опубліковано",
 		archived: "Знято з публікації",
-		newPdf: "Додати PDF",
+		newPdf: "Додати PDF або аудіокнигу",
 		title: "Назва",
 		language: "Мова матеріалу",
-		file: "PDF-файл",
-		pdfHint: "PDF до 12 МБ. Під час редагування можна замінити файл або залишити попередній.",
+		file: "Файл PDF або аудіо",
+		pdfHint: "PDF до 12 МБ або аудіокнига MP3/M4A/OGG до 40 МБ. Під час редагування можна замінити файл або залишити попередній.",
 		upload: "Зберегти матеріал",
 		edit: "Змінити",
 		download: "Завантажити",
@@ -33624,11 +33628,11 @@ var cmsCopy = {
 		restore: "Publish again",
 		published: "Published",
 		archived: "Unpublished",
-		newPdf: "Add PDF",
+		newPdf: "Add PDF or audiobook",
 		title: "Title",
 		language: "Material language",
-		file: "PDF file",
-		pdfHint: "PDF up to 12 MB. When editing, replace the file or keep the existing one.",
+		file: "PDF or audio file",
+		pdfHint: "PDF up to 12 MB or audiobook MP3/M4A/OGG up to 40 MB. When editing, replace the file or keep the existing one.",
 		upload: "Save material",
 		edit: "Edit",
 		download: "Download",
@@ -33675,7 +33679,8 @@ var contentLabels = {
 		"Литература: заголовок бумажных книг",
 		"Литература: текст про заказ в Telegram",
 		"Сувенирка: текст если товаров нет",
-		"Литература: текст если бумажных книг нет"
+		"Литература: текст если бумажных книг нет",
+		"Литература: кнопка добавления бумажной книги"
 	],
 	uk: [
 		"Назва спільноти",
@@ -33701,7 +33706,8 @@ var contentLabels = {
 		"Література: заголовок паперових книг",
 		"Література: текст про замовлення в Telegram",
 		"Сувенірка: текст якщо товарів немає",
-		"Література: текст якщо паперових книг немає"
+		"Література: текст якщо паперових книг немає",
+		"Література: кнопка додавання паперової книги"
 	],
 	en: [
 		"Community name",
@@ -33727,7 +33733,8 @@ var contentLabels = {
 		"Literature: print heading",
 		"Literature: print description",
 		"Shop: empty catalog text",
-		"Literature: empty print catalog text"
+		"Literature: empty print catalog text",
+		"Literature: add print item button"
 	]
 };
 //#endregion
