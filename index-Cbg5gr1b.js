@@ -32758,23 +32758,22 @@ async function api(url, options = {}) {
 			updated_at: (/* @__PURE__ */ new Date()).toISOString()
 		};
 		if (file instanceof File) {
-			const mime = await validateFile(file, file.type && file.type.startsWith("audio") || /\.(mp3|m4a|aac|ogg|oga)$/i.test(file.name||"") ? "media" : "pdf");
-			const audio = String(mime).startsWith("audio");
-			const ext = audio ? ({ "audio/mpeg": ".mp3", "audio/mp4": ".m4a", "audio/ogg": ".ogg" }[mime] || ".mp3") : ".pdf";
-			path = (audio ? "audio-" : "") + crypto.randomUUID() + ext;
-			const buckets = audio ? ["mayday-images", "mayday-pdfs"] : ["mayday-pdfs"];
-			let uploaded = false, lastErr = null, usedBucket = "mayday-pdfs";
-			for (const bucket of buckets) {
-				const result = await db.storage.from(bucket).upload(path, file, {
-					contentType: audio ? mime : "application/pdf",
+			const isAudio = /\.(mp3|m4a|aac|ogg|oga)$/i.test(file.name||"") || String(file.type||"").startsWith("audio");
+			if (isAudio) {
+				const uploaded = await uploadProductImage(file);
+				path = uploaded.path;
+				row.object_key = uploaded.url;
+				row.size = file.size;
+			} else {
+				await validateFile(file, "pdf");
+				path = crypto.randomUUID() + ".pdf";
+				checked(await db.storage.from("mayday-pdfs").upload(path, file, {
+					contentType: "application/pdf",
 					upsert: false
-				});
-				if (!result.error) { uploaded = true; usedBucket = bucket; break; }
-				lastErr = result.error;
+				}));
+				row.object_key = path;
+				row.size = file.size;
 			}
-			if (!uploaded) throw Error(file.size > 12 * 1048576 ? "too_large" : "unavailable");
-			row.object_key = path;
-			row.size = file.size;
 		}
 		if (!id && !path) throw Error("invalid");
 		try {
@@ -32835,11 +32834,8 @@ async function validateFile(file, kind) {
 async function downloadMaterial(id) {
 	const db = client(), row = checked(await db.from("mayday_materials").select("object_key,title").eq("id", id).single());
 	if (!row) throw Error("unavailable");
-	const audio = /\.(mp3|m4a|aac|ogg|oga)$/i.test(row.object_key||"") || String(row.object_key||"").startsWith("audio-");
-	if (audio) {
-		const img = db.storage.from("mayday-images").getPublicUrl(row.object_key).data.publicUrl;
-		const pdf = db.storage.from("mayday-pdfs").getPublicUrl(row.object_key).data.publicUrl;
-		const url = String(row.object_key||"").startsWith("audio-") ? img : pdf;
+	if (/^https?:\/\//.test(row.object_key||"") || /\.(mp3|m4a|aac|ogg|oga)$/i.test(row.object_key||"")) {
+		const url = /^https?:\/\//.test(row.object_key||"") ? row.object_key : db.storage.from("mayday-images").getPublicUrl(row.object_key).data.publicUrl;
 		const anchor = document.createElement("a");
 		anchor.href = url;
 		anchor.download = row.title.replace(/[<>:"/\\|?*]/g, "_") + (row.object_key.match(/\.[a-z0-9]+$/i)||[".mp3"])[0];
@@ -34812,8 +34808,8 @@ function Site({ section, editor = false, authenticated = false, userId }) {
 						(0, import_jsx_runtime.jsx)("h2", { className: "subhead", children: t.digitalTitle || (lang==="uk"?"Електронні матеріали":lang==="en"?"Digital materials":"Электронные материалы") }),
 						(0, import_jsx_runtime.jsx)("p", { className: "page-intro", children: t.digitalText || (lang==="uk"?"PDF-книги та аудіокниги для читання і прослуховування.":lang==="en"?"PDF books and audiobooks to read and listen.":"PDF-книги и аудиокниги — читать и слушать.") }),
 						materials.filter((b) => b.language === lang).length ? materials.filter((b) => b.language === lang).map((b) => {
-							const audio = /\.(mp3|m4a|aac|ogg|oga)$/i.test(b.object_key||"") || String(b.object_key||"").startsWith("audio-");
-							const src = audio ? client().storage.from("mayday-images").getPublicUrl(b.object_key).data.publicUrl : "";
+							const audio = /^https?:\/\//.test(b.object_key||"") || /\.(mp3|m4a|aac|ogg|oga)$/i.test(b.object_key||"") || String(b.object_key||"").startsWith("audio-");
+							const src = /^https?:\/\//.test(b.object_key||"") ? b.object_key : (audio ? client().storage.from("mayday-images").getPublicUrl(b.object_key).data.publicUrl : "");
 							return (0, import_jsx_runtime.jsxs)("div", { className: "resource-link", children: [
 								(0, import_jsx_runtime.jsx)(BookOpen, {}),
 								(0, import_jsx_runtime.jsxs)("div", { children: [
