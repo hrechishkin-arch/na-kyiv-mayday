@@ -32773,8 +32773,6 @@ async function api(url, options = {}) {
 				lastErr = result.error;
 			}
 			if (!uploaded) throw Error(file.size > 12 * 1048576 ? "too_large" : "unavailable");
-			if (audio && usedBucket === "mayday-pdfs") path = path.replace(/^audio-/, "audpdf-");
-			delete row._bucket;
 			row.object_key = path;
 			row.size = file.size;
 		}
@@ -32837,10 +32835,11 @@ async function validateFile(file, kind) {
 async function downloadMaterial(id) {
 	const db = client(), row = checked(await db.from("mayday_materials").select("object_key,title").eq("id", id).single());
 	if (!row) throw Error("unavailable");
-	const audio = /\.(mp3|m4a|aac|ogg|oga)$/i.test(row.object_key||"") || String(row.object_key||"").startsWith("audio-") || String(row.object_key||"").startsWith("audpdf-");
-	const bucket = String(row.object_key||"").startsWith("audio-") ? "mayday-images" : "mayday-pdfs";
+	const audio = /\.(mp3|m4a|aac|ogg|oga)$/i.test(row.object_key||"") || String(row.object_key||"").startsWith("audio-");
 	if (audio) {
-		const url = db.storage.from(bucket).getPublicUrl(row.object_key).data.publicUrl;
+		const img = db.storage.from("mayday-images").getPublicUrl(row.object_key).data.publicUrl;
+		const pdf = db.storage.from("mayday-pdfs").getPublicUrl(row.object_key).data.publicUrl;
+		const url = String(row.object_key||"").startsWith("audio-") ? img : pdf;
 		const anchor = document.createElement("a");
 		anchor.href = url;
 		anchor.download = row.title.replace(/[<>:"/\\|?*]/g, "_") + (row.object_key.match(/\.[a-z0-9]+$/i)||[".mp3"])[0];
