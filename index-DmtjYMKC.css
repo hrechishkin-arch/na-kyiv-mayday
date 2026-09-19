@@ -74,11 +74,17 @@
 .hero-actions{display:flex;flex-direction:column;align-items:flex-start;gap:10px}
 .hero-actions .button{width:auto}
 @media (max-width:760px){
-  .hero, .hero-art, .hero-art img{background:#3d4045 !important}
+  .hero, .hero-art, .hero-art img{background:#000 !important}
   .hero-inner{
-    background:linear-gradient(180deg,rgba(61,64,69,0) 0%,rgba(61,64,69,.28) 56px,rgba(61,64,69,.72) 120px,#3d4045 170px,#3d4045 100%);
-    margin-top:-48px;
-    padding-top:64px !important;
+    background:linear-gradient(180deg,
+      rgba(0,0,0,0) 0%,
+      rgba(0,0,0,0.08) 22%,
+      rgba(0,0,0,0.28) 48%,
+      rgba(0,0,0,0.62) 72%,
+      rgba(0,0,0,0.92) 88%,
+      #000 100%);
+    margin-top:-72px;
+    padding-top:88px !important;
     position:relative;
     z-index:1;
   }
