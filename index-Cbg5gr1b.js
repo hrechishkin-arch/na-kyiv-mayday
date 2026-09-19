@@ -32735,14 +32735,34 @@ async function api(url, options = {}) {
 		};
 		return checked(await (method === "POST" ? db.from("mayday_news").insert(row) : db.from("mayday_news").update(row).eq("id", data.id)).select().single());
 	}
+	async function loadAudioBooks() {
+		const row = checked(await db.from("mayday_settings").select("value").eq("key", "audiobooks").maybeSingle());
+		return Array.isArray(row?.value) ? row.value : [];
+	}
+	async function saveAudioBooks(list) {
+		const cur = checked(await db.from("mayday_settings").select("key").eq("key", "audiobooks").maybeSingle());
+		if (cur) checked(await db.from("mayday_settings").update({ value: list }).eq("key", "audiobooks"));
+		else checked(await db.from("mayday_settings").insert({ key: "audiobooks", value: list }));
+	}
 	if (url.startsWith("/api/literature")) {
 		if (method === "GET") {
 			let q = db.from("mayday_materials").select("*").order("updated_at", { ascending: false });
 			if (!all) q = q.eq("archived", false);
-			return checked(await q);
+			const files = checked(await q) || [];
+			let audio = [];
+			try { audio = await loadAudioBooks(); } catch (e) { audio = []; }
+			if (!all) audio = audio.filter((x) => !x.archived);
+			return [...audio, ...files];
 		}
 		if (method === "PATCH") {
 			const data = JSON.parse(String(options.body));
+			const audio = await loadAudioBooks();
+			const ai = audio.findIndex((x) => x.id === data.id);
+			if (ai >= 0) {
+				audio[ai] = { ...audio[ai], archived: !!data.archived, updated_at: new Date().toISOString() };
+				await saveAudioBooks(audio);
+				return audio[ai];
+			}
 			return checked(await db.from("mayday_materials").update({
 				archived: !!data.archived,
 				updated_at: (/* @__PURE__ */ new Date()).toISOString()
@@ -32761,9 +32781,20 @@ async function api(url, options = {}) {
 			const isAudio = /\.(mp3|m4a|aac|ogg|oga)$/i.test(file.name||"") || String(file.type||"").startsWith("audio");
 			if (isAudio) {
 				const uploaded = await uploadProductImage(file);
-				path = uploaded.path;
-				row.object_key = uploaded.path;
-				row.size = file.size;
+				const item = {
+					id: crypto.randomUUID(),
+					title,
+					language,
+					object_key: uploaded.path,
+					size: file.size,
+					archived: false,
+					updated_at: new Date().toISOString(),
+					kind: "audio"
+				};
+				const audio = await loadAudioBooks();
+				audio.unshift(item);
+				await saveAudioBooks(audio);
+				return item;
 			} else {
 				await validateFile(file, "pdf");
 				path = crypto.randomUUID() + ".pdf";
@@ -33912,7 +33943,7 @@ function useSave(lang, reload) {
 			await reload();
 		} catch (error) {
 			const code = error instanceof Error ? error.message : "";
-			setMessage(code === "too_large" ? t.large : code === "invalid" ? t.invalid : t.error);
+			setMessage((code === "too_large" ? t.large : code === "invalid" ? t.invalid : t.error) + (code && code !== "too_large" && code !== "invalid" ? " ["+code+"]" : ""));
 		} finally {
 			setBusy(false);
 		}
