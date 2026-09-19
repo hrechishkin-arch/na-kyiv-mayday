@@ -32763,21 +32763,18 @@ async function api(url, options = {}) {
 			const ext = audio ? ({ "audio/mpeg": ".mp3", "audio/mp4": ".m4a", "audio/ogg": ".ogg" }[mime] || ".mp3") : ".pdf";
 			path = (audio ? "audio-" : "") + crypto.randomUUID() + ext;
 			const buckets = audio ? ["mayday-images", "mayday-pdfs"] : ["mayday-pdfs"];
-			let uploaded = false, lastErr = null;
+			let uploaded = false, lastErr = null, usedBucket = "mayday-pdfs";
 			for (const bucket of buckets) {
 				const result = await db.storage.from(bucket).upload(path, file, {
 					contentType: audio ? mime : "application/pdf",
 					upsert: false
 				});
-				if (!result.error) { uploaded = true; row._bucket = bucket; break; }
+				if (!result.error) { uploaded = true; usedBucket = bucket; break; }
 				lastErr = result.error;
 			}
 			if (!uploaded) throw Error(file.size > 12 * 1048576 ? "too_large" : "unavailable");
-			row.object_key = (row._bucket === "mayday-images" || audio ? path : path);
-			if (audio && row._bucket === "mayday-pdfs") row.object_key = path.replace(/^audio-/, "audpdf-");
-			if (row.object_key !== path && row._bucket === "mayday-pdfs") {
-				/* keep same path; prefix only for download routing */
-			}
+			if (audio && usedBucket === "mayday-pdfs") path = path.replace(/^audio-/, "audpdf-");
+			delete row._bucket;
 			row.object_key = path;
 			row.size = file.size;
 		}
