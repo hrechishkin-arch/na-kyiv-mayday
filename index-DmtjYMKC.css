@@ -81,3 +81,14 @@
     z-index:1;
   }
 }
+
+.news-media,.product-video{
+  width:100%;
+  max-height:420px;
+  object-fit:cover;
+  border-radius:12px;
+  margin:12px 0 0;
+  background:#111;
+  display:block;
+}
+.product-card .product-video{max-height:260px;margin:0 0 12px}
