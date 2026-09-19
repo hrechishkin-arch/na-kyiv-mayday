@@ -81,3 +81,36 @@
     z-index:1;
   }
 }
+
+.path-banner{
+  width:min(1440px, calc(100% - 16px));
+  max-width:1440px;
+  height:1.5cm;
+  margin:10px auto 0;
+  background:#000;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:0 16px;
+  box-sizing:border-box;
+  border-radius:10px;
+  font-family:"IBM Plex Sans",Arial,Helvetica,sans-serif;
+  font-weight:600;
+  font-size:clamp(13px,1.7vw,18px);
+  letter-spacing:.04em;
+  text-transform:uppercase;
+}
+@media (max-width:760px){
+  .path-banner{
+    width:calc(100% - 24px);
+    font-size:12px;
+    letter-spacing:.03em;
+    line-height:1.25;
+    height:auto;
+    min-height:1.5cm;
+    padding:10px 14px;
+    border-radius:8px;
+  }
+}
