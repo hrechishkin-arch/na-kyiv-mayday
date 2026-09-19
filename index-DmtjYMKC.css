@@ -81,19 +81,3 @@
     z-index:1;
   }
 }
-
-.hero-surround{width:100%}
-.hero-surround .hero,
-.hero{
-  width:80vw !important;
-  max-width:80vw !important;
-  margin-left:auto !important;
-  margin-right:auto !important;
-}
-@media (max-width:760px){
-  .hero-surround .hero,
-  .hero{
-    width:calc(100% - 24px) !important;
-    max-width:calc(100% - 24px) !important;
-  }
-}
