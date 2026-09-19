@@ -34413,11 +34413,7 @@ function AuthPanel({ lang }) {
 //#endregion
 //#region src/site.tsx
 function Site({ section, editor = false, authenticated = false, userId }) {
-	const [settings, setSettings] = (0, import_react.useState)({
-		content: defaultContent,
-		appearance: defaultAppearance,
-		community: structuredClone(defaultCommunity)
-	});
+	const [settings, setSettings] = (0, import_react.useState)((()=>{try{const raw=sessionStorage.getItem("mayday-settings");if(raw)return JSON.parse(raw);}catch(e){}return{content:defaultContent,appearance:defaultAppearance,community:structuredClone(defaultCommunity)};})());
 	const [materials, setMaterials] = (0, import_react.useState)([]);
 	const [materialState, setMaterialState] = (0, import_react.useState)("loading");
 	const [isOwner, setIsOwner] = (0, import_react.useState)(false);
@@ -34450,7 +34446,7 @@ function Site({ section, editor = false, authenticated = false, userId }) {
 			subscription.unsubscribe();
 		};
 	}, []);
-	const [lang, setLang] = (0, import_react.useState)("ru");
+	const [lang, setLang] = (0, import_react.useState)((()=>{const l=new URLSearchParams(location.search).get("lang");return ["ru","uk","en"].includes(l)?l:"ru"})());
 	const [posts, setPosts] = (0, import_react.useState)([]);
 	const [status, setStatus] = (0, import_react.useState)("loading");
 	(0, import_react.useEffect)(() => {
@@ -34474,7 +34470,7 @@ function Site({ section, editor = false, authenticated = false, userId }) {
 		if (section === "news" || section === "admin") reload();
 	}, [section]);
 	(0, import_react.useEffect)(() => {
-		api("/api/site").then((s) => setSettings(s)).catch(() => {});
+		api("/api/site").then((s) => {try{sessionStorage.setItem("mayday-settings",JSON.stringify(s));}catch(e){}setSettings(s);}).catch(() => {});
 		if (section === "literature") api("/api/literature").then((r) => {
 			setMaterials(r);
 			setMaterialState("ok");
@@ -34590,7 +34586,7 @@ function Site({ section, editor = false, authenticated = false, userId }) {
 										href: "https://t.me/mayday_NA_online",
 										target: "_blank",
 										rel: "noopener noreferrer",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", { className: "hero-cta-mark", src: "./mayday-mark.png", alt: "" }), "Mayday online", /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArrowUpRight, { size: 18 })]
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", { className: "hero-cta-mark", src: "./mayday-mark-k.png", alt: "" }), "Mayday online", /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArrowUpRight, { size: 18 })]
 									})]
 								})
 							]
