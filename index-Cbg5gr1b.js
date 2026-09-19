@@ -10709,6 +10709,12 @@ function Shop({ data, lang }) {
 				src: imageUrl(p.image),
 				alt: localText(p.name, lang),
 				loading: "lazy"
+			}), p.video && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("video", {
+				className: "product-video",
+				src: p.video,
+				controls: true,
+				playsInline: true,
+				preload: "metadata"
 			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
 				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Field$1, {
 					value: p.name,
@@ -32764,8 +32770,9 @@ async function api(url, options = {}) {
 	throw Error("unavailable");
 }
 async function validateFile(file, kind) {
-	if (file.size > (kind === "pdf" ? 12 : 8) * 1048576) throw Error("too_large");
-	const b = new Uint8Array(await file.slice(0, 12).arrayBuffer()), s = String.fromCharCode(...b);
+	const limit = kind === "pdf" ? 12 : kind === "image" ? 8 : 40;
+	if (file.size > limit * 1048576) throw Error("too_large");
+	const b = new Uint8Array(await file.slice(0, 16).arrayBuffer()), s = String.fromCharCode(...b);
 	if (kind === "pdf") {
 		if (!s.startsWith("%PDF-")) throw Error("invalid");
 		return "application/pdf";
@@ -32773,6 +32780,8 @@ async function validateFile(file, kind) {
 	if (b[0] === 137 && s.slice(1, 4) === "PNG" && b[4] === 13 && b[5] === 10 && b[6] === 26 && b[7] === 10) return "image/png";
 	if (b[0] === 255 && b[1] === 216 && b[2] === 255) return "image/jpeg";
 	if (s.startsWith("RIFF") && s.slice(8, 12) === "WEBP") return "image/webp";
+	if (s.slice(4, 8) === "ftyp") return "video/mp4";
+	if (b[0] === 26 && b[1] === 69 && b[2] === 223 && b[3] === 163) return "video/webm";
 	throw Error("invalid");
 }
 async function downloadMaterial(id) {
@@ -32862,20 +32871,29 @@ function validateCommunityPatch(data) {
 				"EUR",
 				"USD"
 			].includes(p.currency) || typeof p.available !== "boolean" || p.price !== "" && (!/^\d+(\.\d{1,2})?$/.test(p.price) || Number(p.price) > 1e7)) throw Error("invalid");
-			if (p.image && !p.image.startsWith(client().storage.from("mayday-images").getPublicUrl("").data.publicUrl)) throw Error("invalid");
+			if (p.image && !publicMediaUrl(p.image)) throw Error("invalid");
+			if (p.video && !publicMediaUrl(p.video)) throw Error("invalid");
 		}
 	}
 }
+function publicMediaUrl(url) {
+	if (!url) return false;
+	return url.startsWith(client().storage.from("mayday-images").getPublicUrl("").data.publicUrl);
+}
 async function uploadProductImage(file) {
-	const db = client(), mime = await validateFile(file, "image"), path = crypto.randomUUID() + {
+	const db = client(), mime = await validateFile(file, "media"), path = crypto.randomUUID() + {
 		"image/png": ".png",
 		"image/jpeg": ".jpg",
-		"image/webp": ".webp"
+		"image/webp": ".webp",
+		"video/mp4": ".mp4",
+		"video/webm": ".webm"
 	}[mime];
+	if (!path) throw Error("invalid");
 	checked(await db.storage.from("mayday-images").upload(path, file, { contentType: mime }));
 	return {
 		path,
-		url: db.storage.from("mayday-images").getPublicUrl(path).data.publicUrl
+		url: db.storage.from("mayday-images").getPublicUrl(path).data.publicUrl,
+		mime
 	};
 }
 async function removeUnusedImage(path) {
@@ -32994,6 +33012,7 @@ function CommunityManager({ kind, initial, lang, reload }) {
 		name: emptyText(),
 		description: emptyText(),
 		image: "",
+		video: "",
 		price: "",
 		currency: "UAH",
 		available: true
@@ -33340,7 +33359,8 @@ function CommunityManager({ kind, initial, lang, reload }) {
 							if (file) uploaded = await uploadProductImage(file);
 							const saved = {
 								...product,
-								image: uploaded?.url || product.image
+								image: uploaded && uploaded.mime && uploaded.mime.startsWith("image") ? uploaded.url : product.image,
+								video: uploaded && uploaded.mime && uploaded.mime.startsWith("video") ? uploaded.url : (product.video || "")
 							};
 							const products = draft.products.some((p) => p.id === saved.id) ? draft.products.map((p) => p.id === saved.id ? saved : p) : [...draft.products, saved];
 							await save({ products });
@@ -33384,8 +33404,8 @@ function CommunityManager({ kind, initial, lang, reload }) {
 					}),
 					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [t.photo, /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
 						type: "file",
-						accept: "image/png,image/jpeg,image/webp",
-						required: !product.image,
+						accept: "image/png,image/jpeg,image/webp,video/mp4,video/webm",
+						required: !product.image && !product.video,
 						onChange: (e) => setFile(e.target.files?.[0] || null)
 					}, fileKey)] }),
 					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [t.price, /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
@@ -33834,6 +33854,8 @@ function NewsManager({ lang, posts, reload }) {
 	const [id, setId] = (0, import_react.useState)("");
 	const [editLang, setEditLang] = (0, import_react.useState)(lang);
 	const [draft, setDraft] = (0, import_react.useState)(blank);
+	const [newsFile, setNewsFile] = (0, import_react.useState)(null);
+	const [newsFileKey, setNewsFileKey] = (0, import_react.useState)(0);
 	const state = useSave(lang, reload);
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", { children: [
 		/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", { children: b.news }),
@@ -33879,11 +33901,30 @@ function NewsManager({ lang, posts, reload }) {
 			onSubmit: (e) => {
 				e.preventDefault();
 				state.run(async () => {
-					const value = await send("/api/news", {
-						id,
-						translations: draft
-					}, id ? "PUT" : "POST");
-					setId(value.id);
+					let uploaded;
+					const translations = structuredClone(draft);
+					try {
+						if (newsFile) {
+							uploaded = await uploadProductImage(newsFile);
+							const kind = uploaded.mime.startsWith("video") ? "video" : "image";
+							for (const l of languages) translations[l] = {
+								...translations[l],
+								mediaUrl: uploaded.url,
+								mediaKind: kind
+							};
+						}
+						const value = await send("/api/news", {
+							id,
+							translations
+						}, id ? "PUT" : "POST");
+						setDraft(translations);
+						setId(value.id);
+						setNewsFile(null);
+						setNewsFileKey((k) => k + 1);
+					} catch (error) {
+						if (uploaded) await removeUnusedImage(uploaded.path);
+						throw error;
+					}
 				});
 			},
 			children: [
@@ -33921,8 +33962,14 @@ function NewsManager({ lang, posts, reload }) {
 								body: e.target.value
 							}
 						})
-					})] })
+					})] }),
+					(draft[l].mediaUrl || newsFile) ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { children: newsFile ? newsFile.name : (draft[l].mediaKind === "video" ? "видео" : "фото") }) : null
 				] }, l)),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [lang === "uk" ? "Фото або відео" : lang === "en" ? "Photo or video" : "Фото или видео", /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+					type: "file",
+					accept: "image/png,image/jpeg,image/webp,video/mp4,video/webm",
+					onChange: (e) => setNewsFile(e.target.files?.[0] || null)
+				}, newsFileKey)] }),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 					className: "button",
 					disabled: state.busy,
@@ -34726,7 +34773,18 @@ function Site({ section, editor = false, authenticated = false, userId }) {
 										text: body,
 										lang,
 										from: shown
-									}) })
+									}) }),
+									p.translations[shown] && p.translations[shown].mediaUrl && p.translations[shown].mediaKind === "video" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("video", {
+										className: "news-media",
+										src: p.translations[shown].mediaUrl,
+										controls: true,
+										playsInline: true,
+										preload: "metadata"
+									}) : p.translations[shown] && p.translations[shown].mediaUrl ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
+										className: "news-media",
+										src: p.translations[shown].mediaUrl,
+										alt: ""
+									}) : null
 								]
 							}, p.id);
 						})
