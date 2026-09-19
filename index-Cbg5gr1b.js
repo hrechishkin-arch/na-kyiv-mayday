@@ -34467,7 +34467,7 @@ function Site({ section, editor = false, authenticated = false, userId }) {
 		}
 	}
 	(0, import_react.useEffect)(() => {
-		if (section === "news" || section === "admin") reload();
+		if (section === "news" || section === "admin" || section === "home") reload();
 	}, [section]);
 	(0, import_react.useEffect)(() => {
 		api("/api/site").then((s) => {try{sessionStorage.setItem("mayday-settings",JSON.stringify(s));}catch(e){}setSettings(s);}).catch(() => {});
@@ -34595,34 +34595,36 @@ function Site({ section, editor = false, authenticated = false, userId }) {
 				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
 					className: "resources",
-					children: [
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "section-label",
-							children: ["01 / ", t.literature]
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("a", {
-							className: "resource-link",
-							href: href("/literature"),
-							children: [
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(BookOpen, {}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", { children: t.resources }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { children: t.resourceText })] }),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArrowUpRight, {})
-							]
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "section-label",
-							children: ["02 / ", t.news]
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("a", {
-							className: "resource-link",
-							href: href("/news"),
-							children: [
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Newspaper, {}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", { children: t.latest }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { children: t.newsText })] }),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArrowUpRight, {})
-							]
-						})
-					]
+					children: (()=>{
+						const meetings=(settings.community&&settings.community.meetings)||[];
+						const meeting=meetings.find(m=>localText(m.schedule,lang)||localText(m.name,lang))||meetings[0];
+						const post=posts[0];
+						const shown=post&&(languages.find(l=>l===lang&&post.translations[l]&&post.translations[l].title)||languages.find(l=>post.translations[l]&&post.translations[l].title)||lang);
+						const meetTitle=lang==="uk"?"Найближче зібрання":lang==="en"?"Next meeting":"Ближайшее собрание";
+						const newsTitle=lang==="uk"?"Остання новина":lang==="en"?"Latest news":"Последняя новость";
+						const meetEmpty=lang==="uk"?"Розклад з’явиться у вкладці зібрань.":lang==="en"?"The schedule will appear on the meetings page.":"Расписание появится во вкладке собраний.";
+						const newsEmpty=lang==="uk"?"Поки немає опублікованих новин.":lang==="en"?"No published news yet.":"Пока нет опубликованных новостей.";
+						const meetName=meeting?localText(meeting.name,lang)||"Mayday":"Mayday";
+						const meetWhen=meeting?localText(meeting.schedule,lang):"";
+						const meetFmt=meeting?localText(meeting.format,lang):"";
+						const meetLine=[meetWhen,meetFmt].filter(Boolean).join(" · ")||meetEmpty;
+						const newsHead=post&&shown?post.translations[shown].title:newsEmpty;
+						const newsBody=post&&shown?(post.translations[shown].body||"").slice(0,140):"";
+						return [
+						(0, import_jsx_runtime.jsxs)("div", { className: "section-label", children: ["01 / ", meetTitle] }, "l1"),
+						(0, import_jsx_runtime.jsxs)("a", { className: "resource-link", href: href("/schedule"), children: [
+							(0, import_jsx_runtime.jsx)(BookOpen, {}),
+							(0, import_jsx_runtime.jsxs)("div", { children: [(0, import_jsx_runtime.jsx)("h2", { children: meetName }), (0, import_jsx_runtime.jsx)("p", { children: meetLine })] }),
+							(0, import_jsx_runtime.jsx)(ArrowUpRight, {})
+						] }, "m1"),
+						(0, import_jsx_runtime.jsxs)("div", { className: "section-label", children: ["02 / ", newsTitle] }, "l2"),
+						(0, import_jsx_runtime.jsxs)("a", { className: "resource-link", href: href("/news"), children: [
+							(0, import_jsx_runtime.jsx)(Newspaper, {}),
+							(0, import_jsx_runtime.jsxs)("div", { children: [(0, import_jsx_runtime.jsx)("h2", { children: newsHead }), (0, import_jsx_runtime.jsx)("p", { children: newsBody })] }),
+							(0, import_jsx_runtime.jsx)(ArrowUpRight, {})
+						] }, "n1")
+						];
+					})()
 				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 					className: "home-location",
