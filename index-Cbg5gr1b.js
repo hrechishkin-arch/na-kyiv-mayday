@@ -10731,7 +10731,7 @@ function Shop({ data, lang }) {
 		className: "product-grid",
 		children: community.products.length ? community.products.map((p) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("article", {
 			className: "product-card",
-			children: [imageUrl(p.image) && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
+			children: [imageUrl(p.image) && !p.video && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
 				src: imageUrl(p.image),
 				alt: localText(p.name, lang),
 				loading: "lazy"
