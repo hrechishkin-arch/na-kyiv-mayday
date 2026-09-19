@@ -10375,6 +10375,8 @@ var copy = {
 		digitalText: "PDF-книги и аудиокниги — читать и слушать.",
 		printTitle: "Бумажные книги и атрибутика",
 		printText: "Заказ через Telegram — как в сувенирке.",
+		shopEmpty: "Сувениры скоро появятся",
+		printEmpty: "Бумажные книги скоро появятся",
 		loading: "Загрузка…",
 		error: "Не удалось загрузить новости. Попробуйте ещё раз.",
 		retry: "Повторить",
@@ -10419,6 +10421,8 @@ var copy = {
 		digitalText: "PDF-книги та аудіокниги для читання і прослуховування.",
 		printTitle: "Паперові книги та атрибутика",
 		printText: "Замовлення через Telegram, як у сувенірці.",
+		shopEmpty: "Сувеніри незабаром з’являться",
+		printEmpty: "Паперові книги незабаром з’являться",
 		loading: "Завантаження…",
 		error: "Не вдалося завантажити новини. Спробуйте ще раз.",
 		retry: "Повторити",
@@ -10463,6 +10467,8 @@ var copy = {
 		digitalText: "PDF books and audiobooks to read and listen.",
 		printTitle: "Print books and items",
 		printText: "Order via Telegram, same as the shop.",
+		shopEmpty: "Merchandise is coming soon",
+		printEmpty: "Print items are coming soon",
 		loading: "Loading…",
 		error: "News could not be loaded. Please try again.",
 		retry: "Try again",
@@ -32614,7 +32620,9 @@ var editableKeys = [
 	"digitalTitle",
 	"digitalText",
 	"printTitle",
-	"printText"
+	"printText",
+	"shopEmpty",
+	"printEmpty"
 ];
 var defaultContent = Object.fromEntries(Object.entries(copy).map(([lang, text]) => [lang, Object.fromEntries(editableKeys.map((key) => [key, text[key]]))]));
 var defaultAppearance = {
@@ -33665,7 +33673,9 @@ var contentLabels = {
 		"Литература: заголовок электронных материалов",
 		"Литература: текст про PDF и аудио",
 		"Литература: заголовок бумажных книг",
-		"Литература: текст про заказ в Telegram"
+		"Литература: текст про заказ в Telegram",
+		"Сувенирка: текст если товаров нет",
+		"Литература: текст если бумажных книг нет"
 	],
 	uk: [
 		"Назва спільноти",
@@ -33689,7 +33699,9 @@ var contentLabels = {
 		"Література: заголовок електронних матеріалів",
 		"Література: текст про PDF і аудіо",
 		"Література: заголовок паперових книг",
-		"Література: текст про замовлення в Telegram"
+		"Література: текст про замовлення в Telegram",
+		"Сувенірка: текст якщо товарів немає",
+		"Література: текст якщо паперових книг немає"
 	],
 	en: [
 		"Community name",
@@ -33713,7 +33725,9 @@ var contentLabels = {
 		"Literature: digital heading",
 		"Literature: digital description",
 		"Literature: print heading",
-		"Literature: print description"
+		"Literature: print description",
+		"Shop: empty catalog text",
+		"Literature: empty print catalog text"
 	]
 };
 //#endregion
@@ -34792,14 +34806,14 @@ function Site({ section, editor = false, authenticated = false, userId }) {
 						}) : (0, import_jsx_runtime.jsx)(Empty, { icon: "book", title: t.emptyBooks, text: t.emptyBooksText }),
 						(0, import_jsx_runtime.jsx)("h2", { className: "subhead", children: t.printTitle || (lang==="uk"?"Паперові книги та атрибутика":lang==="en"?"Print books and items":"Бумажные книги и атрибутика") }),
 						(0, import_jsx_runtime.jsx)("p", { className: "page-intro", children: t.printText || (lang==="uk"?"Замовлення через Telegram, як у сувенірці.":lang==="en"?"Order via Telegram, same as the shop.":"Заказ через Telegram — как в сувенирке.") }),
-						(0, import_jsx_runtime.jsx)(Shop, { data: { ...settings.community, products: settings.community.printProducts || [] }, lang })
+						(0, import_jsx_runtime.jsx)(Shop, { data: { ...settings.community, products: settings.community.printProducts || [], labels: { ...(settings.community.labels||{}), emptyShop: { ru: t.printEmpty, uk: t.printEmpty, en: t.printEmpty } } }, lang })
 					] })),
 					section === "schedule" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Schedule, {
 						data: settings.community,
 						lang
 					}),
 					section === "shop" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Shop, {
-						data: settings.community,
+						data: { ...settings.community, labels: { ...(settings.community.labels||{}), emptyShop: { ru: t.shopEmpty || settings.community.labels?.emptyShop?.ru, uk: t.shopEmpty || settings.community.labels?.emptyShop?.uk, en: t.shopEmpty || settings.community.labels?.emptyShop?.en } } },
 						lang
 					}),
 					section === "admin" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AuthPanel, { lang }),
