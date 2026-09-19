@@ -10738,9 +10738,19 @@ function Shop({ data, lang }) {
 			}), p.video && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("video", {
 				className: "product-video",
 				src: p.video,
+				poster: p.image ? imageUrl(p.image) : undefined,
 				controls: true,
 				playsInline: true,
-				preload: "metadata"
+				preload: "auto",
+				muted: true,
+				onLoadedMetadata: (e) => {
+					const v = e.currentTarget;
+					try { if (v.currentTime < 0.05) v.currentTime = 0.15; } catch (err) {}
+				},
+				onLoadedData: (e) => {
+					const v = e.currentTarget;
+					try { if (v.currentTime < 0.05) v.currentTime = 0.15; } catch (err) {}
+				}
 			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
 				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Field$1, {
 					value: p.name,
