@@ -34603,6 +34603,11 @@ function Site({ section, editor = false, authenticated = false, userId }) {
 						})]
 					})
 				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					className: "path-banner",
+					role: "note",
+					children: "Пока я следую по этому пути, мне нечего бояться"
+				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
 					className: "resources",
 					children: (()=>{
