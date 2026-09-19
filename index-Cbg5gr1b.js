@@ -10742,28 +10742,8 @@ function Shop({ data, lang }) {
 				controls: true,
 				playsInline: true,
 				preload: "metadata",
-				crossOrigin: "anonymous",
 				onLoadedData: (e) => {
-					const v = e.currentTarget;
-					if (v.dataset.shot || p.image) return;
-					const snap = () => {
-						if (v.dataset.shot || !v.videoWidth) return;
-						try {
-							const c = document.createElement("canvas");
-							c.width = v.videoWidth;
-							c.height = v.videoHeight;
-							c.getContext("2d").drawImage(v, 0, 0);
-							const url = c.toDataURL("image/jpeg", 0.7);
-							if (url.length > 200) {
-								v.setAttribute("poster", url);
-								v.dataset.shot = "1";
-							}
-						} catch (err) {}
-					};
-					if (v.currentTime > 0.05) { snap(); return; }
-					const onSeeked = () => { snap(); v.removeEventListener("seeked", onSeeked); };
-					v.addEventListener("seeked", onSeeked);
-					try { v.currentTime = 0.2; } catch (err) { snap(); }
+					if (!p.image) bindVideoPoster(e.currentTarget, p.video);
 				}
 			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
 				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Field$1, {
@@ -33007,6 +32987,69 @@ function publicMediaUrl(url) {
 	if (!url) return false;
 	return url.startsWith(client().storage.from("mayday-images").getPublicUrl("").data.publicUrl);
 }
+async function videoPosterFile(file) {
+	return await new Promise((resolve) => {
+		const url = URL.createObjectURL(file);
+		const v = document.createElement("video");
+		v.muted = true;
+		v.playsInline = true;
+		v.preload = "auto";
+		v.src = url;
+		const done = (fileOut) => { try { URL.revokeObjectURL(url); } catch (e) {} resolve(fileOut || null); };
+		const grab = () => {
+			try {
+				if (!v.videoWidth) return done(null);
+				const c = document.createElement("canvas");
+				c.width = v.videoWidth;
+				c.height = v.videoHeight;
+				c.getContext("2d").drawImage(v, 0, 0);
+				c.toBlob((blob) => {
+					if (!blob) return done(null);
+					done(new File([blob], "poster.jpg", { type: "image/jpeg" }));
+				}, "image/jpeg", 0.82);
+			} catch (e) { done(null); }
+		};
+		v.addEventListener("loadeddata", () => {
+			const seek = () => grab();
+			v.addEventListener("seeked", seek, { once: true });
+			try { v.currentTime = 0.3; } catch (e) { grab(); }
+		}, { once: true });
+		v.addEventListener("error", () => done(null), { once: true });
+		setTimeout(() => done(null), 9e3);
+	});
+}
+async function bindVideoPoster(el, src) {
+	if (!el || el.dataset.shot || el.getAttribute("poster")) return;
+	try {
+		const res = await fetch(src, { mode: "cors" });
+		if (!res.ok) return;
+		const blob = await res.blob();
+		const local = URL.createObjectURL(blob);
+		const v = document.createElement("video");
+		v.muted = true;
+		v.playsInline = true;
+		v.src = local;
+		v.addEventListener("loadeddata", () => {
+			const paint = () => {
+				try {
+					if (!v.videoWidth) return;
+					const c = document.createElement("canvas");
+					c.width = v.videoWidth;
+					c.height = v.videoHeight;
+					c.getContext("2d").drawImage(v, 0, 0);
+					const url = c.toDataURL("image/jpeg", 0.72);
+					if (url.length > 200) {
+						el.setAttribute("poster", url);
+						el.dataset.shot = "1";
+					}
+				} catch (e) {}
+				URL.revokeObjectURL(local);
+			};
+			v.addEventListener("seeked", paint, { once: true });
+			try { v.currentTime = 0.3; } catch (e) { paint(); }
+		}, { once: true });
+	} catch (e) {}
+}
 async function uploadProductImage(file) {
 	const db = client();
 	let mime = await validateFile(file, "media");
@@ -33502,10 +33545,19 @@ function CommunityManager({ kind, initial, lang, reload }) {
 						let uploaded;
 						try {
 							if (file) uploaded = await uploadProductImage(file);
+							let image = uploaded && uploaded.mime && uploaded.mime.startsWith("image") ? uploaded.url : product.image;
+							const video = uploaded && uploaded.mime && uploaded.mime.startsWith("video") ? uploaded.url : (product.video || "");
+							if (file && uploaded && uploaded.mime && uploaded.mime.startsWith("video") && !image) {
+								const poster = await videoPosterFile(file);
+								if (poster) {
+									const shot = await uploadProductImage(poster);
+									if (shot && shot.url) image = shot.url;
+								}
+							}
 							const saved = {
 								...product,
-								image: uploaded && uploaded.mime && uploaded.mime.startsWith("image") ? uploaded.url : product.image,
-								video: uploaded && uploaded.mime && uploaded.mime.startsWith("video") ? uploaded.url : (product.video || "")
+								image,
+								video
 							};
 							const products = (kind==="print"?(draft.printProducts||[]):draft.products).some((p) => p.id === saved.id) ? (kind==="print"?(draft.printProducts||[]):draft.products).map((p) => p.id === saved.id ? saved : p) : [...(kind==="print"?(draft.printProducts||[]):draft.products), saved];
 							await save({ [kind==="print"?"printProducts":"products"]: products });
