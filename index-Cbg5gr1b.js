@@ -34846,7 +34846,7 @@ function ThemeToggle({ lang }) {
 		"aria-pressed": theme === "dark",
 		title: theme === "dark" ? (lang==="uk"?"Світла тема":lang==="en"?"Light theme":"Светлая тема") : (lang==="uk"?"Темна тема":lang==="en"?"Dark theme":"Тёмная тема"),
 		onClick: () => setTheme(theme === "dark" ? "light" : "dark"),
-		children: theme === "dark" ? "☀" : "☾"
+		children: theme === "dark" ? (0, import_jsx_runtime.jsxs)("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.7", strokeLinecap: "round", children: [(0, import_jsx_runtime.jsx)("circle", { cx: "12", cy: "12", r: "4" }), (0, import_jsx_runtime.jsx)("path", { d: "M12 3v2M12 19v2M5 12H3M21 12h-2M6.2 6.2l1.4 1.4M16.4 16.4l1.4 1.4M6.2 17.8l1.4-1.4M16.4 7.6l1.4-1.4" })] }) : (0, import_jsx_runtime.jsx)("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.7", strokeLinecap: "round", children: (0, import_jsx_runtime.jsx)("path", { d: "M16 4.5A8 8 0 1 0 20 15 6.5 6.5 0 0 1 16 4.5z" }) })
 	});
 }
 function TraditionMenu({ lang, settings }) {
