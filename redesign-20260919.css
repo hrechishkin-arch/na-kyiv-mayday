@@ -172,32 +172,34 @@ video.product-video{
 @media (max-width:760px){
   .header-tools{margin-left:0;width:100%;justify-content:flex-end;flex:1}
   .tradition-wrap{margin-right:auto}
-  .theme-toggle{margin-left:0;margin-right:6px}
+  .page.lit-page{padding-left:5%;padding-right:5%}
+  .newcomer-card,.page .lit-block{margin:0;width:100%;box-sizing:border-box}
    .tradition-drop{z-index:300;left:auto;right:0;min-width:min(280px, calc(100vw - 20px));max-width:calc(100vw - 20px)}
   .tradition-btn{height:34px;padding:6px 16px;font-size:12px;min-width:118px}
   .hero-actions .button.light{padding:6px 12px 6px 6px;min-height:42px;font-size:13px}
   .hero-cta-mark{width:30px;height:30px}
 }
 
+.site-prefs{display:flex;align-items:center}
 .theme-toggle{
-  width:36px;height:36px;border-radius:50%;border:1px solid #111;cursor:pointer;
-  background:transparent;color:#111;padding:0;
+  width:32px;height:32px;border-radius:50%;border:0;cursor:pointer;
+  background:transparent;color:#1a1a1a;padding:0;margin-right:2px;
   display:flex;align-items:center;justify-content:center;flex-shrink:0
 }
-.theme-toggle svg{width:18px;height:18px}
-html[data-theme=dark] .theme-toggle{background:transparent;color:#c8c8c8;border-color:#8a8a8a}
+.theme-toggle svg{width:16px;height:16px}
+html[data-theme=dark] .theme-toggle{background:transparent;color:#b0b4b8;border:0}
 
 html[data-theme=dark]{
-  --background:#1c1e22;
-  --foreground:#cfd2d6;
+  --background:#3a3d42;
+  --foreground:#b7bcc2;
   --primary:#d5d8dc;
   --border:#34383e;
   --muted-foreground:#9aa0a6;
   color-scheme:dark
 }
-html[data-theme=dark] body{background:#1c1e22;color:#cfd2d6}
-html[data-theme=dark] .header{background:#1c1e22}
-html[data-theme=dark] .header nav a{color:#c5c8cc}
+html[data-theme=dark] body{background:#3a3d42;color:#b7bcc2}
+html[data-theme=dark] .header{background:#3a3d42}
+html[data-theme=dark] .header nav a{color:#b3b8be}
 html[data-theme=dark] .header nav a:hover{background:#1e2227}
 html[data-theme=dark] .header nav a[aria-current],
 html[data-theme=dark] .header nav a[aria-current=page]{background:#000;color:#fff}
@@ -205,8 +207,8 @@ html[data-theme=dark] .languages{background:#1c2025}
 html[data-theme=dark] .languages button{color:#c8c8c8}
 html[data-theme=dark] .languages button[aria-pressed=true]{background:#000;color:#fff;box-shadow:none}
 html[data-theme=dark] .brand,html[data-theme=dark] .brand small{color:#ddd}
-html[data-theme=dark] .page,html[data-theme=dark] main{background:#1c1e22;color:#cfd2d6}
-html[data-theme=dark] .subhead,html[data-theme=dark] h1,html[data-theme=dark] h2,html[data-theme=dark] .product-card h2{color:#c8ccd0}
+html[data-theme=dark] .page,html[data-theme=dark] main{background:#3a3d42;color:#b7bcc2}
+html[data-theme=dark] .subhead,html[data-theme=dark] h1,html[data-theme=dark] h2,html[data-theme=dark] .product-card h2{color:#b3b8be}
 html[data-theme=dark] .page-intro,html[data-theme=dark] .muted,html[data-theme=dark] .resource-link p{color:#b4b8be}
 html[data-theme=dark] .seller-card,
 html[data-theme=dark] .product-card,
@@ -218,20 +220,24 @@ html[data-theme=dark] .empty,
 html[data-theme=dark] .manage-form,
 html[data-theme=dark] .location-section,
 html[data-theme=dark] .tradition-drop{
-  background:#26292e;border-color:#3a3e44;color:#cfd2d6
+  background:#4a4e55;border-color:#3a3e44;color:#b7bcc2
 }
 html[data-theme=dark] .resources>.section-label,
-html[data-theme=dark] .resources>.resource-link{background:#26292e;border-color:#2c3036;color:#d0d0d0}
-html[data-theme=dark] .product-card>div{background:#26292e}
+html[data-theme=dark] .resources>.resource-link{background:#4a4e55;border-color:#2c3036;color:#d0d0d0}
+html[data-theme=dark] .product-card>div{background:#4a4e55}
 html[data-theme=dark] footer{color:#aaa;border-color:#2c3036}
 html[data-theme=dark] input,html[data-theme=dark] textarea,html[data-theme=dark] select{
-  background:#1c1e22;color:#eee;border-color:#3a3f46
+  background:#3a3d42;color:#eee;border-color:#3a3f46
 }
-html[data-theme=dark] .button:not(.light){background:#000;color:#fff;border-color:#000}
+html[data-theme=dark] .button:not(.light){background:#2f3238;color:#b7bcc2;border-color:#2f3238}
+html[data-theme=dark] .header nav a[aria-current],
+html[data-theme=dark] .header nav a[aria-current=page]{background:#2f3238 !important;color:#b7bcc2 !important}
+html[data-theme=dark] .brand svg,html[data-theme=dark] .brand-wordmark{color:#b7bcc2}
+html[data-theme=dark] .brand img{filter:brightness(.82) contrast(.95)}
 html[data-theme=dark] .hero .button.light{background:#fff;color:#111}
 html[data-theme=dark] .tradition-item:hover{background:#262b32}
 html[data-theme=dark] .tradition-item,.tradition-item strong{color:#fff}
-html[data-theme=dark] .home-location{background:#1c1e22}
+html[data-theme=dark] .home-location{background:#3a3d42}
 @media (max-width:760px){
   .theme-toggle{width:34px;height:34px;font-size:15px}
   html[data-theme=dark] .hero-inner{color:#fff}
