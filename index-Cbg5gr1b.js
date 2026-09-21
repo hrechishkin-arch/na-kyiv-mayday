@@ -35143,13 +35143,13 @@ function Site({ section, editor = false, authenticated = false, userId }) {
 						(0, import_jsx_runtime.jsxs)("a", { className: "resource-link", href: href("/schedule"), children: [
 							(0, import_jsx_runtime.jsx)(BookOpen, {}),
 							(0, import_jsx_runtime.jsxs)("div", { children: [(0, import_jsx_runtime.jsx)("h2", { children: meetNameNode }), (0, import_jsx_runtime.jsxs)("p", { children: [meetWhenNode, meetFmtNode ? " · " : "", meetFmtNode] })] }),
-							(0, import_jsx_runtime.jsx)(ArrowUpRight, {})
+							"↗"
 						] }, "m1"),
 						(0, import_jsx_runtime.jsxs)("div", { className: "section-label", children: ["02 / ", newsTitle] }, "l2"),
 						(0, import_jsx_runtime.jsxs)("a", { className: "resource-link", href: href("/news"), children: [
 							(0, import_jsx_runtime.jsx)(Newspaper, {}),
 							(0, import_jsx_runtime.jsxs)("div", { children: [(0, import_jsx_runtime.jsx)("h2", { children: newsHead }), (0, import_jsx_runtime.jsx)("p", { children: newsBody })] }),
-							(0, import_jsx_runtime.jsx)(ArrowUpRight, {})
+							"↗"
 						] }, "n1")
 						];
 					})()
