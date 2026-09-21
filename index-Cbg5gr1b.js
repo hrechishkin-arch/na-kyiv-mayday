@@ -35046,16 +35046,15 @@ function Site({ section, editor = false, authenticated = false, userId }) {
 				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "header-tools", children: [
 				(0, import_jsx_runtime.jsx)(TraditionMenu, { lang, settings }),
-				(0, import_jsx_runtime.jsx)(ThemeToggle, { lang }),
-				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-					className: "languages",
+				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "languages site-prefs",
 					"aria-label": lang === "ru" ? "Язык" : lang === "uk" ? "Мова" : "Language",
-					children: languages.map((l) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+					children: [(0, import_jsx_runtime.jsx)(ThemeToggle, { lang }), languages.map((l) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 						lang: l,
 						"aria-pressed": l === lang,
 						onClick: () => language(l),
 						children: l === "uk" ? "УКР" : l === "ru" ? "РУС" : "ENG"
-					}, l))
+					}, l))]
 				})
 				] })
 			]
@@ -35216,11 +35215,11 @@ function Site({ section, editor = false, authenticated = false, userId }) {
 						(0, import_jsx_runtime.jsx)("p", { className: "eyebrow", children: t.city }),
 						(0, import_jsx_runtime.jsx)("h1", { children: t.newcomerTitle || t.newcomer }),
 						(0, import_jsx_runtime.jsx)("p", { className: "page-intro", children: t.newcomerText }),
-						((settings.newcomerPdfs)||[]).length ? ((settings.newcomerPdfs)||[]).map((b) => (0, import_jsx_runtime.jsxs)("div", { className: "resource-link", children: [
+						((settings.newcomerPdfs)||[]).length ? ((settings.newcomerPdfs)||[]).map((b) => (0, import_jsx_runtime.jsxs)("div", { className: "lit-block newcomer-card", children: [(0, import_jsx_runtime.jsxs)("div", { className: "resource-link", children: [
 							(0, import_jsx_runtime.jsx)(BookOpen, {}),
 							(0, import_jsx_runtime.jsx)("h2", { children: b.title }),
 							(0, import_jsx_runtime.jsx)("button", { className: "button", type: "button", onClick: async () => { try { const blob = checked(await client().storage.from("mayday-pdfs").download(b.object_key)); const url = URL.createObjectURL(blob); const a=document.createElement("a"); a.href=url; a.target="_blank"; a.download=(b.title||"booklet")+".pdf"; a.click(); } catch(e){} }, children: t.download || (lang==="uk"?"Відкрити PDF":lang==="en"?"Open PDF":"Открыть PDF") })
-						] }, b.id)) : (0, import_jsx_runtime.jsx)("p", { className: "muted", children: lang==="uk"?"Буклети з’являться тут.":lang==="en"?"Booklets will appear here.":"Буклеты появятся здесь." })
+						] })] }, b.id)) : (0, import_jsx_runtime.jsx)("p", { className: "muted", children: lang==="uk"?"Буклети з’являться тут.":lang==="en"?"Booklets will appear here.":"Буклеты появятся здесь." })
 					] }),
 					section === "schedule" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Schedule, {
 						data: settings.community,
