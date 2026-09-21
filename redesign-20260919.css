@@ -398,3 +398,28 @@ html[data-theme=dark] .tradition-btn{
   background:#fff !important;
   color:#111 !important;
 }
+
+html[data-theme="dark"] .header nav a[aria-current],
+html[data-theme="dark"] .header nav a[aria-current="page"],
+html[data-theme="dark"] .header nav a[aria-current]:hover,
+html[data-theme="dark"] .header nav a[aria-current]:active,
+html[data-theme="dark"] .header nav a[aria-current]:focus{
+  background:#ffffff !important;
+  background-image:none !important;
+  color:#111111 !important;
+  box-shadow:0 8px 20px rgba(0,0,0,.4) !important;
+}
+html[data-theme="dark"] .hero-actions .button.light,
+html[data-theme="dark"] .hero-actions .button.light:hover,
+html[data-theme="dark"] .hero-actions a.button.light,
+html[data-theme="dark"] .hero-actions a.button.light span,
+html[data-theme="dark"] .hero-actions a.button.light svg{
+  background:#ffffff !important;
+  color:#111111 !important;
+  fill:#111111;
+  stroke:#111111;
+}
+html[data-theme="dark"] .hero-cta-mark{
+  filter:none !important;
+  opacity:1 !important;
+}
