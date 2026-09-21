@@ -35098,21 +35098,21 @@ function Site({ section, editor = false, authenticated = false, userId }) {
 										href: "https://t.me/mayday_NA_online",
 										target: "_blank",
 										rel: "noopener noreferrer",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", { className: "hero-cta-mark", src: "./mayday-btn2.png", alt: "" }), "Mayday online", /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArrowUpRight, { size: 18 })]
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", { className: "hero-cta-mark", src: "./mayday-btn2.png", alt: "" }), "Mayday online", /* @__PURE__ */ "↗"]
 									}),
 									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("a", {
 										className: "button light hero-sponsor",
 										href: telegramHref(settings.community && settings.community.sponsorContact, "https://t.me/mayday"),
 										target: "_blank",
 										rel: "noopener noreferrer",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", { className: "hero-cta-mark", src: "./mayday-btn2.png", alt: "" }), t.sponsorBtn || (lang==="uk"?"Спонсор":lang==="en"?"Sponsor":"Спонсор"), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArrowUpRight, { size: 18 })]
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", { className: "hero-cta-mark", src: "./mayday-btn2.png", alt: "" }), t.sponsorBtn || (lang==="uk"?"Спонсор":lang==="en"?"Sponsor":"Спонсор"), /* @__PURE__ */ "↗"]
 									}),
 									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("a", {
 										className: "button light hero-group",
 										href: telegramHref((settings.community&&settings.community.groupContact)||settings.community.sellerContact, "https://t.me/mayday"),
 										target: "_blank",
 										rel: "noopener noreferrer",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", { className: "hero-cta-mark", src: "./mayday-btn2.png", alt: "" }), t.groupBtn || (lang==="uk"?"Зв’язок із групою":lang==="en"?"Contact the group":"Связь с группой"), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArrowUpRight, { size: 18 })]
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", { className: "hero-cta-mark", src: "./mayday-btn2.png", alt: "" }), t.groupBtn || (lang==="uk"?"Зв’язок із групою":lang==="en"?"Contact the group":"Связь с группой"), /* @__PURE__ */ "↗"]
 									})
 									] })]
 								})
