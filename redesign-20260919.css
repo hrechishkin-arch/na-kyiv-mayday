@@ -182,11 +182,11 @@ video.product-video{
 
 .site-prefs{display:flex;align-items:center}
 .theme-toggle{
-  width:32px;height:32px;border-radius:50%;border:0;cursor:pointer;
-  background:transparent;color:#1a1a1a;padding:0;margin-right:2px;
+  width:36px;height:36px;border-radius:50%;border:0;cursor:pointer;
+  background:transparent;color:#1a1a1a;padding:0;margin-right:4px;
   display:flex;align-items:center;justify-content:center;flex-shrink:0
 }
-.theme-toggle svg{width:16px;height:16px}
+.theme-toggle svg{width:22px;height:22px}
 html[data-theme=dark] .theme-toggle{background:transparent;color:#b0b4b8;border:0}
 
 html[data-theme=dark]{
