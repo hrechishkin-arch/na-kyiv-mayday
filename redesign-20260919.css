@@ -243,11 +243,23 @@ html[data-theme=dark] .home-location{background:#121416}
 html[data-theme=dark] .theme-toggle{color:#ddd}
 
 .newcomer-card{margin-top:16px}
-.newcomer-card .resource-link{border:0;background:transparent;padding:0;box-shadow:none;display:flex;align-items:center;gap:16px}
-.newcomer-card .resource-link h2,.page .resource-link h2{font-size:22px;font-weight:500;letter-spacing:-.03em;line-height:1.25;margin:0}
-@media(max-width:760px){
-  .newcomer-card .resource-link h2,.page .resource-link h2{font-size:20px}
+.newcomer-card .resource-link{
+  display:flex;align-items:center;gap:18px;flex-wrap:nowrap;
+  border:0;background:transparent;padding:8px 0;box-shadow:none
 }
+.newcomer-card .resource-link>div{flex:1;min-width:0}
+.newcomer-card .resource-link h2{
+  font-size:25px;font-weight:500;letter-spacing:-.035em;line-height:1.25;
+  margin:0;white-space:normal;overflow-wrap:anywhere
+}
+.newcomer-card .resource-link .button{flex-shrink:0}
+@media(max-width:760px){
+  .newcomer-card .resource-link{flex-direction:column;align-items:flex-start;gap:12px}
+  .newcomer-card .resource-link>div{width:100%}
+  .newcomer-card .resource-link h2{font-size:25px}
+  .newcomer-card .resource-link .button{width:auto}
+}
+
 
 /* tradition-read */
 .tradition-drop,.tradition-drop *{color:#232624 !important}
