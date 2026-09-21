@@ -205,7 +205,7 @@ html[data-theme=dark] .header{background:#121416}
 html[data-theme=dark] .header nav a{color:#e8e8e8}
 html[data-theme=dark] .header nav a:hover{background:#1e2227}
 html[data-theme=dark] .header nav a[aria-current],
-html[data-theme=dark] .header nav a[aria-current=page]{background:#000 !important;color:#fff !important}
+html[data-theme=dark] .header nav a[aria-current=page]{background:#fff !important;color:#111 !important}
 html[data-theme=dark] .languages{background:#1c2025}
 html[data-theme=dark] .languages button{color:#c8c8c8}
 html[data-theme=dark] .languages button[aria-pressed=true]{background:#000;color:#fff;box-shadow:none}
@@ -382,6 +382,19 @@ html[data-theme=dark] button:hover{
 html[data-theme=dark] .header nav a[aria-current]:hover,
 html[data-theme=dark] .button:hover,
 html[data-theme=dark] .button.light:hover{
+  background:#fff !important;
+  color:#111 !important;
+}
+
+html[data-theme=dark] .header nav a[aria-current],
+html[data-theme=dark] .header nav a[aria-current="page"],
+html[data-theme=dark] header nav a[aria-current]{
+  background:#fff !important;
+  background-color:#fff !important;
+  color:#111 !important;
+  box-shadow:0 8px 20px rgba(0,0,0,.35) !important;
+}
+html[data-theme=dark] .tradition-btn{
   background:#fff !important;
   color:#111 !important;
 }
