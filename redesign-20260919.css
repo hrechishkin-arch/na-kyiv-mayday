@@ -352,4 +352,11 @@ html[data-theme=dark] .hero-actions a.button.light:first-child{
   box-shadow:none !important;
   border:0 !important;
 }
+@media (max-width:760px){
+  html[data-theme=dark] .hero-actions a.button.light:first-child{
+    background:#fff !important;
+    color:#111 !important;
+    box-shadow:0 12px 28px rgba(0,0,0,.32) !important;
+  }
+}
 
