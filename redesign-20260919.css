@@ -321,3 +321,20 @@ html[data-theme=dark] .tradition-item{border-color:#4a4e54}
 @media(max-width:760px){
   .product-card .button .order-arrow{width:16px;height:16px}
 }
+
+@media (max-width:760px){
+  .hero-art{position:relative}
+  .hero-art:after{
+    content:"";
+    position:absolute;left:0;right:0;bottom:0;
+    height:56px;
+    background:linear-gradient(180deg,rgba(0,0,0,0) 0%,#000 100%);
+    pointer-events:none;
+    z-index:2;
+  }
+  .hero-inner{
+    background:#000 !important;
+    margin-top:0 !important;
+    padding-top:28px !important;
+  }
+}
