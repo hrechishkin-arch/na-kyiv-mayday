@@ -170,7 +170,9 @@ video.product-video{
 .tradition-item strong{font-size:14px}
 .tradition-item span{font-size:12px;color:#222 !important}
 @media (max-width:760px){
-  .header-tools{margin-left:auto;justify-content:flex-end;flex:1}
+  .header-tools{margin-left:0;width:100%;justify-content:flex-end;flex:1}
+  .tradition-wrap{margin-right:auto}
+  .theme-toggle{margin-left:0;margin-right:6px}
    .tradition-drop{z-index:300;left:auto;right:0;min-width:min(280px, calc(100vw - 20px));max-width:calc(100vw - 20px)}
   .tradition-btn{height:34px;padding:6px 16px;font-size:12px;min-width:118px}
   .hero-actions .button.light{padding:6px 12px 6px 6px;min-height:42px;font-size:13px}
@@ -178,23 +180,24 @@ video.product-video{
 }
 
 .theme-toggle{
-  width:36px;height:36px;border-radius:50%;border:0;cursor:pointer;
-  background:#000;color:#fff;font-size:16px;line-height:36px;padding:0;
-  display:flex;align-items:center;justify-content:center
+  width:36px;height:36px;border-radius:50%;border:1px solid #111;cursor:pointer;
+  background:transparent;color:#111;padding:0;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0
 }
-html[data-theme=dark] .theme-toggle{background:#fff;color:#111}
+.theme-toggle svg{width:18px;height:18px}
+html[data-theme=dark] .theme-toggle{background:transparent;color:#c8c8c8;border-color:#8a8a8a}
 
 html[data-theme=dark]{
-  --background:#121416;
-  --foreground:#ececec;
-  --primary:#f2f2f2;
-  --border:#2a2d32;
-  --muted-foreground:#a3a8ae;
+  --background:#1c1e22;
+  --foreground:#cfd2d6;
+  --primary:#d5d8dc;
+  --border:#34383e;
+  --muted-foreground:#9aa0a6;
   color-scheme:dark
 }
-html[data-theme=dark] body{background:#121416;color:#ececec}
-html[data-theme=dark] .header{background:#121416}
-html[data-theme=dark] .header nav a{color:#e8e8e8}
+html[data-theme=dark] body{background:#1c1e22;color:#cfd2d6}
+html[data-theme=dark] .header{background:#1c1e22}
+html[data-theme=dark] .header nav a{color:#c5c8cc}
 html[data-theme=dark] .header nav a:hover{background:#1e2227}
 html[data-theme=dark] .header nav a[aria-current],
 html[data-theme=dark] .header nav a[aria-current=page]{background:#000;color:#fff}
@@ -202,8 +205,8 @@ html[data-theme=dark] .languages{background:#1c2025}
 html[data-theme=dark] .languages button{color:#c8c8c8}
 html[data-theme=dark] .languages button[aria-pressed=true]{background:#000;color:#fff;box-shadow:none}
 html[data-theme=dark] .brand,html[data-theme=dark] .brand small{color:#ddd}
-html[data-theme=dark] .page,html[data-theme=dark] main{background:#121416;color:#ececec}
-html[data-theme=dark] .subhead,html[data-theme=dark] h1,html[data-theme=dark] h2{color:#f3f3f3}
+html[data-theme=dark] .page,html[data-theme=dark] main{background:#1c1e22;color:#cfd2d6}
+html[data-theme=dark] .subhead,html[data-theme=dark] h1,html[data-theme=dark] h2,html[data-theme=dark] .product-card h2{color:#c8ccd0}
 html[data-theme=dark] .page-intro,html[data-theme=dark] .muted,html[data-theme=dark] .resource-link p{color:#b4b8be}
 html[data-theme=dark] .seller-card,
 html[data-theme=dark] .product-card,
@@ -215,20 +218,20 @@ html[data-theme=dark] .empty,
 html[data-theme=dark] .manage-form,
 html[data-theme=dark] .location-section,
 html[data-theme=dark] .tradition-drop{
-  background:#1a1d22;border-color:#2c3036;color:#ececec
+  background:#26292e;border-color:#3a3e44;color:#cfd2d6
 }
 html[data-theme=dark] .resources>.section-label,
-html[data-theme=dark] .resources>.resource-link{background:#1a1d22;border-color:#2c3036;color:#d0d0d0}
-html[data-theme=dark] .product-card>div{background:#1a1d22}
+html[data-theme=dark] .resources>.resource-link{background:#26292e;border-color:#2c3036;color:#d0d0d0}
+html[data-theme=dark] .product-card>div{background:#26292e}
 html[data-theme=dark] footer{color:#aaa;border-color:#2c3036}
 html[data-theme=dark] input,html[data-theme=dark] textarea,html[data-theme=dark] select{
-  background:#121416;color:#eee;border-color:#3a3f46
+  background:#1c1e22;color:#eee;border-color:#3a3f46
 }
 html[data-theme=dark] .button:not(.light){background:#000;color:#fff;border-color:#000}
 html[data-theme=dark] .hero .button.light{background:#fff;color:#111}
 html[data-theme=dark] .tradition-item:hover{background:#262b32}
 html[data-theme=dark] .tradition-item,.tradition-item strong{color:#fff}
-html[data-theme=dark] .home-location{background:#121416}
+html[data-theme=dark] .home-location{background:#1c1e22}
 @media (max-width:760px){
   .theme-toggle{width:34px;height:34px;font-size:15px}
   html[data-theme=dark] .hero-inner{color:#fff}
