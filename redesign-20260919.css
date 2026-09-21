@@ -162,7 +162,8 @@ video.product-video{
 .tradition-item strong{font-size:14px}
 .tradition-item span{font-size:12px;color:#667}
 @media (max-width:760px){
-  .header-tools{margin-left:0}
+  .header-tools{margin-left:auto;justify-content:flex-end;flex:1}
+  .tradition-drop{left:auto;right:0;min-width:min(280px, calc(100vw - 20px));max-width:calc(100vw - 20px)}
   .tradition-btn{height:34px;padding:6px 16px;font-size:12px;min-width:118px}
   .hero-actions .button.light{padding:6px 12px 6px 6px;min-height:42px;font-size:13px}
   .hero-cta-mark{width:30px;height:30px}
