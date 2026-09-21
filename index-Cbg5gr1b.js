@@ -10747,20 +10747,14 @@ function Shop({ data, lang }) {
 	const community = withLabels(data);
 	communityCopy[lang];
 	const contact = contactUrl(community.sellerContact);
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [(community.sellerName || community.sellerContact) && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("aside", {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [community.sellerName && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("aside", {
 		className: "seller-card",
 		children: [
 			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Field$1, {
 				value: community.labels.seller,
 				lang
 			}) }),
-			community.sellerName && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { children: community.sellerName }),
-			community.sellerContact && (contact ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("a", {
-				href: contact,
-				target: contact.startsWith("https:") ? "_blank" : void 0,
-				rel: "noopener noreferrer",
-				children: community.sellerContact
-			}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { children: community.sellerContact }))
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { children: community.sellerName })
 		]
 	}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 		className: "product-grid",
@@ -34837,6 +34831,24 @@ function NewcomerPdfManager({ lang, initial, reload }) {
 		(0, import_jsx_runtime.jsx)(Feedback, { ...state })
 	] });
 }
+
+function ThemeToggle({ lang }) {
+	const [theme, setTheme] = (0, import_react.useState)(() => {
+		try { return localStorage.getItem("mayday-theme") === "dark" ? "dark" : "light"; } catch (e) { return "light"; }
+	});
+	(0, import_react.useEffect)(() => {
+		document.documentElement.setAttribute("data-theme", theme);
+		try { localStorage.setItem("mayday-theme", theme); } catch (e) {}
+	}, [theme]);
+	return (0, import_jsx_runtime.jsx)("button", {
+		type: "button",
+		className: "theme-toggle",
+		"aria-pressed": theme === "dark",
+		title: theme === "dark" ? (lang==="uk"?"Світла тема":lang==="en"?"Light theme":"Светлая тема") : (lang==="uk"?"Темна тема":lang==="en"?"Dark theme":"Тёмная тема"),
+		onClick: () => setTheme(theme === "dark" ? "light" : "dark"),
+		children: theme === "dark" ? "☀" : "☾"
+	});
+}
 function TraditionMenu({ lang, settings }) {
 	const [open, setOpen] = (0, import_react.useState)(false);
 	const [copied, setCopied] = (0, import_react.useState)("");
@@ -35034,6 +35046,7 @@ function Site({ section, editor = false, authenticated = false, userId }) {
 				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "header-tools", children: [
 				(0, import_jsx_runtime.jsx)(TraditionMenu, { lang, settings }),
+				(0, import_jsx_runtime.jsx)(ThemeToggle, { lang }),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 					className: "languages",
 					"aria-label": lang === "ru" ? "Язык" : lang === "uk" ? "Мова" : "Language",
