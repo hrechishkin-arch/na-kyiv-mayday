@@ -10801,7 +10801,7 @@ function Shop({ data, lang }) {
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Field$1, {
 						value: community.labels.contact,
 						lang
-					}), " ↗"]
+					}), (0, import_jsx_runtime.jsx)(ArrowUpRight, { size: 16, className: "order-arrow" })]
 				})
 			] })]
 		}, p.id)) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Field$1, {
