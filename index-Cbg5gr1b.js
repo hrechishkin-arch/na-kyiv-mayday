@@ -34840,22 +34840,39 @@ function NewcomerPdfManager({ lang, initial, reload }) {
 function TraditionMenu({ lang, settings }) {
 	const [open, setOpen] = (0, import_react.useState)(false);
 	const [copied, setCopied] = (0, import_react.useState)("");
+	const [box, setBox] = (0, import_react.useState)(null);
+	const wrapRef = (0, import_react.useRef)(null);
 	(0, import_react.useEffect)(() => {
 		if (!open) return;
+		const place = () => {
+			const el = wrapRef.current && wrapRef.current.querySelector(".tradition-btn");
+			if (!el) return;
+			const r = el.getBoundingClientRect();
+			const width = Math.min(300, Math.max(220, window.innerWidth - 24));
+			let left = r.right - width;
+			if (left < 12) left = 12;
+			if (left + width > window.innerWidth - 12) left = Math.max(12, window.innerWidth - width - 12);
+			setBox({ top: Math.round(r.bottom + 8), left: Math.round(left), width: Math.round(width) });
+		};
+		place();
 		const onDoc = (e) => {
 			if (e.target && e.target.closest && e.target.closest(".tradition-wrap")) return;
 			setOpen(false);
 		};
+		window.addEventListener("resize", place);
+		window.addEventListener("scroll", place, true);
 		document.addEventListener("mousedown", onDoc);
 		document.addEventListener("touchstart", onDoc);
 		return () => {
+			window.removeEventListener("resize", place);
+			window.removeEventListener("scroll", place, true);
 			document.removeEventListener("mousedown", onDoc);
 			document.removeEventListener("touchstart", onDoc);
 		};
 	}, [open]);
 	const t = { ...copy[lang], ...(settings.content && settings.content[lang] || {}) };
 	const items = (settings.community && settings.community.tradition && settings.community.tradition.items) || (defaultCommunity.tradition && defaultCommunity.tradition.items) || [];
-	return (0, import_jsx_runtime.jsxs)("div", { className: "tradition-wrap", children: [
+	return (0, import_jsx_runtime.jsxs)("div", { className: "tradition-wrap", ref: wrapRef, children: [
 		(0, import_jsx_runtime.jsx)("button", {
 			type: "button",
 			className: "tradition-btn",
@@ -34863,7 +34880,7 @@ function TraditionMenu({ lang, settings }) {
 			onClick: () => setOpen(!open),
 			children: t.traditionBtn || (lang==="uk"?"7 традиція":lang==="en"?"7th Tradition":"7 традиция")
 		}),
-		open && (0, import_jsx_runtime.jsxs)("div", { className: "tradition-drop", children: [
+		open && (0, import_jsx_runtime.jsxs)("div", { className: "tradition-drop", style: box ? { position: "fixed", top: box.top, left: box.left, width: box.width, right: "auto" } : null, children: [
 			items.map((it) => (0, import_jsx_runtime.jsxs)("button", {
 				type: "button",
 				className: "tradition-item",
