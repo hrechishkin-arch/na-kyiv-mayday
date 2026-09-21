@@ -74,7 +74,7 @@
 .hero-actions{display:flex;flex-direction:column;align-items:flex-start;gap:10px}
 .hero-actions .button{width:auto}
 @media (max-width:760px){
-  .hero, .hero-art, .hero-art img{background:#000 !important}
+  
   .hero-art{position:relative}
   .hero-art:after{
     content:"";
@@ -91,10 +91,12 @@
     z-index:1;
   }
 }
-html[data-theme=dark] .hero-art:after{
-  background:linear-gradient(180deg,rgba(18,20,22,0) 0%,#121416 100%);
+@media (max-width:760px){
+  html[data-theme=dark] .hero-art:after{
+    background:linear-gradient(180deg,rgba(18,20,22,0) 0%,#121416 100%);
+  }
+  html[data-theme=dark] .hero-inner{background:#121416}
 }
-html[data-theme=dark] .hero-inner{background:#121416}
 
 
 
