@@ -343,3 +343,45 @@ html[data-theme=dark] .tradition-item{border-color:#4a4e54}
 
 
 
+
+/* dark-no-beige */
+html[data-theme=dark] .button,
+html[data-theme=dark] .button.light,
+html[data-theme=dark] .download-button,
+html[data-theme=dark] .tradition-btn,
+html[data-theme=dark] .header nav a[aria-current],
+html[data-theme=dark] .header nav a[aria-current=page],
+html[data-theme=dark] .header nav a:hover,
+html[data-theme=dark] .languages button[aria-pressed=true],
+html[data-theme=dark] button[aria-pressed=true],
+html[data-theme=dark] .theme-toggle:hover{
+  background:#fff !important;
+  background-color:#fff !important;
+  color:#111 !important;
+  border-color:transparent !important;
+  box-shadow:0 12px 28px rgba(0,0,0,.32) !important;
+}
+html[data-theme=dark] .languages{
+  background:#2a2d32 !important;
+}
+html[data-theme=dark] .languages button{
+  background:transparent !important;
+  color:#c8c8c8 !important;
+  box-shadow:none !important;
+}
+html[data-theme=dark] .languages button[aria-pressed=true]{
+  background:#fff !important;
+  color:#111 !important;
+}
+html[data-theme=dark] .header nav a:hover,
+html[data-theme=dark] .resource-link:hover,
+html[data-theme=dark] .tradition-item:hover,
+html[data-theme=dark] button:hover{
+  background:#2a2d32;
+}
+html[data-theme=dark] .header nav a[aria-current]:hover,
+html[data-theme=dark] .button:hover,
+html[data-theme=dark] .button.light:hover{
+  background:#fff !important;
+  color:#111 !important;
+}
