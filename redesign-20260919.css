@@ -339,19 +339,11 @@ html[data-theme=dark] .tradition-item{border-color:#4a4e54}
   }
 }
 
-/* hero-online-pop */
-html:not([data-theme=dark]) .hero .button.light{
-  background:#fff !important;
-  color:#111 !important;
-  box-shadow:0 12px 28px rgba(0,0,0,.32),0 0 0 1px rgba(255,255,255,.5) inset !important;
-}
-html:not([data-theme=dark]) .hero-actions a.button.light:first-child{
-  background:#fff !important;
-  color:#111 !important;
-  box-shadow:0 14px 34px rgba(0,0,0,.42),0 0 0 2px #fff !important;
-}
-@media (max-width:760px){
-  html:not([data-theme=dark]) .hero-actions a.button.light:first-child{
-    box-shadow:0 12px 30px rgba(0,0,0,.45),0 0 0 2px #fff !important;
-  }
+
+.hero-actions a.button.light:first-child,
+.hero .button.light:first-child{
+  background:#ececec !important;
+  color:#121416 !important;
+  box-shadow:0 10px 24px rgba(0,0,0,.28) !important;
+  border:0 !important;
 }
