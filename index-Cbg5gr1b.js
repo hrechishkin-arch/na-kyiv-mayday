@@ -34076,8 +34076,8 @@ function OwnerPanel({ lang }) {
 					reload
 				}),
 				tab === "literature" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
-					(0, import_jsx_runtime.jsx)(LiteratureManager, { lang, materials, reload }),
-					settings && (0, import_jsx_runtime.jsx)(CommunityManager, { kind: "print", initial: settings.community, lang, reload })
+					settings && (0, import_jsx_runtime.jsx)(CommunityManager, { kind: "print", initial: settings.community, lang, reload }),
+					(0, import_jsx_runtime.jsx)(LiteratureManager, { lang, materials, reload })
 				] }),
 				(tab === "schedule" || tab === "shop") && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CommunityManager, {
 					kind: tab,
@@ -35195,6 +35195,11 @@ function Site({ section, editor = false, authenticated = false, userId }) {
 						};
 						return [
 							(0, import_jsx_runtime.jsxs)("section", { className: "lit-block", children: [
+								(0, import_jsx_runtime.jsx)("h2", { className: "subhead", children: t.printTitle || (lang==="uk"?"Паперові книги та атрибутика":lang==="en"?"Print books and items":"Бумажные книги и атрибутика") }),
+								(0, import_jsx_runtime.jsx)("p", { className: "page-intro", children: t.printText || (lang==="uk"?"Замовлення через Telegram.":lang==="en"?"Order via Telegram.":"Заказ через Telegram.") }),
+								(0, import_jsx_runtime.jsx)(Shop, { data: { ...settings.community, products: settings.community.printProducts || [], labels: { ...(settings.community.labels||{}), emptyShop: { ru: t.printEmpty, uk: t.printEmpty, en: t.printEmpty } } }, lang })
+							] }, "print"),
+							(0, import_jsx_runtime.jsxs)("section", { className: "lit-block", children: [
 								(0, import_jsx_runtime.jsx)("h2", { className: "subhead", children: lang==="uk"?"PDF-книги":lang==="en"?"PDF books":"Книги PDF" }),
 								(0, import_jsx_runtime.jsx)("p", { className: "page-intro", children: lang==="uk"?"Завантажити та читати на пристрої.":lang==="en"?"Download and read on your device.":"Скачать и читать на устройстве." }),
 								pdfs.length ? pdfs.map((b)=>item(b,false)) : (0, import_jsx_runtime.jsx)(Empty, { icon: "book", title: t.emptyBooks, text: t.emptyBooksText })
@@ -35203,12 +35208,7 @@ function Site({ section, editor = false, authenticated = false, userId }) {
 								(0, import_jsx_runtime.jsx)("h2", { className: "subhead", children: lang==="uk"?"Аудіокниги":lang==="en"?"Audiobooks":"Аудиокниги" }),
 								(0, import_jsx_runtime.jsx)("p", { className: "page-intro", children: lang==="uk"?"Слухати онлайн або завантажити MP3.":lang==="en"?"Listen online or download MP3.":"Слушать онлайн или скачать MP3." }),
 								audios.length ? audios.map((b)=>item(b,true)) : (0, import_jsx_runtime.jsx)("p", { className: "muted", children: lang==="uk"?"Аудіокниг поки немає.":lang==="en"?"No audiobooks yet.":"Аудиокниг пока нет." })
-							] }, "audio"),
-							(0, import_jsx_runtime.jsxs)("section", { className: "lit-block", children: [
-								(0, import_jsx_runtime.jsx)("h2", { className: "subhead", children: t.printTitle || (lang==="uk"?"Паперові книги та атрибутика":lang==="en"?"Print books and items":"Бумажные книги и атрибутика") }),
-								(0, import_jsx_runtime.jsx)("p", { className: "page-intro", children: t.printText || (lang==="uk"?"Замовлення через Telegram.":lang==="en"?"Order via Telegram.":"Заказ через Telegram.") }),
-								(0, import_jsx_runtime.jsx)(Shop, { data: { ...settings.community, products: settings.community.printProducts || [], labels: { ...(settings.community.labels||{}), emptyShop: { ru: t.printEmpty, uk: t.printEmpty, en: t.printEmpty } } }, lang })
-							] }, "print")
+							] }, "audio")
 						];
 					})() })),
 					section === "newcomer" && (0, import_jsx_runtime.jsxs)("section", { className: "page lit-page", children: [
