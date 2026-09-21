@@ -10268,6 +10268,14 @@ var defaultCommunity = {
 	sellerName: "",
 	sellerContact: "",
 	groupContact: "https://t.me/mayday",
+	sponsorContact: "",
+	tradition: {
+		items: [
+			{ id: "uah", title: { ru: "Гривна", uk: "Гривня", en: "Hryvnia" }, detail: "" },
+			{ id: "fx", title: { ru: "Иностранная валюта", uk: "Іноземна валюта", en: "Foreign currency" }, detail: "" },
+			{ id: "crypto", title: { ru: "Криптовалюта", uk: "Криптовалюта", en: "Cryptocurrency" }, detail: "" }
+		]
+	},
 	products: [],
 	printProducts: []
 };
@@ -10380,6 +10388,11 @@ var copy = {
 		printEmpty: "Бумажные книги скоро появятся",
 		printAdd: "Добавить книгу или атрибутику",
 		groupBtn: "Связь с группой",
+		sponsorBtn: "Спонсор",
+		traditionBtn: "7 традиция",
+		newcomer: "Новичку",
+		newcomerTitle: "Новичку",
+		newcomerText: "Здесь появится информация для тех, кто пришёл впервые.",
 		loading: "Загрузка…",
 		error: "Не удалось загрузить новости. Попробуйте ещё раз.",
 		retry: "Повторить",
@@ -10428,6 +10441,11 @@ var copy = {
 		printEmpty: "Паперові книги незабаром з’являться",
 		printAdd: "Додати книгу або атрибутику",
 		groupBtn: "Зв’язок із групою",
+		sponsorBtn: "Спонсор",
+		traditionBtn: "7 традиція",
+		newcomer: "Новачку",
+		newcomerTitle: "Новачку",
+		newcomerText: "Тут з’явиться інформація для тих, хто прийшов уперше.",
 		loading: "Завантаження…",
 		error: "Не вдалося завантажити новини. Спробуйте ще раз.",
 		retry: "Повторити",
@@ -10476,6 +10494,11 @@ var copy = {
 		printEmpty: "Print items are coming soon",
 		printAdd: "Add book or item",
 		groupBtn: "Contact the group",
+		sponsorBtn: "Sponsor",
+		traditionBtn: "7th Tradition",
+		newcomer: "Newcomer",
+		newcomerTitle: "For newcomers",
+		newcomerText: "Information for people coming to the group for the first time will appear here.",
 		loading: "Loading…",
 		error: "News could not be loaded. Please try again.",
 		retry: "Try again",
@@ -10514,10 +10537,21 @@ async function translateText(text, to, from = "auto") {
 	const hit = memory.get(key) || sessionStorage.getItem("tr:" + key);
 	if (hit) return hit;
 	const url = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=" + from + "&tl=" + to + "&dt=t&q=" + encodeURIComponent(value);
-	const res = await fetch(url);
-	if (!res.ok) throw Error("translate");
-	const data = await res.json();
-	const out = Array.isArray(data?.[0]) ? data[0].map((part) => part?.[0] || "").join("") : value;
+	let out = value;
+	try {
+		const res = await fetch(url);
+		if (res.ok) {
+			const data = await res.json();
+			out = Array.isArray(data?.[0]) ? data[0].map((part) => part?.[0] || "").join("") : value;
+		} else throw Error("translate");
+	} catch (e) {
+		try {
+			const pair = (from === "auto" ? "ru" : from) + "|" + to;
+			const alt = await fetch("https://api.mymemory.translated.net/get?q=" + encodeURIComponent(value) + "&langpair=" + encodeURIComponent(pair));
+			const js = await alt.json();
+			out = (js && js.responseData && js.responseData.translatedText) || value;
+		} catch (e2) { out = value; }
+	}
 	memory.set(key, out);
 	try {
 		sessionStorage.setItem("tr:" + key, out);
@@ -10590,12 +10624,13 @@ var import_jsx_runtime = (/* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports = require_react_jsx_runtime_production();
 })))();
 function Field$1({ value, lang }) {
-	const shown = localText(value, lang);
-	const from = sourceLang(value, lang);
-	if (!shown) return null;
-	if (from === lang) return shown;
+	if (!value) return null;
+	const from = (value.ru && String(value.ru).trim()) ? "ru" : sourceLang(value, lang);
+	const text = String((value[from] || localText(value, lang) || "")).trim();
+	if (!text) return null;
+	if (from === lang) return text;
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Translated, {
-		text: value[from],
+		text,
 		lang,
 		from
 	});
@@ -32635,7 +32670,12 @@ var editableKeys = [
 	"shopEmpty",
 	"printEmpty",
 	"printAdd",
-	"groupBtn"
+	"groupBtn",
+	"sponsorBtn",
+	"traditionBtn",
+	"newcomer",
+	"newcomerTitle",
+	"newcomerText"
 ];
 var defaultContent = Object.fromEntries(Object.entries(copy).map(([lang, text]) => [lang, Object.fromEntries(editableKeys.map((key) => [key, text[key]]))]));
 var defaultAppearance = {
@@ -32680,7 +32720,9 @@ async function getSettings() {
 				...row.value._community?.labels || {}
 			}
 		};
+		result.newcomerPdfs = Array.isArray(row.value._newcomerPdfs) ? row.value._newcomerPdfs : [];
 	} else if (row.key in result.appearance) result.appearance[row.key] = row.value;
+	if (result.newcomerPdfs === undefined) result.newcomerPdfs = [];
 	return result;
 }
 async function api(url, options = {}) {
@@ -32705,11 +32747,18 @@ async function api(url, options = {}) {
 			await setting("brand", validText(data.brand, 80));
 			return { ok: true };
 		}
+		if (data.section === "newcomerPdf") {
+			const list = Array.isArray(data.pdfs) ? data.pdfs.slice(0, 40) : [];
+			await updateContent((old) => ({ ...old, _newcomerPdfs: list }));
+			return { ok: true };
+		}
 		for (const lang of languages) for (const key of Object.keys(defaultContent[lang])) validText(data.content?.[lang]?.[key], 2e3);
 		await updateContent((old) => ({
 			...old,
 			...data.content,
-			_community: old._community
+			_community: old._community,
+			_audiobooks: old._audiobooks,
+			_newcomerPdfs: old._newcomerPdfs
 		}));
 		return { ok: true };
 	}
@@ -32915,6 +32964,8 @@ function validateCommunityPatch(data) {
 		"sellerName",
 		"sellerContact",
 		"groupContact",
+		"sponsorContact",
+		"tradition",
 		"products",
 		"printProducts",
 		"labels"
@@ -32954,8 +33005,19 @@ function validateCommunityPatch(data) {
 	for (const key of [
 		"mapQuery",
 		"sellerName",
-		"sellerContact"
+		"sellerContact",
+		"groupContact",
+		"sponsorContact"
 	]) if (data[key] !== void 0 && (typeof data[key] !== "string" || data[key].length > 500)) throw Error("invalid");
+	if (data.tradition) {
+		const items = data.tradition.items;
+		if (!Array.isArray(items) || items.length > 8) throw Error("invalid");
+		for (const it of items) {
+			validText(it.id, 40);
+			text(it.title, 80);
+			if (typeof it.detail !== "string" || it.detail.length > 400) throw Error("invalid");
+		}
+	}
 	if (data.products) {
 		if (data.products.length > 100) throw Error("invalid");
 		for (const p of data.products) {
@@ -33386,6 +33448,7 @@ function CommunityManager({ kind, initial, lang, reload }) {
 							sellerName: draft.sellerName,
 							sellerContact: draft.sellerContact,
 							groupContact: draft.groupContact,
+							sponsorContact: draft.sponsorContact,
 							labels: draft.labels
 						});
 					});
@@ -33482,6 +33545,15 @@ function CommunityManager({ kind, initial, lang, reload }) {
 						onChange: (e) => setDraft({
 							...draft,
 							groupContact: e.target.value
+						})
+					})] }),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [lang==="uk"?"Telegram спонсора":lang==="en"?"Sponsor Telegram":"Telegram спонсора", /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+						maxLength: 500,
+						placeholder: "@username или https://t.me/...",
+						value: draft.sponsorContact || "",
+						onChange: (e) => setDraft({
+							...draft,
+							sponsorContact: e.target.value
 						})
 					})] }),
 					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
@@ -33814,7 +33886,12 @@ var contentLabels = {
 		"Сувенирка: текст если товаров нет",
 		"Литература: текст если бумажных книг нет",
 		"Литература: кнопка добавления бумажной книги",
-		"Баннер: кнопка связи с группой"
+		"Баннер: кнопка связи с группой",
+		"Баннер: кнопка «Спонсор»",
+		"Кнопка «7 традиция»",
+		"Пункт меню «Новичку»",
+		"Новичку: заголовок страницы",
+		"Новичку: текст страницы"
 	],
 	uk: [
 		"Назва спільноти",
@@ -33842,7 +33919,12 @@ var contentLabels = {
 		"Сувенірка: текст якщо товарів немає",
 		"Література: текст якщо паперових книг немає",
 		"Література: кнопка додавання паперової книги",
-		"Банер: кнопка зв’язку з групою"
+		"Банер: кнопка зв’язку з групою",
+		"Банер: кнопка «Спонсор»",
+		"Кнопка «7 традиція»",
+		"Пункт меню «Новачку»",
+		"Новачку: заголовок сторінки",
+		"Новачку: текст сторінки"
 	],
 	en: [
 		"Community name",
@@ -33870,7 +33952,12 @@ var contentLabels = {
 		"Shop: empty catalog text",
 		"Literature: empty print catalog text",
 		"Literature: add print item button",
-		"Banner: contact the group button"
+		"Banner: contact the group button",
+		"Banner: Sponsor button",
+		"7th Tradition button",
+		"Newcomer navigation",
+		"Newcomer: page heading",
+		"Newcomer: page text"
 	]
 };
 //#endregion
@@ -33967,6 +34054,8 @@ function OwnerPanel({ lang }) {
 					["literature", base.literature],
 					["schedule", communityCopy[lang].schedule],
 					["shop", communityCopy[lang].shop],
+					["tradition", t.traditionBtn || "7 традиция"],
+					["newcomer", t.newcomer || "Новичку"],
 					["content", t.content],
 					["appearance", t.appearance]
 				].map(([key, label]) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
@@ -34002,6 +34091,8 @@ function OwnerPanel({ lang }) {
 					lang,
 					reload
 				}, tab),
+				tab === "tradition" && settings && (0, import_jsx_runtime.jsx)(TraditionManager, { lang, initial: settings.community, reload }),
+				tab === "newcomer" && settings && (0, import_jsx_runtime.jsx)(NewcomerPdfManager, { lang, initial: settings.newcomerPdfs || [], reload }),
 				tab === "content" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TextManager, {
 					lang,
 					initial: settings.content,
@@ -34693,6 +34784,93 @@ function AuthPanel({ lang }) {
 }
 //#endregion
 //#region src/site.tsx
+
+function telegramHref(raw, fallback) {
+	const v = String(raw || "").trim();
+	if (!v) return fallback || "#";
+	if (/^https?:\/\//i.test(v)) return v;
+	return "https://t.me/" + v.replace(/^@/, "");
+}
+
+function TraditionManager({ lang, initial, reload }) {
+	const t = cmsCopy[lang], b = copy[lang];
+	const [draft, setDraft] = (0, import_react.useState)(() => {
+		const base = structuredClone(defaultCommunity.tradition);
+		const cur = initial && initial.tradition && initial.tradition.items;
+		return { items: (cur && cur.length ? cur : base.items).map((it) => ({ id: it.id, title: { ru: "", uk: "", en: "", ...it.title }, detail: it.detail || "" })) };
+	});
+	const [editLang, setEditLang] = (0, import_react.useState)(lang);
+	const state = useSave(lang, reload);
+	return (0, import_jsx_runtime.jsxs)("section", { children: [
+		(0, import_jsx_runtime.jsx)("h2", { children: lang==="uk"?"7 традиція":lang==="en"?"7th Tradition":"7 традиция" }),
+		(0, import_jsx_runtime.jsx)("p", { children: lang==="uk"?"Підпис кнопки змінюється у «Текстах сайту». Тут — три рядки реквізитів.":lang==="en"?"The button label is edited in Site texts. Here are the three payment rows.":"Подпись кнопки меняется в «Текстах сайта». Здесь — три строки реквизитов." }),
+		(0, import_jsx_runtime.jsx)(Languages, { value: editLang, onChange: setEditLang }),
+		(0, import_jsx_runtime.jsxs)("form", { className: "manage-form", onSubmit: (e) => { e.preventDefault(); state.run(async () => { await send("/api/community", { tradition: draft }); }); }, children: [
+			draft.items.map((it, idx) => (0, import_jsx_runtime.jsxs)("fieldset", { children: [
+				(0, import_jsx_runtime.jsx)("legend", { children: it.id }),
+				(0, import_jsx_runtime.jsxs)("label", { children: [lang==="uk"?"Назва рядка":lang==="en"?"Row title":"Название строки", (0, import_jsx_runtime.jsx)("input", { value: it.title[editLang] || "", maxLength: 80, onChange: (e) => { const items = draft.items.map((x,i)=> i===idx?{...x,title:{...x.title,[editLang]:e.target.value}}:x); setDraft({ items }); } })] }),
+				(0, import_jsx_runtime.jsxs)("label", { children: [lang==="uk"?"Номер картки / адреса":lang==="en"?"Card number / address":"Номер карты / адрес", (0, import_jsx_runtime.jsx)("input", { value: it.detail, maxLength: 400, onChange: (e) => { const items = draft.items.map((x,i)=> i===idx?{...x,detail:e.target.value}:x); setDraft({ items }); } })] })
+			] }, it.id)),
+			(0, import_jsx_runtime.jsx)("button", { className: "button", disabled: state.busy, children: state.busy ? b.saving : t.save })
+		] }),
+		(0, import_jsx_runtime.jsx)(Feedback, { ...state })
+	] });
+}
+function NewcomerPdfManager({ lang, initial, reload }) {
+	const t = cmsCopy[lang], b = copy[lang];
+	const [title, setTitle] = (0, import_react.useState)("");
+	const [file, setFile] = (0, import_react.useState)(null);
+	const [list, setList] = (0, import_react.useState)(initial || []);
+	const state = useSave(lang, reload);
+	return (0, import_jsx_runtime.jsxs)("section", { children: [
+		(0, import_jsx_runtime.jsx)("h2", { children: lang==="uk"?"Буклети для новачка":lang==="en"?"Newcomer booklets":"Буклеты для новичка" }),
+		(0, import_jsx_runtime.jsx)("p", { children: lang==="uk"?"Текст сторінки — у «Текстах сайту». Тут PDF.":lang==="en"?"Page text is in Site texts. PDFs go here.":"Текст страницы — в «Текстах сайта». Здесь PDF." }),
+		(0, import_jsx_runtime.jsx)("div", { className: "manage-list", children: list.map((item) => (0, import_jsx_runtime.jsxs)("div", { className: "manage-row", children: [
+			(0, import_jsx_runtime.jsx)("strong", { children: item.title }),
+			(0, import_jsx_runtime.jsx)("button", { type: "button", onClick: () => state.run(async () => { const next = list.filter((x) => x.id !== item.id); await send("/api/site", { section: "newcomerPdf", pdfs: next }); setList(next); }), children: t.archive || "Удалить" })
+		] }, item.id)) }),
+		(0, import_jsx_runtime.jsxs)("form", { className: "manage-form", onSubmit: (e) => { e.preventDefault(); state.run(async () => { if (!file) throw Error("invalid"); await validateFile(file, "pdf"); const path = crypto.randomUUID() + ".pdf"; const db = client(); checked(await db.storage.from("mayday-pdfs").upload(path, file, { contentType: "application/pdf" })); const item = { id: crypto.randomUUID(), title: title || file.name, object_key: path }; const next = [item, ...list]; await send("/api/site", { section: "newcomerPdf", pdfs: next }); setList(next); setTitle(""); setFile(null); }); }, children: [
+			(0, import_jsx_runtime.jsxs)("label", { children: [t.title, (0, import_jsx_runtime.jsx)("input", { value: title, maxLength: 180, onChange: (e) => setTitle(e.target.value) })] }),
+			(0, import_jsx_runtime.jsxs)("label", { children: ["PDF", (0, import_jsx_runtime.jsx)("input", { type: "file", accept: "application/pdf,.pdf", onChange: (e) => setFile(e.target.files && e.target.files[0] || null) })] }),
+			(0, import_jsx_runtime.jsx)("button", { className: "button", disabled: state.busy, children: state.busy ? b.saving : t.upload })
+		] }),
+		(0, import_jsx_runtime.jsx)(Feedback, { ...state })
+	] });
+}
+function TraditionMenu({ lang, settings }) {
+	const [open, setOpen] = (0, import_react.useState)(false);
+	const [copied, setCopied] = (0, import_react.useState)("");
+	const t = { ...copy[lang], ...(settings.content && settings.content[lang] || {}) };
+	const items = (settings.community && settings.community.tradition && settings.community.tradition.items) || (defaultCommunity.tradition && defaultCommunity.tradition.items) || [];
+	return (0, import_jsx_runtime.jsxs)("div", { className: "tradition-wrap", children: [
+		(0, import_jsx_runtime.jsx)("button", {
+			type: "button",
+			className: "tradition-btn",
+			"aria-expanded": open,
+			onClick: () => setOpen(!open),
+			children: t.traditionBtn || (lang==="uk"?"7 традиція":lang==="en"?"7th Tradition":"7 традиция")
+		}),
+		open && (0, import_jsx_runtime.jsxs)("div", { className: "tradition-drop", children: [
+			items.map((it) => (0, import_jsx_runtime.jsxs)("button", {
+				type: "button",
+				className: "tradition-item",
+				onClick: async () => {
+					const val = String(it.detail || "").trim();
+					if (!val) return;
+					try { await navigator.clipboard.writeText(val); } catch (e) {
+						const ta = document.createElement("textarea"); ta.value = val; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove();
+					}
+					setCopied(it.id);
+					setTimeout(() => setCopied(""), 1600);
+				},
+				children: [
+					(0, import_jsx_runtime.jsx)("strong", { children: (0, import_jsx_runtime.jsx)(Field$1, { value: it.title, lang }) }),
+					(0, import_jsx_runtime.jsx)("span", { children: copied === it.id ? (lang==="uk"?"Скопійовано":lang==="en"?"Copied":"Скопировано") : (it.detail ? (lang==="uk"?"Копіювати":lang==="en"?"Copy":"Копировать") : (lang==="uk"?"Немає реквізитів":lang==="en"?"No details yet":"Нет реквизитов")) })
+				]
+			}, it.id))
+		] })
+	] });
+}
 function Site({ section, editor = false, authenticated = false, userId }) {
 	const [settings, setSettings] = (0, import_react.useState)((()=>{try{const raw=sessionStorage.getItem("mayday-settings");if(raw)return JSON.parse(raw);}catch(e){}return{content:defaultContent,appearance:defaultAppearance,community:structuredClone(defaultCommunity)};})());
 	const [materials, setMaterials] = (0, import_react.useState)([]);
@@ -34814,6 +34992,7 @@ function Site({ section, editor = false, authenticated = false, userId }) {
 					children: [
 						"home",
 						"literature",
+						"newcomer",
 						"schedule",
 						"news",
 						"shop"
@@ -34823,6 +35002,8 @@ function Site({ section, editor = false, authenticated = false, userId }) {
 						children: s === "schedule" ? ct.schedule : s === "shop" ? ct.shop : t[s]
 					}, s))
 				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "header-tools", children: [
+				(0, import_jsx_runtime.jsx)(TraditionMenu, { lang, settings }),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 					className: "languages",
 					"aria-label": lang === "ru" ? "Язык" : lang === "uk" ? "Мова" : "Language",
@@ -34833,6 +35014,7 @@ function Site({ section, editor = false, authenticated = false, userId }) {
 						children: l === "uk" ? "УКР" : l === "ru" ? "РУС" : "ENG"
 					}, l))
 				})
+				] })
 			]
 		}),
 		/* @__PURE__ */ (0, import_jsx_runtime.jsx)("main", {
@@ -34871,8 +35053,15 @@ function Site({ section, editor = false, authenticated = false, userId }) {
 										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", { className: "hero-cta-mark", src: "./mayday-btn2.png", alt: "" }), "Mayday online", /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArrowUpRight, { size: 18 })]
 									}),
 									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("a", {
+										className: "button light hero-sponsor",
+										href: telegramHref(settings.community && settings.community.sponsorContact, "https://t.me/mayday"),
+										target: "_blank",
+										rel: "noopener noreferrer",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", { className: "hero-cta-mark", src: "./mayday-btn2.png", alt: "" }), t.sponsorBtn || (lang==="uk"?"Спонсор":lang==="en"?"Sponsor":"Спонсор"), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArrowUpRight, { size: 18 })]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("a", {
 										className: "button light hero-group",
-										href: (()=>{ const raw=(settings.community&&settings.community.groupContact)||settings.community.sellerContact||"https://t.me/mayday"; const v=String(raw).trim(); if(!v) return "https://t.me/mayday"; if(/^https?:\/\//i.test(v)) return v; return "https://t.me/"+v.replace(/^@/,""); })(),
+										href: telegramHref((settings.community&&settings.community.groupContact)||settings.community.sellerContact, "https://t.me/mayday"),
 										target: "_blank",
 										rel: "noopener noreferrer",
 										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", { className: "hero-cta-mark", src: "./mayday-btn2.png", alt: "" }), t.groupBtn || (lang==="uk"?"Зв’язок із групою":lang==="en"?"Contact the group":"Связь с группой"), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArrowUpRight, { size: 18 })]
@@ -34894,17 +35083,17 @@ function Site({ section, editor = false, authenticated = false, userId }) {
 						const newsTitle=lang==="uk"?"Остання новина":lang==="en"?"Latest news":"Последняя новость";
 						const meetEmpty=lang==="uk"?"Розклад з’явиться у вкладці зібрань.":lang==="en"?"The schedule will appear on the meetings page.":"Расписание появится во вкладке собраний.";
 						const newsEmpty=lang==="uk"?"Поки немає опублікованих новин.":lang==="en"?"No published news yet.":"Пока нет опубликованных новостей.";
-						const meetName=meeting?localText(meeting.name,lang)||"Mayday":"Mayday";
-						const meetWhen=meeting?localText(meeting.schedule,lang):"";
-						const meetFmt=meeting?localText(meeting.format,lang):"";
-						const meetLine=[meetWhen,meetFmt].filter(Boolean).join(" · ")||meetEmpty;
-						const newsHead=post&&shown?post.translations[shown].title:newsEmpty;
+						const meetNameNode=meeting?(0, import_jsx_runtime.jsx)(Field$1,{value:meeting.name,lang}):"Mayday";
+						const meetWhenNode=meeting?(0, import_jsx_runtime.jsx)(Field$1,{value:meeting.schedule,lang}):null;
+						const meetFmtNode=meeting?(0, import_jsx_runtime.jsx)(Field$1,{value:meeting.format,lang}):null;
+						const newsPack=post?{ru:(post.translations.ru&&post.translations.ru.title)||"",uk:(post.translations.uk&&post.translations.uk.title)||"",en:(post.translations.en&&post.translations.en.title)||""}:null;
+						const newsHead=newsPack?(0, import_jsx_runtime.jsx)(Field$1,{value:newsPack,lang}):newsEmpty;
 						const newsBody=post&&shown?(post.translations[shown].body||"").slice(0,140):"";
 						return [
 						(0, import_jsx_runtime.jsxs)("div", { className: "section-label", children: ["01 / ", meetTitle] }, "l1"),
 						(0, import_jsx_runtime.jsxs)("a", { className: "resource-link", href: href("/schedule"), children: [
 							(0, import_jsx_runtime.jsx)(BookOpen, {}),
-							(0, import_jsx_runtime.jsxs)("div", { children: [(0, import_jsx_runtime.jsx)("h2", { children: meetName }), (0, import_jsx_runtime.jsx)("p", { children: meetLine })] }),
+							(0, import_jsx_runtime.jsxs)("div", { children: [(0, import_jsx_runtime.jsx)("h2", { children: meetNameNode }), (0, import_jsx_runtime.jsxs)("p", { children: [meetWhenNode, meetFmtNode ? " · " : "", meetFmtNode] })] }),
 							(0, import_jsx_runtime.jsx)(ArrowUpRight, {})
 						] }, "m1"),
 						(0, import_jsx_runtime.jsxs)("div", { className: "section-label", children: ["02 / ", newsTitle] }, "l2"),
@@ -34979,6 +35168,16 @@ function Site({ section, editor = false, authenticated = false, userId }) {
 							] }, "print")
 						];
 					})() })),
+					section === "newcomer" && (0, import_jsx_runtime.jsxs)("section", { className: "page lit-page", children: [
+						(0, import_jsx_runtime.jsx)("p", { className: "eyebrow", children: t.city }),
+						(0, import_jsx_runtime.jsx)("h1", { children: t.newcomerTitle || t.newcomer }),
+						(0, import_jsx_runtime.jsx)("p", { className: "page-intro", children: t.newcomerText }),
+						((settings.newcomerPdfs)||[]).length ? ((settings.newcomerPdfs)||[]).map((b) => (0, import_jsx_runtime.jsxs)("div", { className: "resource-link", children: [
+							(0, import_jsx_runtime.jsx)(BookOpen, {}),
+							(0, import_jsx_runtime.jsx)("h2", { children: b.title }),
+							(0, import_jsx_runtime.jsx)("button", { className: "button", type: "button", onClick: async () => { try { const blob = checked(await client().storage.from("mayday-pdfs").download(b.object_key)); const url = URL.createObjectURL(blob); const a=document.createElement("a"); a.href=url; a.target="_blank"; a.download=(b.title||"booklet")+".pdf"; a.click(); } catch(e){} }, children: t.download || (lang==="uk"?"Відкрити PDF":lang==="en"?"Open PDF":"Открыть PDF") })
+						] }, b.id)) : (0, import_jsx_runtime.jsx)("p", { className: "muted", children: lang==="uk"?"Буклети з’являться тут.":lang==="en"?"Booklets will appear here.":"Буклеты появятся здесь." })
+					] }),
 					section === "schedule" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Schedule, {
 						data: settings.community,
 						lang
@@ -35067,6 +35266,6 @@ function Empty({ icon, title, text }) {
 //#endregion
 //#region src/main.tsx
 var page = new URLSearchParams(location.search).get("page");
-var section = page === "news" || page === "literature" || page === "admin" || page === "schedule" || page === "shop" ? page : "home";
+var section = page === "news" || page === "literature" || page === "newcomer" || page === "admin" || page === "schedule" || page === "shop" ? page : "home";
 (0, import_client.createRoot)(document.getElementById("root")).render(/* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_react.StrictMode, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Site, { section }) }));
 //#endregion
