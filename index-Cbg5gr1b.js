@@ -10667,7 +10667,7 @@ function Location({ data, lang }) {
 				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Field$1, {
 					value: labels.route,
 					lang
-				}), " ↗"]
+				}), (0, import_jsx_runtime.jsx)(ArrowUpRight, { size: 16, className: "order-arrow" })]
 			})
 		] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 			className: "map-frame",
