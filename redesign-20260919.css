@@ -267,3 +267,38 @@ html[data-theme=dark] .theme-toggle{color:#ddd}
 html[data-theme=dark] .tradition-drop,
 html[data-theme=dark] .tradition-drop *{color:#ececec !important}
 html[data-theme=dark] .tradition-item span{color:#b4b8be !important}
+
+html[data-theme=dark] button,
+html[data-theme=dark] .button,
+html[data-theme=dark] a,
+html[data-theme=dark] label,
+html[data-theme=dark] legend,
+html[data-theme=dark] p,
+html[data-theme=dark] span,
+html[data-theme=dark] li,
+html[data-theme=dark] .manage-row,
+html[data-theme=dark] .manage-row strong,
+html[data-theme=dark] .admin button,
+html[data-theme=dark] [aria-pressed],
+html[data-theme=dark] .eyebrow{
+  color:#c5c8cc;
+}
+html[data-theme=dark] button,
+html[data-theme=dark] .admin button,
+html[data-theme=dark] button[aria-pressed]{
+  background:#2a2d32;
+  border-color:#3a3e44;
+  color:#e6e6e6 !important;
+}
+html[data-theme=dark] button[aria-pressed=true],
+html[data-theme=dark] button[aria-pressed="true"]{
+  background:#000 !important;
+  color:#fff !important;
+}
+html[data-theme=dark] .resource-link>svg,
+html[data-theme=dark] svg{
+  color:#c5c8cc !important;
+  stroke:#c5c8cc;
+}
+html[data-theme=dark] a{color:#c5c8cc}
+html[data-theme=dark] .header nav a{color:#c5c8cc}
