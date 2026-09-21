@@ -10660,7 +10660,7 @@ function Location({ data, lang }) {
 				lang
 			}) }),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("a", {
-				className: "shop-order",
+				className: "button",
 				href: "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(query),
 				target: "_blank",
 				rel: "noopener noreferrer",
@@ -10795,7 +10795,7 @@ function Shop({ data, lang }) {
 					value: community.labels.sold,
 					lang
 				}) }) : contact && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("a", {
-					className: "shop-order",
+					className: "button",
 					href: contact,
 					target: contact.startsWith("https:") ? "_blank" : void 0,
 					rel: "noopener noreferrer",
@@ -35098,21 +35098,21 @@ function Site({ section, editor = false, authenticated = false, userId }) {
 										href: "https://t.me/mayday_NA_online",
 										target: "_blank",
 										rel: "noopener noreferrer",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", { className: "hero-cta-mark", src: "./mayday-btn2.png", alt: "" }), "Mayday online", /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "link-arrow", children: "↗" })]
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", { className: "hero-cta-mark", src: "./mayday-btn2.png", alt: "" }), "Mayday online", /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArrowUpRight, { size: 18 })]
 									}),
 									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("a", {
 										className: "button light hero-sponsor",
 										href: telegramHref(settings.community && settings.community.sponsorContact, "https://t.me/mayday"),
 										target: "_blank",
 										rel: "noopener noreferrer",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", { className: "hero-cta-mark", src: "./mayday-btn2.png", alt: "" }), t.sponsorBtn || (lang==="uk"?"Спонсор":lang==="en"?"Sponsor":"Спонсор"), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "link-arrow", children: "↗" })]
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", { className: "hero-cta-mark", src: "./mayday-btn2.png", alt: "" }), t.sponsorBtn || (lang==="uk"?"Спонсор":lang==="en"?"Sponsor":"Спонсор"), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArrowUpRight, { size: 18 })]
 									}),
 									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("a", {
 										className: "button light hero-group",
 										href: telegramHref((settings.community&&settings.community.groupContact)||settings.community.sellerContact, "https://t.me/mayday"),
 										target: "_blank",
 										rel: "noopener noreferrer",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", { className: "hero-cta-mark", src: "./mayday-btn2.png", alt: "" }), t.groupBtn || (lang==="uk"?"Зв’язок із групою":lang==="en"?"Contact the group":"Связь с группой"), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "link-arrow", children: "↗" })]
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", { className: "hero-cta-mark", src: "./mayday-btn2.png", alt: "" }), t.groupBtn || (lang==="uk"?"Зв’язок із групою":lang==="en"?"Contact the group":"Связь с группой"), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArrowUpRight, { size: 18 })]
 									})
 									] })]
 								})
@@ -35143,13 +35143,13 @@ function Site({ section, editor = false, authenticated = false, userId }) {
 						(0, import_jsx_runtime.jsxs)("a", { className: "resource-link", href: href("/schedule"), children: [
 							(0, import_jsx_runtime.jsx)(BookOpen, {}),
 							(0, import_jsx_runtime.jsxs)("div", { children: [(0, import_jsx_runtime.jsx)("h2", { children: meetNameNode }), (0, import_jsx_runtime.jsxs)("p", { children: [meetWhenNode, meetFmtNode ? " · " : "", meetFmtNode] })] }),
-							(0, import_jsx_runtime.jsx)("span", { className: "link-arrow", children: "↗" })
+							(0, import_jsx_runtime.jsx)(ArrowUpRight, {})
 						] }, "m1"),
 						(0, import_jsx_runtime.jsxs)("div", { className: "section-label", children: ["02 / ", newsTitle] }, "l2"),
 						(0, import_jsx_runtime.jsxs)("a", { className: "resource-link", href: href("/news"), children: [
 							(0, import_jsx_runtime.jsx)(Newspaper, {}),
 							(0, import_jsx_runtime.jsxs)("div", { children: [(0, import_jsx_runtime.jsx)("h2", { children: newsHead }), (0, import_jsx_runtime.jsx)("p", { children: newsBody })] }),
-							(0, import_jsx_runtime.jsx)("span", { className: "link-arrow", children: "↗" })
+							(0, import_jsx_runtime.jsx)(ArrowUpRight, {})
 						] }, "n1")
 						];
 					})()
@@ -35224,7 +35224,7 @@ function Site({ section, editor = false, authenticated = false, userId }) {
 						((settings.newcomerPdfs)||[]).length ? ((settings.newcomerPdfs)||[]).map((b) => (0, import_jsx_runtime.jsxs)("div", { className: "lit-block newcomer-card", children: [(0, import_jsx_runtime.jsxs)("div", { className: "resource-link", children: [
 							(0, import_jsx_runtime.jsx)(BookOpen, {}),
 							(0, import_jsx_runtime.jsxs)("div", { children: [(0, import_jsx_runtime.jsx)("h2", { children: b.title })] }),
-							(0, import_jsx_runtime.jsx)("button", { className: "shop-order", type: "button", onClick: async () => { try { const blob = checked(await client().storage.from("mayday-pdfs").download(b.object_key)); const url = URL.createObjectURL(blob); const a=document.createElement("a"); a.href=url; a.target="_blank"; a.download=(b.title||"booklet")+".pdf"; a.click(); } catch(e){} }, children: t.download || (lang==="uk"?"Відкрити PDF":lang==="en"?"Open PDF":"Открыть PDF") })
+							(0, import_jsx_runtime.jsx)("button", { className: "download-button", type: "button", onClick: async () => { try { const blob = checked(await client().storage.from("mayday-pdfs").download(b.object_key)); const url = URL.createObjectURL(blob); const a=document.createElement("a"); a.href=url; a.target="_blank"; a.download=(b.title||"booklet")+".pdf"; a.click(); } catch(e){} }, children: t.download || (lang==="uk"?"Відкрити PDF":lang==="en"?"Open PDF":"Открыть PDF") })
 						] })] }, b.id)) : (0, import_jsx_runtime.jsx)("p", { className: "muted", children: lang==="uk"?"Буклети з’являться тут.":lang==="en"?"Booklets will appear here.":"Буклеты появятся здесь." })
 					] }),
 					section === "schedule" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Schedule, {
