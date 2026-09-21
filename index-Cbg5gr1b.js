@@ -10795,7 +10795,7 @@ function Shop({ data, lang }) {
 					value: community.labels.sold,
 					lang
 				}) }) : contact && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("a", {
-					className: "button shop-order",
+					className: "shop-order",
 					href: contact,
 					target: contact.startsWith("https:") ? "_blank" : void 0,
 					rel: "noopener noreferrer",
