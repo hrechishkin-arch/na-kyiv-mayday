@@ -10660,7 +10660,7 @@ function Location({ data, lang }) {
 				lang
 			}) }),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("a", {
-				className: "button",
+				className: "shop-order",
 				href: "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(query),
 				target: "_blank",
 				rel: "noopener noreferrer",
