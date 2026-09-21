@@ -10265,7 +10265,7 @@ var defaultCommunity = {
 		en: "7 Kruh­louniversytetska Street, Kyiv"
 	},
 	mapQuery: "Київ, Круглоуніверситетська вулиця, 7",
-	sellerName: "",
+	sellerName: { ru: "", uk: "", en: "" },
 	sellerContact: "",
 	groupContact: "https://t.me/mayday",
 	sponsorContact: "",
@@ -10747,14 +10747,15 @@ function Shop({ data, lang }) {
 	const community = withLabels(data);
 	communityCopy[lang];
 	const contact = contactUrl(community.sellerContact);
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [community.sellerName && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("aside", {
+	const sellerNote = typeof community.sellerName === "string" ? { ru: community.sellerName, uk: "", en: "" } : (community.sellerName || { ru: "", uk: "", en: "" });
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [(sellerNote.ru || sellerNote.uk || sellerNote.en) && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("aside", {
 		className: "seller-card",
 		children: [
 			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Field$1, {
 				value: community.labels.seller,
 				lang
 			}) }),
-			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { children: community.sellerName })
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Field$1, { value: sellerNote, lang }) })
 		]
 	}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 		className: "product-grid",
@@ -32998,11 +32999,15 @@ function validateCommunityPatch(data) {
 	if (data.address) text(data.address, 500);
 	for (const key of [
 		"mapQuery",
-		"sellerName",
 		"sellerContact",
 		"groupContact",
 		"sponsorContact"
 	]) if (data[key] !== void 0 && (typeof data[key] !== "string" || data[key].length > 500)) throw Error("invalid");
+	if (data.sellerName !== void 0) {
+		if (typeof data.sellerName === "string") {
+			if (data.sellerName.length > 500) throw Error("invalid");
+		} else text(data.sellerName, 500);
+	}
 	if (data.tradition) {
 		const items = data.tradition.items;
 		if (!Array.isArray(items) || items.length > 8) throw Error("invalid");
@@ -33516,13 +33521,14 @@ function CommunityManager({ kind, initial, lang, reload }) {
 							})
 						})
 					] }),
-					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [t.seller, /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-						maxLength: 180,
-						value: draft.sellerName,
-						onChange: (e) => setDraft({
-							...draft,
-							sellerName: e.target.value
-						})
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [t.seller, /* @__PURE__ */ (0, import_jsx_runtime.jsx)("textarea", {
+						maxLength: 500,
+						rows: 3,
+						value: (typeof draft.sellerName === "string" ? { ru: draft.sellerName, uk: "", en: "" } : (draft.sellerName || { ru: "", uk: "", en: "" }))[editLang] || "",
+						onChange: (e) => {
+							const cur = typeof draft.sellerName === "string" ? { ru: draft.sellerName, uk: "", en: "" } : { ru: "", uk: "", en: "", ...(draft.sellerName || {}) };
+							setDraft({ ...draft, sellerName: { ...cur, [editLang]: e.target.value } });
+						}
 					})] }),
 					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [t.contact, /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
 						maxLength: 500,
