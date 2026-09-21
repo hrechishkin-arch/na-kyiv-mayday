@@ -340,24 +340,6 @@ html[data-theme=dark] .tradition-item{border-color:#4a4e54}
 }
 
 
-html:not([data-theme=dark]) .hero-actions a.button.light:first-child{
-  background:#fff !important;
-  color:#111 !important;
-  box-shadow:0 16px 36px rgba(0,0,0,.45),0 0 0 3px #fff,0 0 0 5px rgba(255,255,255,.35) !important;
-  border:0 !important;
-}
-html[data-theme=dark] .hero-actions a.button.light:first-child{
-  background:#000 !important;
-  color:#fff !important;
-  box-shadow:none !important;
-  border:0 !important;
-}
-@media (max-width:760px){
-  html[data-theme=dark] .hero-actions a.button.light:first-child{
-    background:#fff !important;
-    color:#111 !important;
-    box-shadow:0 12px 28px rgba(0,0,0,.32) !important;
-  }
-}
+
 
 
