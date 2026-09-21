@@ -75,20 +75,27 @@
 .hero-actions .button{width:auto}
 @media (max-width:760px){
   .hero, .hero-art, .hero-art img{background:#000 !important}
+  .hero-art{position:relative}
+  .hero-art:after{
+    content:"";
+    position:absolute;left:0;right:0;bottom:0;
+    height:56px;
+    background:linear-gradient(180deg,rgba(0,0,0,0) 0%,#000 100%);
+    pointer-events:none;
+  }
   .hero-inner{
-    background:linear-gradient(180deg,
-      rgba(0,0,0,0) 0%,
-      rgba(0,0,0,0.08) 22%,
-      rgba(0,0,0,0.28) 48%,
-      rgba(0,0,0,0.62) 72%,
-      rgba(0,0,0,0.92) 88%,
-      #000 100%);
-    margin-top:-72px;
-    padding-top:88px !important;
+    background:#000;
+    margin-top:0;
+    padding-top:28px !important;
     position:relative;
     z-index:1;
   }
 }
+html[data-theme=dark] .hero-art:after{
+  background:linear-gradient(180deg,rgba(18,20,22,0) 0%,#121416 100%);
+}
+html[data-theme=dark] .hero-inner{background:#121416}
+
 
 
 
