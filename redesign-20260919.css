@@ -1,5 +1,6 @@
+html, :root{--primary:#000 !important}
 /* Mayday visual refresh. Remove this stylesheet link to restore baseline 0a950306. */
-:root{--background:#f6f5f2;--foreground:#232624;--primary:#25372f;--border:#dddeda;--muted-foreground:#626860}
+:root{--background:#f6f5f2;--foreground:#232624;--primary:#000;--border:#dddeda;--muted-foreground:#626860}
 body{color:var(--foreground);background:var(--background);line-height:1.65}
 .header{max-width:1500px;padding:26px 3.5%;gap:24px;position:relative;z-index:80}
 .header nav{gap:6px;font-size:14px}
