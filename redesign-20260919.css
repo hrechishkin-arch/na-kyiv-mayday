@@ -315,3 +315,9 @@ button.button:not(.light),.newcomer-card button,.page.lit-page button.button{
 }
 
 html[data-theme=dark] .tradition-item{border-color:#4a4e54}
+
+.product-card .button,.location-section .button{display:inline-flex;align-items:center;gap:6px}
+.order-arrow{flex-shrink:0;width:16px;height:16px}
+@media(max-width:760px){
+  .product-card .button .order-arrow{width:16px;height:16px}
+}
