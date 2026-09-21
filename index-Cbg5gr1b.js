@@ -34840,6 +34840,19 @@ function NewcomerPdfManager({ lang, initial, reload }) {
 function TraditionMenu({ lang, settings }) {
 	const [open, setOpen] = (0, import_react.useState)(false);
 	const [copied, setCopied] = (0, import_react.useState)("");
+	(0, import_react.useEffect)(() => {
+		if (!open) return;
+		const onDoc = (e) => {
+			if (e.target && e.target.closest && e.target.closest(".tradition-wrap")) return;
+			setOpen(false);
+		};
+		document.addEventListener("mousedown", onDoc);
+		document.addEventListener("touchstart", onDoc);
+		return () => {
+			document.removeEventListener("mousedown", onDoc);
+			document.removeEventListener("touchstart", onDoc);
+		};
+	}, [open]);
 	const t = { ...copy[lang], ...(settings.content && settings.content[lang] || {}) };
 	const items = (settings.community && settings.community.tradition && settings.community.tradition.items) || (defaultCommunity.tradition && defaultCommunity.tradition.items) || [];
 	return (0, import_jsx_runtime.jsxs)("div", { className: "tradition-wrap", children: [
@@ -35088,7 +35101,8 @@ function Site({ section, editor = false, authenticated = false, userId }) {
 						const meetFmtNode=meeting?(0, import_jsx_runtime.jsx)(Field$1,{value:meeting.format,lang}):null;
 						const newsPack=post?{ru:(post.translations.ru&&post.translations.ru.title)||"",uk:(post.translations.uk&&post.translations.uk.title)||"",en:(post.translations.en&&post.translations.en.title)||""}:null;
 						const newsHead=newsPack?(0, import_jsx_runtime.jsx)(Field$1,{value:newsPack,lang}):newsEmpty;
-						const newsBody=post&&shown?(post.translations[shown].body||"").slice(0,140):"";
+						const newsBodyPack=post?{ru:((post.translations.ru&&post.translations.ru.body)||"").slice(0,140),uk:((post.translations.uk&&post.translations.uk.body)||"").slice(0,140),en:((post.translations.en&&post.translations.en.body)||"").slice(0,140)}:null;
+						const newsBody=newsBodyPack?(0, import_jsx_runtime.jsx)(Field$1,{value:newsBodyPack,lang}):"";
 						return [
 						(0, import_jsx_runtime.jsxs)("div", { className: "section-label", children: ["01 / ", meetTitle] }, "l1"),
 						(0, import_jsx_runtime.jsxs)("a", { className: "resource-link", href: href("/schedule"), children: [
