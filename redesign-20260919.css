@@ -1,7 +1,7 @@
 /* Mayday visual refresh. Remove this stylesheet link to restore baseline 0a950306. */
 :root{--background:#f6f5f2;--foreground:#232624;--primary:#25372f;--border:#dddeda;--muted-foreground:#626860}
 body{color:var(--foreground);background:var(--background);line-height:1.65}
-.header{max-width:1500px;padding:26px 3.5%;gap:24px}
+.header{max-width:1500px;padding:26px 3.5%;gap:24px;position:relative;z-index:80}
 .header nav{gap:6px;font-size:14px}
 .header nav a{padding:10px 14px;border:0;border-radius:24px;font-weight:500;color:#1a1e1b}
 .header nav a:hover{background:#e8eae4}
@@ -148,7 +148,7 @@ video.product-video{
   padding:8px 18px;font-size:13px;font-weight:600;letter-spacing:.02em;
   height:36px;white-space:nowrap;cursor:pointer
 }
-.tradition-drop{
+ .tradition-drop{z-index:300;
   position:absolute;right:0;top:calc(100% + 8px);z-index:40;
   background:#fff;border:1px solid #e4e7e0;border-radius:16px;
   min-width:260px;padding:8px;box-shadow:0 12px 30px #00000022
@@ -163,7 +163,7 @@ video.product-video{
 .tradition-item span{font-size:12px;color:#667}
 @media (max-width:760px){
   .header-tools{margin-left:auto;justify-content:flex-end;flex:1}
-  .tradition-drop{left:auto;right:0;min-width:min(280px, calc(100vw - 20px));max-width:calc(100vw - 20px)}
+   .tradition-drop{z-index:300;left:auto;right:0;min-width:min(280px, calc(100vw - 20px));max-width:calc(100vw - 20px)}
   .tradition-btn{height:34px;padding:6px 16px;font-size:12px;min-width:118px}
   .hero-actions .button.light{padding:6px 12px 6px 6px;min-height:42px;font-size:13px}
   .hero-cta-mark{width:30px;height:30px}
