@@ -187,28 +187,29 @@ video.product-video{
   display:flex;align-items:center;justify-content:center;flex-shrink:0
 }
 .theme-toggle svg{width:22px;height:22px}
-html[data-theme=dark] .theme-toggle{background:transparent;color:#b0b4b8;border:0}
 
 html[data-theme=dark]{
-  --background:#8b8e94;
-  --foreground:#b7bcc2;
-  --primary:#d5d8dc;
-  --border:#34383e;
-  --muted-foreground:#9aa0a6;
+  --background:#121416;
+  --foreground:#ececec;
+  --primary:#f2f2f2;
+  --border:#2a2d32;
+  --muted-foreground:#a3a8ae;
   color-scheme:dark
 }
-html[data-theme=dark] body{background:#8b8e94;color:#b7bcc2}
-html[data-theme=dark] .header{background:#8b8e94}
-html[data-theme=dark] .header nav a{color:#b3b8be}
+html[data-theme=dark] body{background:#121416;color:#ececec}
+html[data-theme=dark] .header{background:#121416}
+html[data-theme=dark] .header nav a{color:#e8e8e8}
 html[data-theme=dark] .header nav a:hover{background:#1e2227}
 html[data-theme=dark] .header nav a[aria-current],
-html[data-theme=dark] .header nav a[aria-current=page]{background:#000;color:#fff}
+html[data-theme=dark] .header nav a[aria-current=page]{background:#000 !important;color:#fff !important}
 html[data-theme=dark] .languages{background:#1c2025}
 html[data-theme=dark] .languages button{color:#c8c8c8}
 html[data-theme=dark] .languages button[aria-pressed=true]{background:#000;color:#fff;box-shadow:none}
 html[data-theme=dark] .brand,html[data-theme=dark] .brand small{color:#ddd}
-html[data-theme=dark] .page,html[data-theme=dark] main{background:#8b8e94;color:#b7bcc2}
-html[data-theme=dark] .subhead,html[data-theme=dark] h1,html[data-theme=dark] h2,html[data-theme=dark] .product-card h2{color:#b3b8be}
+html[data-theme=dark] .brand svg,html[data-theme=dark] .brand-wordmark{color:#ddd}
+html[data-theme=dark] .brand img{filter:none}
+html[data-theme=dark] .page,html[data-theme=dark] main{background:#121416;color:#ececec}
+html[data-theme=dark] .subhead,html[data-theme=dark] h1,html[data-theme=dark] h2,html[data-theme=dark] .product-card h2{color:#f3f3f3}
 html[data-theme=dark] .page-intro,html[data-theme=dark] .muted,html[data-theme=dark] .resource-link p{color:#b4b8be}
 html[data-theme=dark] .seller-card,
 html[data-theme=dark] .product-card,
@@ -219,66 +220,31 @@ html[data-theme=dark] .meeting-card,
 html[data-theme=dark] .empty,
 html[data-theme=dark] .manage-form,
 html[data-theme=dark] .location-section,
-html[data-theme=dark] .tradition-drop{
-  background:#9a9da3;border-color:#3a3e44;color:#b7bcc2
-}
+html[data-theme=dark] .tradition-drop,
 html[data-theme=dark] .resources>.section-label,
-html[data-theme=dark] .resources>.resource-link{background:#9a9da3;border-color:#2c3036;color:#d0d0d0}
-html[data-theme=dark] .product-card>div{background:#9a9da3}
+html[data-theme=dark] .resources>.resource-link,
+html[data-theme=dark] .product-card>div{
+  background:#1a1d22;border-color:#2c3036;color:#ececec
+}
 html[data-theme=dark] footer{color:#aaa;border-color:#2c3036}
 html[data-theme=dark] input,html[data-theme=dark] textarea,html[data-theme=dark] select{
-  background:#8b8e94;color:#eee;border-color:#3a3f46
+  background:#121416;color:#eee;border-color:#3a3f46
 }
-html[data-theme=dark] .button:not(.light){background:#3e4248;color:#b7bcc2;border-color:#3e4248}
-html[data-theme=dark] .header nav a[aria-current],
-html[data-theme=dark] .header nav a[aria-current=page]{background:#3e4248 !important;color:#b7bcc2 !important}
-html[data-theme=dark] .brand svg,html[data-theme=dark] .brand-wordmark{color:#b7bcc2}
-html[data-theme=dark] .brand img{filter:brightness(.82) contrast(.95)}
-html[data-theme=dark] .hero .button.light{background:#fff;color:#111}
-html[data-theme=dark] .tradition-item:hover{background:#262b32}
-html[data-theme=dark] .tradition-item,.tradition-item strong{color:#fff}
-html[data-theme=dark] .home-location{background:#8b8e94}
-@media (max-width:760px){
-  .theme-toggle{width:34px;height:34px;font-size:15px}
-  html[data-theme=dark] .hero-inner{color:#fff}
-}
-
-
-/* dark-buttons-muted */
-html[data-theme=dark] .hero .button.light{
-  background:#9a9da3 !important;
-  color:#c5c8cc !important;
-  box-shadow:none !important;
-}
-html[data-theme=dark] .header nav a[aria-current],
-html[data-theme=dark] .header nav a[aria-current=page],
-html[data-theme=dark] .tradition-btn,
+html[data-theme=dark] .button:not(.light),
 html[data-theme=dark] .product-card .button,
 html[data-theme=dark] .location-section .button,
-html[data-theme=dark] .home-location .button,
-html[data-theme=dark] .meeting-card .button{
-  background:#000 !important;
-  color:#fff !important;
-  border-color:#000 !important;
+html[data-theme=dark] .tradition-btn{
+  background:#000 !important;color:#fff !important;border-color:#000 !important
 }
-html[data-theme=dark] .languages button[aria-pressed=true]{
-  background:#000 !important;
-  color:#fff !important;
-}
+html[data-theme=dark] .hero .button.light{background:#fff;color:#111;box-shadow:0 12px 28px rgba(0,0,0,.32)}
+html[data-theme=dark] .tradition-item:hover{background:#262b32}
+html[data-theme=dark] .tradition-item,html[data-theme=dark] .tradition-item strong{color:#fff}
+html[data-theme=dark] .home-location{background:#121416}
+html[data-theme=dark] .theme-toggle{color:#ddd}
 
-html[data-theme=dark] .resource-link>svg,
-html[data-theme=dark] .resource-link h2,
-html[data-theme=dark] .resource-link p,
-html[data-theme=dark] .section-label,
-html[data-theme=dark] .brand small,
-html[data-theme=dark] .eyebrow,
-html[data-theme=dark] a{color:#c0c3c8 !important}
-html[data-theme=dark] .newcomer-card .resource-link h2,
-html[data-theme=dark] .lit-block .resource-link h2,
-.page .resource-link h2,.newcomer-card .resource-link h2{
-  font-size:22px;font-weight:500;letter-spacing:-.03em;line-height:1.25;margin:0
-}
-.newcomer-card .resource-link{display:flex;align-items:center;gap:16px}
+.newcomer-card{margin-top:16px}
+.newcomer-card .resource-link{border:0;background:transparent;padding:0;box-shadow:none;display:flex;align-items:center;gap:16px}
+.newcomer-card .resource-link h2,.page .resource-link h2{font-size:22px;font-weight:500;letter-spacing:-.03em;line-height:1.25;margin:0}
 @media(max-width:760px){
   .newcomer-card .resource-link h2,.page .resource-link h2{font-size:20px}
 }
