@@ -302,3 +302,5 @@ html[data-theme=dark] svg{
 }
 html[data-theme=dark] a{color:#c5c8cc}
 html[data-theme=dark] .header nav a{color:#c5c8cc}
+
+.newcomer-card .button,.page.lit-page .button{background:#000 !important;border-color:#000 !important;color:#fff !important}
