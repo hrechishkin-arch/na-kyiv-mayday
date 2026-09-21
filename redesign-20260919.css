@@ -248,3 +248,10 @@ html[data-theme=dark] .theme-toggle{color:#ddd}
 @media(max-width:760px){
   .newcomer-card .resource-link h2,.page .resource-link h2{font-size:20px}
 }
+
+/* tradition-read */
+.tradition-drop,.tradition-drop *{color:#232624 !important}
+.tradition-item span{color:#626860 !important}
+html[data-theme=dark] .tradition-drop,
+html[data-theme=dark] .tradition-drop *{color:#ececec !important}
+html[data-theme=dark] .tradition-item span{color:#b4b8be !important}
