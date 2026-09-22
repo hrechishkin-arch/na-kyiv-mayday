@@ -34345,7 +34345,19 @@ function NewsManager({ lang, posts, reload }) {
 							}
 						})
 					})] }),
-					(draft[l].mediaUrl || newsFile) ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { children: newsFile ? newsFile.name : (draft[l].mediaKind === "video" ? "видео" : "фото") }) : null
+					(draft[l].mediaUrl || newsFile) ? (0, import_jsx_runtime.jsxs)("p", { children: [
+						newsFile ? newsFile.name : (draft[l].mediaKind === "video" ? (lang==="en"?"video":"видео") : (lang==="en"?"photo":"фото")),
+						" ",
+						(0, import_jsx_runtime.jsx)("button", { type: "button", onClick: () => {
+							setNewsFile(null);
+							setNewsFileKey((k)=>k+1);
+							setDraft((d) => {
+								const n = structuredClone(d);
+								for (const lg of languages) { n[lg].mediaUrl = ""; n[lg].mediaKind = ""; }
+								return n;
+							});
+						}, children: lang==="en"?"Remove media":"Удалить фото/видео" })
+					] }) : null
 				] }, l)),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [lang === "uk" ? "Фото або відео" : lang === "en" ? "Photo or video" : "Фото или видео", /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
 					type: "file",
@@ -35049,7 +35061,9 @@ function CommitteeManager({ lang, initial, reload }) {
 			(0, import_jsx_runtime.jsxs)("label", { children: [lang==="en"?"Description":lang==="uk"?"Опис":"Описание", (0, import_jsx_runtime.jsx)("textarea", { rows: 2, value: description[editLang]||"", onChange: (e) => patch(item.id, (x) => ({ ...x, description: { ...description, [editLang]: e.target.value } })) })] }),
 			(0, import_jsx_runtime.jsxs)("label", { children: [lang==="en"?"Text":lang==="uk"?"Текст":"Основной текст", (0, import_jsx_runtime.jsx)("textarea", { rows: 6, value: body[editLang]||"", onChange: (e) => patch(item.id, (x) => ({ ...x, body: { ...body, [editLang]: e.target.value } })) })] }),
 			(0, import_jsx_runtime.jsxs)("label", { children: ["Telegram", (0, import_jsx_runtime.jsx)("input", { value: item.contact||"", placeholder: "@mayday", onChange: (e) => patch(item.id, (x) => ({ ...x, contact: e.target.value })) })] }),
+			item.image ? (0, import_jsx_runtime.jsxs)("p", { children: [(0, import_jsx_runtime.jsx)("img", { className: "product-preview", src: item.image, alt: "" }), (0, import_jsx_runtime.jsx)("button", { type: "button", onClick: () => patch(item.id, (x)=>({...x,image:""})), children: lang==="en"?"Remove photo":"Удалить фото" })] }) : null,
 			(0, import_jsx_runtime.jsxs)("label", { children: [lang==="en"?"Photo":lang==="uk"?"Фото":"Фото", (0, import_jsx_runtime.jsx)("input", { type: "file", accept: "image/*", onChange: async (e) => { const f=e.target.files&&e.target.files[0]; if (!f) return; const url=await upload(f); patch(item.id, (x)=>({...x,image:url})); } })] }),
+			item.video ? (0, import_jsx_runtime.jsxs)("p", { children: [(0, import_jsx_runtime.jsx)("button", { type: "button", onClick: () => patch(item.id, (x)=>({...x,video:""})), children: lang==="en"?"Remove video":"Удалить видео" })] }) : null,
 			(0, import_jsx_runtime.jsxs)("label", { children: ["Видео", (0, import_jsx_runtime.jsx)("input", { type: "file", accept: "video/*", onChange: async (e) => { const f=e.target.files&&e.target.files[0]; if (!f) return; const url=await upload(f); patch(item.id, (x)=>({...x,video:url})); } })] }),
 			(0, import_jsx_runtime.jsxs)("div", { className: "manage-row", children: [
 				(0, import_jsx_runtime.jsx)("button", { className: "button", type: "submit", disabled: busy, children: t.save || "Сохранить" }),
