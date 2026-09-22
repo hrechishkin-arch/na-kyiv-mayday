@@ -317,7 +317,8 @@ html[data-theme=dark] svg{
 html[data-theme=dark] a{color:#c5c8cc}
 html[data-theme=dark] .header nav a{color:#c5c8cc}
 
-button.button:not(.light),.newcomer-card button,.page.lit-page button.button{
+button.button:not(.light),.newcomer-card button,.page.lit-page button.button,
+.committee-card a.button,.committee-card a.shop-order,.page.lit-page .committee-card a{
   background:#000 !important;
   background-color:#000 !important;
   border-color:#000 !important;
