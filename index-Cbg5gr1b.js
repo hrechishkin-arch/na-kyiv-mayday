@@ -34337,6 +34337,10 @@ function NewsManager({ lang, posts, reload }) {
 					accept: "image/png,image/jpeg,image/webp,video/mp4,video/webm",
 					onChange: (e) => setNewsFile(e.target.files?.[0] || null)
 				}, newsFileKey)] }),
+				(0, import_jsx_runtime.jsxs)("label", { children: [lang==="uk"?"Telegram для кнопки «Зв’язок»":lang==="en"?"Telegram for Contact":"Telegram для кнопки «Связь» (необязательно)", (0, import_jsx_runtime.jsx)("input", { value: (draft[editLang]&&draft[editLang].contact)||"", placeholder: "@mayday или https://t.me/...", onChange: (e) => {
+					const v=e.target.value;
+					setDraft((d)=>{ const n=structuredClone(d); for (const lg of languages) n[lg]={...n[lg], contact:v}; return n; });
+				} })] }),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 					className: "button",
 					disabled: state.busy,
@@ -34504,9 +34508,7 @@ function TextManager({ lang, initial, reload }) {
 						[key]: e.target.value
 					}
 				})
-			})] }, key)),
-					(0, import_jsx_runtime.jsxs)("label", { children: [lang==="uk"?"Telegram для кнопки «Зв’язок»":lang==="en"?"Telegram for Contact button":"Telegram для кнопки «Связь» (необязательно)", (0, import_jsx_runtime.jsx)("input", { value: (draft[editLang]&&draft[editLang].contact)||"", placeholder: "@mayday", onChange: (e) => setDraft({ ...draft, [editLang]: { ...draft[editLang], contact: e.target.value } }) })] }),
-					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+			})] }, key)), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 				className: "button",
 				disabled: state.busy,
 				children: state.busy ? b.saving : t.save
