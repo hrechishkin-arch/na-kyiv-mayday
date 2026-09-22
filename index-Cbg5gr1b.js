@@ -34127,6 +34127,7 @@ function OwnerPanel({ lang }) {
 					["newcomer", t.newcomer || "Новичку"],
 					["committees", t.committees || "МКО"],
 					["content", t.content],
+					["visits", lang==="uk"?"Відвідування":lang==="en"?"Visits":"Посещения"],
 					["appearance", t.appearance]
 				].map(([key, label]) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 					"aria-pressed": tab === key,
@@ -34164,6 +34165,7 @@ function OwnerPanel({ lang }) {
 				tab === "tradition" && settings && (0, import_jsx_runtime.jsx)(TraditionManager, { lang, initial: settings.community, reload }),
 				tab === "newcomer" && settings && (0, import_jsx_runtime.jsx)(NewcomerPdfManager, { lang, initial: settings.newcomerPdfs || [], reload }),
 				tab === "committees" && settings && (0, import_jsx_runtime.jsx)(CommitteeManager, { lang, initial: (settings.community&&settings.community.committees)||[], reload }),
+				tab === "visits" && (0, import_jsx_runtime.jsx)(VisitStats, { lang }),
 				tab === "content" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TextManager, {
 					lang,
 					initial: settings.content,
@@ -35082,7 +35084,44 @@ function CommitteeManager({ lang, initial, reload }) {
 	] });
 }
 
+
+async function recordVisit() {
+	try {
+		if (sessionStorage.getItem("mayday-hit") === "1") return;
+		sessionStorage.setItem("mayday-hit", "1");
+		const day = new Date().toISOString().slice(0, 10);
+		const db = client();
+		const row = checked(await db.from("mayday_settings").select("value").eq("key", "visits").maybeSingle());
+		const value = row && row.value && typeof row.value === "object" ? row.value : { total: 0, days: {} };
+		if (!value.days || typeof value.days !== "object") value.days = {};
+		value.days[day] = (Number(value.days[day]) || 0) + 1;
+		value.total = (Number(value.total) || 0) + 1;
+		const keep = Object.keys(value.days).sort().slice(-40);
+		value.days = Object.fromEntries(keep.map((k) => [k, value.days[k]]));
+		checked(await db.from("mayday_settings").upsert({ key: "visits", value }));
+	} catch (e) {}
+}
+async function loadVisits() {
+	const db = client();
+	const row = checked(await db.from("mayday_settings").select("value").eq("key", "visits").maybeSingle());
+	return row && row.value ? row.value : { total: 0, days: {} };
+}
+function VisitStats({ lang }) {
+	const [data, setData] = (0, import_react.useState)(null);
+	(0, import_react.useEffect)(() => {
+		loadVisits().then(setData).catch(() => setData({ total: 0, days: {} }));
+	}, []);
+	if (!data) return (0, import_jsx_runtime.jsx)("p", { children: lang==="en"?"Loading…":"Загрузка…" });
+	const days = Object.keys(data.days || {}).sort().reverse().slice(0, 14);
+	return (0, import_jsx_runtime.jsxs)("section", { children: [
+		(0, import_jsx_runtime.jsx)("h2", { children: lang==="uk"?"Відвідування":lang==="en"?"Visits":"Посещения" }),
+		(0, import_jsx_runtime.jsx)("p", { children: lang==="uk"?"Без імен і IP. Один захід з однієї вкладки браузера.":lang==="en"?"No names or IPs. One count per browser tab session.":"Без имён и IP. Один заход с одной вкладки браузера." }),
+		(0, import_jsx_runtime.jsxs)("p", { children: [lang==="en"?"Total: ":"Всего: ", String(data.total || 0)] }),
+		(0, import_jsx_runtime.jsx)("div", { className: "manage-list", children: days.length ? days.map((d) => (0, import_jsx_runtime.jsxs)("div", { className: "manage-row", children: [(0, import_jsx_runtime.jsx)("strong", { children: d }), (0, import_jsx_runtime.jsx)("span", { children: String(data.days[d]) }) ] }, d)) : (0, import_jsx_runtime.jsx)("p", { children: lang==="en"?"No visits yet.":"Пока нет данных." }) })
+	] });
+}
 function Site({ section, editor = false, authenticated = false, userId }) {
+	(0, import_react.useEffect)(() => { recordVisit(); }, []);
 	const [settings, setSettings] = (0, import_react.useState)((()=>{try{const raw=sessionStorage.getItem("mayday-settings");if(raw)return JSON.parse(raw);}catch(e){}return{content:defaultContent,appearance:defaultAppearance,community:structuredClone(defaultCommunity)};})());
 	const [materials, setMaterials] = (0, import_react.useState)([]);
 	const [materialState, setMaterialState] = (0, import_react.useState)("loading");
