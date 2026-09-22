@@ -5,7 +5,9 @@ body{color:var(--foreground);background:var(--background);line-height:1.65}
 .header{max-width:1500px;padding:26px 3.5%;gap:24px;position:relative;z-index:80}
 .header nav{gap:6px;font-size:14px}
 .header nav a{padding:10px 14px;border:0;border-radius:24px;font-weight:500;color:#1a1e1b}
-.header nav a:hover{background:#e8eae4}
+@media (hover:hover) and (pointer:fine){
+.header nav a:hover{background:#e8eae4}}
+
 .header nav a[aria-current]{background:#000;color:#fff}
 .languages{background:#e9ebe5;border-radius:24px;padding:4px;gap:2px}
 .languages button{border-radius:20px;padding:8px 10px;color:#586056}
@@ -23,7 +25,9 @@ body{color:var(--foreground);background:var(--background);line-height:1.65}
 .resources>.resource-link{min-width:0;background:#fff;border:1px solid #e0e4dc;border-top:0;border-radius:0 0 20px 20px;padding:22px 28px 30px;gap:18px}
 .resources>.resource-link:nth-child(2){grid-column:1;grid-row:2}
 .resources>.resource-link:nth-child(4){grid-column:2;grid-row:2}
-.resources>.resource-link:hover{background:#fcfdf9;transform:none}
+@media (hover:hover) and (pointer:fine){
+.resources>.resource-link:hover{background:#fcfdf9;transform:none}}
+
 .resource-link>svg{color:#5b725d;flex-shrink:0}
 .resource-link>svg:last-child{padding:8px;box-sizing:content-box;border:1px solid #dde5d9;border-radius:50%;width:16px;height:16px;margin-top:0}
 .resource-link h2{font-size:28px;font-weight:500;letter-spacing:-.035em;line-height:1.2;margin-bottom:14px}
@@ -169,7 +173,9 @@ video.product-video{
   padding:10px 16px;text-align:left;cursor:pointer;
   margin:6px 0;box-sizing:border-box
 }
-.tradition-item:hover{background:#f3f4f0}
+@media (hover:hover) and (pointer:fine){
+.tradition-item:hover{background:#f3f4f0}}
+
 .tradition-item,.tradition-item strong,.tradition-item span,.tradition-drop{color:#000 !important}
 .tradition-item strong{font-size:14px}
 .tradition-item span{font-size:12px;color:#222 !important}
@@ -203,7 +209,9 @@ html[data-theme=dark]{
 html[data-theme=dark] body{background:#121416;color:#ececec}
 html[data-theme=dark] .header{background:#121416}
 html[data-theme=dark] .header nav a{color:#e8e8e8}
-html[data-theme=dark] .header nav a:hover{background:#1e2227}
+@media (hover:hover) and (pointer:fine){
+html[data-theme=dark] .header nav a:hover{background:#1e2227}}
+
 html[data-theme=dark] .header nav a[aria-current],
 html[data-theme=dark] .header nav a[aria-current=page]{background:#fff !important;color:#111 !important}
 html[data-theme=dark] .languages{background:#1c2025}
@@ -241,7 +249,9 @@ html[data-theme=dark] .tradition-btn{
   background:#000 !important;color:#fff !important;border-color:#000 !important
 }
 html[data-theme=dark] .hero .button.light{background:#fff;color:#111;box-shadow:0 12px 28px rgba(0,0,0,.32)}
-html[data-theme=dark] .tradition-item:hover{background:#262b32}
+@media (hover:hover) and (pointer:fine){
+html[data-theme=dark] .tradition-item:hover{background:#262b32}}
+
 html[data-theme=dark] .tradition-item,html[data-theme=dark] .tradition-item strong{color:#fff}
 html[data-theme=dark] .home-location{background:#121416}
 html[data-theme=dark] .theme-toggle{color:#ddd}
@@ -351,16 +361,24 @@ html[data-theme=dark] .download-button,
 html[data-theme=dark] .tradition-btn,
 html[data-theme=dark] .header nav a[aria-current],
 html[data-theme=dark] .header nav a[aria-current=page],
-html[data-theme=dark] .header nav a:hover,
 html[data-theme=dark] .languages button[aria-pressed=true],
-html[data-theme=dark] button[aria-pressed=true],
-html[data-theme=dark] .theme-toggle:hover{
+html[data-theme=dark] button[aria-pressed=true]{
   background:#fff !important;
   background-color:#fff !important;
   color:#111 !important;
   border-color:transparent !important;
   box-shadow:0 12px 28px rgba(0,0,0,.32) !important;
 }
+@media (hover:hover) and (pointer:fine){
+html[data-theme=dark] .header nav a:hover,
+html[data-theme=dark] .theme-toggle:hover{
+  background:#fff !important;
+  background-color:#fff !important;
+  color:#111 !important;
+  border-color:transparent !important;
+  box-shadow:0 12px 28px rgba(0,0,0,.32) !important;
+}}
+
 html[data-theme=dark] .languages{
   background:#2a2d32 !important;
 }
@@ -373,18 +391,22 @@ html[data-theme=dark] .languages button[aria-pressed=true]{
   background:#fff !important;
   color:#111 !important;
 }
+@media (hover:hover) and (pointer:fine){
 html[data-theme=dark] .header nav a:hover,
 html[data-theme=dark] .resource-link:hover,
 html[data-theme=dark] .tradition-item:hover,
 html[data-theme=dark] button:hover{
   background:#2a2d32;
-}
+}}
+
+@media (hover:hover) and (pointer:fine){
 html[data-theme=dark] .header nav a[aria-current]:hover,
 html[data-theme=dark] .button:hover,
 html[data-theme=dark] .button.light:hover{
   background:#fff !important;
   color:#111 !important;
-}
+}}
+
 
 html[data-theme=dark] .header nav a[aria-current],
 html[data-theme=dark] .header nav a[aria-current="page"],
@@ -401,7 +423,6 @@ html[data-theme=dark] .tradition-btn{
 
 html[data-theme="dark"] .header nav a[aria-current],
 html[data-theme="dark"] .header nav a[aria-current="page"],
-html[data-theme="dark"] .header nav a[aria-current]:hover,
 html[data-theme="dark"] .header nav a[aria-current]:active,
 html[data-theme="dark"] .header nav a[aria-current]:focus{
   background:#ffffff !important;
@@ -409,8 +430,15 @@ html[data-theme="dark"] .header nav a[aria-current]:focus{
   color:#111111 !important;
   box-shadow:0 8px 20px rgba(0,0,0,.4) !important;
 }
+@media (hover:hover) and (pointer:fine){
+html[data-theme="dark"] .header nav a[aria-current]:hover{
+  background:#ffffff !important;
+  background-image:none !important;
+  color:#111111 !important;
+  box-shadow:0 8px 20px rgba(0,0,0,.4) !important;
+}}
+
 html[data-theme="dark"] .hero-actions .button.light,
-html[data-theme="dark"] .hero-actions .button.light:hover,
 html[data-theme="dark"] .hero-actions a.button.light,
 html[data-theme="dark"] .hero-actions a.button.light span,
 html[data-theme="dark"] .hero-actions a.button.light svg{
@@ -419,6 +447,14 @@ html[data-theme="dark"] .hero-actions a.button.light svg{
   fill:#111111;
   stroke:#111111;
 }
+@media (hover:hover) and (pointer:fine){
+html[data-theme="dark"] .hero-actions .button.light:hover{
+  background:#ffffff !important;
+  color:#111111 !important;
+  fill:#111111;
+  stroke:#111111;
+}}
+
 html[data-theme="dark"] .hero-cta-mark{
   filter:none !important;
   opacity:1 !important;
