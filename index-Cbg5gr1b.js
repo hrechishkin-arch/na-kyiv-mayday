@@ -35085,8 +35085,13 @@ function CommitteeManager({ lang, initial, reload }) {
 }
 
 
+function visitDay() {
+	const d = new Date();
+	const p = (n) => String(n).padStart(2, "0");
+	return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate());
+}
 function bumpVisits(visits) {
-	const day = new Date().toISOString().slice(0, 10);
+	const day = visitDay();
 	const value = visits && typeof visits === "object" ? { total: visits.total || 0, days: { ...(visits.days || {}) } } : { total: 0, days: {} };
 	if (!value.days || typeof value.days !== "object") value.days = {};
 	value.days[day] = (Number(value.days[day]) || 0) + 1;
@@ -35095,19 +35100,31 @@ function bumpVisits(visits) {
 	value.days = Object.fromEntries(keep.map((k) => [k, value.days[k]]));
 	return value;
 }
-async function recordVisit(force) {
-	const page = new URLSearchParams(location.search).get("page");
-	if (!force && page === "admin") return;
-	if (!force && sessionStorage.getItem("mayday-hit") === "1") return;
-	await updateContent((old) => ({ ...old, _visits: bumpVisits(old._visits) }));
-	sessionStorage.setItem("mayday-hit", "1");
+async function recordVisit() {
+	try {
+		const page = new URLSearchParams(location.search).get("page");
+		if (page === "admin") return;
+		const stamp = "mayday-hit-" + visitDay();
+		if (localStorage.getItem(stamp) === "1") return;
+		const db = client();
+		const found = await db.from("mayday_settings").select("value").eq("key", "visits");
+		const row = found && found.data && found.data[0];
+		const value = bumpVisits(row && row.value);
+		let wr;
+		if (row) wr = await db.from("mayday_settings").update({ value }).eq("key", "visits");
+		else wr = await db.from("mayday_settings").insert({ key: "visits", value });
+		if (wr && wr.error) throw wr.error;
+		localStorage.setItem(stamp, "1");
+	} catch (e) {}
 }
 async function loadVisits() {
 	const db = client();
-	const found = await db.from("mayday_settings").select("value").eq("key", "content");
+	const found = await db.from("mayday_settings").select("value").eq("key", "visits");
 	const row = found && found.data && found.data[0];
-	const visits = row && row.value && row.value._visits;
-	return visits && typeof visits === "object" ? visits : { total: 0, days: {} };
+	if (row && row.value) return row.value;
+	const content = await db.from("mayday_settings").select("value").eq("key", "content");
+	const c = content && content.data && content.data[0] && content.data[0].value && content.data[0].value._visits;
+	return c && typeof c === "object" ? c : { total: 0, days: {} };
 }
 function VisitStats({ lang }) {
 	const [data, setData] = (0, import_react.useState)(null);
@@ -35119,8 +35136,7 @@ function VisitStats({ lang }) {
 	return (0, import_jsx_runtime.jsxs)("section", { children: [
 		(0, import_jsx_runtime.jsx)("h2", { children: lang==="uk"?"Відвідування":lang==="en"?"Visits":"Посещения" }),
 		(0, import_jsx_runtime.jsx)("p", { children: lang==="uk"?"Без імен і IP. Один захід з однієї вкладки браузера.":lang==="en"?"No names or IPs. One count per browser tab session.":"Без имён и IP. Один заход с одной вкладки браузера." }),
-		(0, import_jsx_runtime.jsx)("button", { type: "button", className: "button", onClick: async () => { try { sessionStorage.removeItem("mayday-hit"); await recordVisit(true); setData(await loadVisits()); } catch (err) { setData({ total: 0, days: {}, error: String(err.message || err) }); } }, children: lang==="en"?"Count this visit":"Записать заход" }),
-		data && data.error ? (0, import_jsx_runtime.jsx)("p", { className: "save-error", children: data.error }) : null,
+		(0, import_jsx_runtime.jsx)("button", { type: "button", onClick: async () => setData(await loadVisits()), children: lang==="en"?"Refresh":"Обновить" }),
 		(0, import_jsx_runtime.jsxs)("p", { children: [lang==="en"?"Total: ":"Всего: ", String(data.total || 0)] }),
 		(0, import_jsx_runtime.jsx)("div", { className: "manage-list", children: days.length ? days.map((d) => (0, import_jsx_runtime.jsxs)("div", { className: "manage-row", children: [(0, import_jsx_runtime.jsx)("strong", { children: d }), (0, import_jsx_runtime.jsx)("span", { children: String(data.days[d]) }) ] }, d)) : (0, import_jsx_runtime.jsx)("p", { children: lang==="en"?"No visits yet.":"Пока нет данных." }) })
 	] });
