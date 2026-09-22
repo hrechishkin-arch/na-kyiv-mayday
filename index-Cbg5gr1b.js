@@ -33372,7 +33372,8 @@ function CommunityManager({ kind, initial, lang, reload }) {
 							[key]: v
 						} : x)
 					})
-				}, key))] }, m.id)),
+				}, key)), (0, import_jsx_runtime.jsx)("button", { type: "button", onClick: () => { if (draft.meetings.length < 2) return; setDraft({ ...draft, meetings: draft.meetings.filter((x) => x.id !== m.id) }); }, children: lang==="uk"?"Видалити збори":lang==="en"?"Remove meeting":"Удалить собрание" })] }, m.id)),
+				(0, import_jsx_runtime.jsx)("button", { type: "button", className: "button", onClick: () => setDraft({ ...draft, meetings: draft.meetings.concat([{ id: crypto.randomUUID(), name: emptyText(), schedule: emptyText(), format: emptyText(), details: emptyText() }]) }), children: lang==="uk"?"Додати збори":lang==="en"?"Add meeting":"Добавить собрание" }),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("fieldset", { children: [
 					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("legend", { children: editLang === "uk" ? "Тексти біля карти" : editLang === "en" ? "Map section texts" : "Тексты у карты" }),
 					/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Field, {
