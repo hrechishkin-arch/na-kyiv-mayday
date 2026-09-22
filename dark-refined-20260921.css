@@ -111,3 +111,6 @@ html[data-theme="dark"] .page .lit-page .download-button{background:#222833!impo
 @media (hover:hover) and (pointer:fine){html[data-theme="dark"] .page .lit-page .download-button:hover{background:#2d3543!important;border-color:#91a3bc!important}}
 .page .lit-page .download-button:disabled{opacity:.55;cursor:wait}
 
+/* Match literature downloads to the order/contact button. */
+html[data-theme="dark"] .page .lit-page .download-button{background:#c9d6e6!important;background-color:#c9d6e6!important;color:#131a23!important;border-color:#c9d6e6!important;box-shadow:0 4px 14px #0002!important}
+@media (hover:hover) and (pointer:fine){html[data-theme="dark"] .page .lit-page .download-button:hover{background:#c9d6e6!important;border-color:#c9d6e6!important;filter:brightness(1.08)}}
