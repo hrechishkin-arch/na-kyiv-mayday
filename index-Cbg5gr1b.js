@@ -35498,10 +35498,7 @@ function Site({ section, editor = false, authenticated = false, userId }) {
 						] })] }, b.id)) : (0, import_jsx_runtime.jsx)("p", { className: "muted", children: lang==="uk"?"Буклети з’являться тут.":lang==="en"?"Booklets will appear here.":"Буклеты появятся здесь." })
 					] }),
 
-					section === "schedule" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Schedule, {
-						data: settings.community,
-						lang
-					}),
+
 					section === "shop" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Shop, {
 						data: { ...settings.community, labels: { ...(settings.community.labels||{}), emptyShop: { ru: t.shopEmpty || settings.community.labels?.emptyShop?.ru, uk: t.shopEmpty || settings.community.labels?.emptyShop?.uk, en: t.shopEmpty || settings.community.labels?.emptyShop?.en } } },
 						lang
