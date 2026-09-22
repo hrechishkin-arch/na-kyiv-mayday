@@ -35106,18 +35106,31 @@ async function recordVisit() {
 		const day = visitDay();
 		if (sessionStorage.getItem("mayday-hit-session") === day) return;
 		const db = client();
-		const found = await db.from("mayday_settings").select("value").eq("key", "visits");
-		const row = found && found.data && found.data[0];
-		const value = bumpVisits(row && row.value);
-		let wr;
-		if (row) wr = await db.from("mayday_settings").update({ value }).eq("key", "visits");
-		else wr = await db.from("mayday_settings").insert({ key: "visits", value });
-		if (wr && wr.error) throw wr.error;
+		const ins = await db.from("mayday_hits").insert({ day });
+		if (ins && ins.error) {
+			const found = await db.from("mayday_settings").select("value").eq("key", "visits");
+			const row = found && found.data && found.data[0];
+			const value = bumpVisits(row && row.value);
+			let wr;
+			if (row) wr = await db.from("mayday_settings").update({ value }).eq("key", "visits");
+			else wr = await db.from("mayday_settings").insert({ key: "visits", value });
+			if (wr && wr.error) throw wr.error;
+		}
 		sessionStorage.setItem("mayday-hit-session", day);
 	} catch (e) {}
 }
 async function loadVisits() {
 	const db = client();
+	const hits = await db.from("mayday_hits").select("day");
+	if (!hits.error && Array.isArray(hits.data)) {
+		const days = {};
+		for (const row of hits.data) {
+			const d = String(row.day).slice(0, 10);
+			days[d] = (days[d] || 0) + 1;
+		}
+		const total = hits.data.length;
+		return { total, days };
+	}
 	const found = await db.from("mayday_settings").select("value").eq("key", "visits");
 	const row = found && found.data && found.data[0];
 	return row && row.value && typeof row.value === "object" ? row.value : { total: 0, days: {} };
@@ -35125,14 +35138,10 @@ async function loadVisits() {
 async function resetVisits() {
 	const empty = { total: 0, days: {} };
 	const db = client();
+	try { await db.from("mayday_hits").delete().neq("id", 0); } catch (e) {}
 	const found = await db.from("mayday_settings").select("value").eq("key", "visits");
-	if (found && found.data && found.data[0]) {
-		const wr = await db.from("mayday_settings").update({ value: empty }).eq("key", "visits");
-		if (wr && wr.error) throw wr.error;
-	} else {
-		const wr = await db.from("mayday_settings").insert({ key: "visits", value: empty });
-		if (wr && wr.error) throw wr.error;
-	}
+	if (found && found.data && found.data[0]) await db.from("mayday_settings").update({ value: empty }).eq("key", "visits");
+	else await db.from("mayday_settings").insert({ key: "visits", value: empty });
 	try { await updateContent((old) => ({ ...old, _visits: empty })); } catch (e) {}
 	try { sessionStorage.removeItem("mayday-hit-session"); } catch (e) {}
 	return empty;
