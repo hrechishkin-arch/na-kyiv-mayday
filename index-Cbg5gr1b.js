@@ -35139,15 +35139,24 @@ async function resetVisits() {
 }
 function VisitStats({ lang }) {
 	const [data, setData] = (0, import_react.useState)(null);
+	const [note, setNote] = (0, import_react.useState)("");
+	const [busy, setBusy] = (0, import_react.useState)(false);
 	(0, import_react.useEffect)(() => {
 		loadVisits().then(setData).catch(() => setData({ total: 0, days: {} }));
 	}, []);
 	if (!data) return (0, import_jsx_runtime.jsx)("p", { children: lang==="en"?"Loading…":"Загрузка…" });
 	const days = Object.keys(data.days || {}).sort().reverse().slice(0, 14);
+	const logLabel = lang==="uk"?"Запис входу":lang==="en"?"Visit log":"Запись входа";
 	return (0, import_jsx_runtime.jsxs)("section", { children: [
 		(0, import_jsx_runtime.jsx)("h2", { children: lang==="uk"?"Відвідування":lang==="en"?"Visits":"Посещения" }),
 		(0, import_jsx_runtime.jsx)("p", { children: lang==="uk"?"Без імен і IP. Один захід з однієї вкладки браузера.":lang==="en"?"No names or IPs. One count per browser tab session.":"Без имён и IP. Новая вкладка — новый заход. Обновление той же вкладки — раз в сутки." }),
-		(0, import_jsx_runtime.jsx)("button", { type: "button", onClick: async () => setData(await loadVisits()), children: lang==="uk"?"Запис входу":lang==="en"?"Visit log":"Запись входа" }),
+		(0, import_jsx_runtime.jsx)("button", { type: "button", className: "button", disabled: busy, onClick: async () => {
+			setBusy(true); setNote(lang==="en"?"Updating…":"Обновляю…");
+			try { setData(await loadVisits()); setNote(lang==="en"?"Updated":"Обновлено"); }
+			catch (e) { setNote(String(e.message || e)); }
+			finally { setBusy(false); setTimeout(() => setNote(""), 2000); }
+		}, children: busy ? (lang==="en"?"Updating…":"Обновляю…") : logLabel }),
+		note ? (0, import_jsx_runtime.jsx)("p", { children: note }) : null,
 		(0, import_jsx_runtime.jsx)("button", { type: "button", onClick: async () => {
 			if (!confirm(lang==="en"?"Reset visit counter?":"Сбросить счётчик посещений?")) return;
 			try { setData(await resetVisits()); } catch (err) { alert(String(err.message || err)); }
