@@ -459,3 +459,10 @@ html[data-theme="dark"] .hero-cta-mark{
   filter:none !important;
   opacity:1 !important;
 }
+
+.committee-card{margin:16px 0;padding:22px;border-radius:18px}
+.committee-card .shop-order,.committee-card .button{margin-top:14px}
+@media(max-width:760px){
+  .committee-card{padding:16px}
+  .header nav a{padding:8px 10px}
+}
