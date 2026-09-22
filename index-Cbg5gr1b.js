@@ -10238,6 +10238,16 @@ function withLabels(data) {
 }
 var defaultCommunity = {
 	labels: defaultLabels(),
+	committees: [{
+		id: "mko-main",
+		kind: "main",
+		title: { ru: "МКО", uk: "МКО", en: "MKO" },
+		description: emptyText(),
+		body: emptyText(),
+		contact: "",
+		image: "",
+		video: ""
+	}],
 	meetings: [{
 		id: "group-1",
 		name: {
@@ -10393,6 +10403,14 @@ var copy = {
 		newcomer: "Новичку",
 		newcomerTitle: "Новичку",
 		newcomerText: "Здесь появится информация для тех, кто пришёл впервые.",
+		committees: "МКО / подкомитеты",
+		committeesTitle: "МКО / подкомитеты",
+		committeesMain: "МКО",
+		committeesSubs: "Подкомитеты",
+		committeesEmpty: "Раздел скоро появится.",
+		committeesContact: "Связь",
+		committeesAdd: "Добавить подкомитет",
+		committeesAddMain: "Основной МКО",
 		loading: "Загрузка…",
 		error: "Не удалось загрузить новости. Попробуйте ещё раз.",
 		retry: "Повторить",
@@ -10446,6 +10464,14 @@ var copy = {
 		newcomer: "Новачку",
 		newcomerTitle: "Новачку",
 		newcomerText: "Тут з’явиться інформація для тих, хто прийшов уперше.",
+		committees: "МКО / підкомітети",
+		committeesTitle: "МКО / підкомітети",
+		committeesMain: "МКО",
+		committeesSubs: "Підкомітети",
+		committeesEmpty: "Розділ з’явиться незабаром.",
+		committeesContact: "Зв’язок",
+		committeesAdd: "Додати підкомітет",
+		committeesAddMain: "Основний МКО",
 		loading: "Завантаження…",
 		error: "Не вдалося завантажити новини. Спробуйте ще раз.",
 		retry: "Повторити",
@@ -10499,6 +10525,14 @@ var copy = {
 		newcomer: "Newcomer",
 		newcomerTitle: "For newcomers",
 		newcomerText: "Information for people coming to the group for the first time will appear here.",
+		committees: "MKO / subcommittees",
+		committeesTitle: "MKO / subcommittees",
+		committeesMain: "MKO",
+		committeesSubs: "Subcommittees",
+		committeesEmpty: "This section will appear soon.",
+		committeesContact: "Contact",
+		committeesAdd: "Add subcommittee",
+		committeesAddMain: "Main MKO",
 		loading: "Loading…",
 		error: "News could not be loaded. Please try again.",
 		retry: "Try again",
@@ -32670,7 +32704,15 @@ var editableKeys = [
 	"traditionBtn",
 	"newcomer",
 	"newcomerTitle",
-	"newcomerText"
+	"newcomerText",
+	"committees",
+	"committeesTitle",
+	"committeesMain",
+	"committeesSubs",
+	"committeesEmpty",
+	"committeesContact",
+	"committeesAdd",
+	"committeesAddMain"
 ];
 var defaultContent = Object.fromEntries(Object.entries(copy).map(([lang, text]) => [lang, Object.fromEntries(editableKeys.map((key) => [key, text[key]]))]));
 var defaultAppearance = {
@@ -32963,7 +33005,8 @@ function validateCommunityPatch(data) {
 		"tradition",
 		"products",
 		"printProducts",
-		"labels"
+		"labels",
+		"committees"
 	].includes(k))) throw Error("invalid");
 	const text = (x, max = 3e3) => {
 		if (!x || languages.some((l) => typeof x[l] !== "string" || x[l].length > max)) throw Error("invalid");
@@ -33032,8 +33075,34 @@ function validateCommunityPatch(data) {
 			if (p.video && !publicMediaUrl(p.video)) throw Error("invalid");
 		}
 	}
+	if (data.committees) {
+		if (!Array.isArray(data.committees) || data.committees.length > 40) throw Error("invalid");
+		for (const c of data.committees) {
+			validText(c.id, 100);
+			if (c.kind !== "main" && c.kind !== "sub") throw Error("invalid");
+			text(c.title, 180);
+			text(c.description, 800);
+			text(c.body, 8000);
+			if (c.contact && (typeof c.contact !== "string" || c.contact.length > 500)) throw Error("invalid");
+			if (c.image && !publicMediaUrl(c.image)) throw Error("invalid");
+			if (c.video && !publicMediaUrl(c.video)) throw Error("invalid");
+		}
+	}
 	if (data.printProducts) {
-		if (data.printProducts.length > 100) throw Error("invalid");
+		if (data.committees) {
+		if (!Array.isArray(data.committees) || data.committees.length > 40) throw Error("invalid");
+		for (const c of data.committees) {
+			validText(c.id, 100);
+			if (c.kind !== "main" && c.kind !== "sub") throw Error("invalid");
+			text(c.title, 180);
+			text(c.description, 800);
+			text(c.body, 8000);
+			if (c.contact && (typeof c.contact !== "string" || c.contact.length > 500)) throw Error("invalid");
+			if (c.image && !publicMediaUrl(c.image)) throw Error("invalid");
+			if (c.video && !publicMediaUrl(c.video)) throw Error("invalid");
+		}
+	}
+	if (data.printProducts.length > 100) throw Error("invalid");
 		for (const p of data.printProducts) {
 			validText(p.id, 100);
 			text(p.name, 180);
@@ -34056,6 +34125,7 @@ function OwnerPanel({ lang }) {
 					["shop", communityCopy[lang].shop],
 					["tradition", t.traditionBtn || "7 традиция"],
 					["newcomer", t.newcomer || "Новичку"],
+					["committees", t.committees || "МКО"],
 					["content", t.content],
 					["appearance", t.appearance]
 				].map(([key, label]) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
@@ -34093,6 +34163,7 @@ function OwnerPanel({ lang }) {
 				}, tab),
 				tab === "tradition" && settings && (0, import_jsx_runtime.jsx)(TraditionManager, { lang, initial: settings.community, reload }),
 				tab === "newcomer" && settings && (0, import_jsx_runtime.jsx)(NewcomerPdfManager, { lang, initial: settings.newcomerPdfs || [], reload }),
+				tab === "committees" && settings && (0, import_jsx_runtime.jsx)(CommitteeManager, { lang, initial: (settings.community&&settings.community.committees)||[], reload }),
 				tab === "content" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TextManager, {
 					lang,
 					initial: settings.content,
@@ -34919,6 +34990,84 @@ function TraditionMenu({ lang, settings }) {
 		] })
 	] });
 }
+
+function emptyCommittee(kind) {
+	return { id: crypto.randomUUID(), kind: kind || "sub", title: emptyText(), description: emptyText(), body: emptyText(), contact: "", image: "", video: "" };
+}
+function committeeHref(contact) {
+	if (!contact) return "";
+	const v = String(contact).trim();
+	if (/^https?:\/\//i.test(v)) return v;
+	if (v.startsWith("t.me/") || v.startsWith("telegram.me/")) return "https://" + v;
+	return "https://t.me/" + v.replace(/^@/, "");
+}
+function CommitteeCard({ item, lang, t }) {
+	const href = committeeHref(item.contact);
+	return (0, import_jsx_runtime.jsxs)("article", { className: "article committee-card", children: [
+		item.video ? (0, import_jsx_runtime.jsx)("video", { className: "news-media product-video", src: item.video, controls: true, playsInline: true, poster: item.image || undefined }) : item.image ? (0, import_jsx_runtime.jsx)("img", { className: "news-media", src: item.image, alt: "" }) : null,
+		(0, import_jsx_runtime.jsx)("h2", { children: (0, import_jsx_runtime.jsx)(Field$1, { value: item.title, lang }) }),
+		(item.description && (item.description[lang] || item.description.ru)) ? (0, import_jsx_runtime.jsx)("p", { className: "page-intro", children: (0, import_jsx_runtime.jsx)(Field$1, { value: item.description, lang }) }) : null,
+		(item.body && (item.body[lang] || item.body.ru)) ? (0, import_jsx_runtime.jsx)("p", { children: (0, import_jsx_runtime.jsx)(Field$1, { value: item.body, lang }) }) : null,
+		href ? (0, import_jsx_runtime.jsx)("a", { className: "button shop-order", href, target: "_blank", rel: "noopener noreferrer", children: t.committeesContact || (lang==="uk"?"Зв’язок":lang==="en"?"Contact":"Связь") }) : null
+	] }, item.id);
+}
+function CommitteeManager({ lang, initial, reload }) {
+	const t = cmsCopy[lang] || {};
+	const [items, setItems] = (0, import_react.useState)(() => Array.isArray(initial) && initial.length ? structuredClone(initial) : [emptyCommittee("main")]);
+	const [editLang, setEditLang] = (0, import_react.useState)(lang);
+	const [busy, setBusy] = (0, import_react.useState)(false);
+	const [message, setMessage] = (0, import_react.useState)("");
+	const rec = (v) => (!v ? emptyText() : typeof v === "string" ? { ru: v, uk: "", en: "" } : { ru: v.ru||"", uk: v.uk||"", en: v.en||"" });
+	function patch(id, fn) { setItems((list) => list.map((x) => x.id === id ? fn({ ...x }) : x)); }
+	async function upload(file) {
+		const mime = file.type || "application/octet-stream";
+		const ext = (file.name.split(".").pop() || "bin").toLowerCase();
+		const path = "committee-" + crypto.randomUUID() + "." + ext;
+		const db = client();
+		checked(await db.storage.from("mayday-images").upload(path, file, { contentType: mime, upsert: false }));
+		return db.storage.from("mayday-images").getPublicUrl(path).data.publicUrl;
+	}
+	async function persist() {
+		setBusy(true); setMessage("");
+		try {
+			const body = JSON.stringify({ committees: items });
+			await api("/api/community", { method: "POST", body });
+			setMessage(lang==="uk"?"Збережено.":lang==="en"?"Saved.":"Сохранено.");
+			reload && reload();
+		} catch (e) {
+			setMessage(String(e.message || e));
+		} finally { setBusy(false); }
+	}
+	function row(item) {
+		const title = rec(item.title);
+		const description = rec(item.description);
+		const body = rec(item.body);
+		return (0, import_jsx_runtime.jsxs)("form", { className: "manage-form", onSubmit: (e) => { e.preventDefault(); persist(); }, children: [
+			(0, import_jsx_runtime.jsx)("h3", { children: item.kind === "main" ? (t.committeesMain || "МКО") : (t.committeesSubs || "Подкомитет") }),
+			(0, import_jsx_runtime.jsxs)("div", { className: "languages", children: languages.map((l) => (0, import_jsx_runtime.jsx)("button", { type: "button", "aria-pressed": editLang===l, onClick: () => setEditLang(l), children: l.toUpperCase() }, l)) }),
+			(0, import_jsx_runtime.jsxs)("label", { children: [lang==="en"?"Title":lang==="uk"?"Назва":"Название", (0, import_jsx_runtime.jsx)("input", { value: title[editLang]||"", onChange: (e) => patch(item.id, (x) => ({ ...x, title: { ...title, [editLang]: e.target.value } })) })] }),
+			(0, import_jsx_runtime.jsxs)("label", { children: [lang==="en"?"Description":lang==="uk"?"Опис":"Описание", (0, import_jsx_runtime.jsx)("textarea", { rows: 2, value: description[editLang]||"", onChange: (e) => patch(item.id, (x) => ({ ...x, description: { ...description, [editLang]: e.target.value } })) })] }),
+			(0, import_jsx_runtime.jsxs)("label", { children: [lang==="en"?"Text":lang==="uk"?"Текст":"Основной текст", (0, import_jsx_runtime.jsx)("textarea", { rows: 6, value: body[editLang]||"", onChange: (e) => patch(item.id, (x) => ({ ...x, body: { ...body, [editLang]: e.target.value } })) })] }),
+			(0, import_jsx_runtime.jsxs)("label", { children: ["Telegram", (0, import_jsx_runtime.jsx)("input", { value: item.contact||"", placeholder: "@mayday", onChange: (e) => patch(item.id, (x) => ({ ...x, contact: e.target.value })) })] }),
+			(0, import_jsx_runtime.jsxs)("label", { children: [lang==="en"?"Photo":lang==="uk"?"Фото":"Фото", (0, import_jsx_runtime.jsx)("input", { type: "file", accept: "image/*", onChange: async (e) => { const f=e.target.files&&e.target.files[0]; if (!f) return; const url=await upload(f); patch(item.id, (x)=>({...x,image:url})); } })] }),
+			(0, import_jsx_runtime.jsxs)("label", { children: ["Видео", (0, import_jsx_runtime.jsx)("input", { type: "file", accept: "video/*", onChange: async (e) => { const f=e.target.files&&e.target.files[0]; if (!f) return; const url=await upload(f); patch(item.id, (x)=>({...x,video:url})); } })] }),
+			(0, import_jsx_runtime.jsxs)("div", { className: "manage-row", children: [
+				(0, import_jsx_runtime.jsx)("button", { className: "button", type: "submit", disabled: busy, children: t.save || "Сохранить" }),
+				item.kind !== "main" ? (0, import_jsx_runtime.jsx)("button", { type: "button", onClick: () => setItems((list)=>list.filter((x)=>x.id!==item.id)), children: lang==="en"?"Delete":"Удалить" }) : null
+			] }),
+			message ? (0, import_jsx_runtime.jsx)("p", { children: message }) : null
+		] }, item.id);
+	}
+	const mains = items.filter((x)=>x.kind==="main");
+	const subs = items.filter((x)=>x.kind!=="main");
+	return (0, import_jsx_runtime.jsxs)("div", { children: [
+		(0, import_jsx_runtime.jsx)("p", { children: lang==="uk"?"Тексти сторінки — у «Текстах сайту». Тут блоки МКО.":lang==="en"?"Page labels are in Site texts. Blocks are here.":"Подписи раздела — в «Текстах сайта». Здесь карточки МКО." }),
+		mains.map(row),
+		subs.map(row),
+		(0, import_jsx_runtime.jsx)("button", { type: "button", className: "button", onClick: () => setItems((list)=>list.concat(emptyCommittee("sub"))), children: t.committeesAdd || "Добавить подкомитет" })
+	] });
+}
+
 function Site({ section, editor = false, authenticated = false, userId }) {
 	const [settings, setSettings] = (0, import_react.useState)((()=>{try{const raw=sessionStorage.getItem("mayday-settings");if(raw)return JSON.parse(raw);}catch(e){}return{content:defaultContent,appearance:defaultAppearance,community:structuredClone(defaultCommunity)};})());
 	const [materials, setMaterials] = (0, import_react.useState)([]);
@@ -35041,13 +35190,14 @@ function Site({ section, editor = false, authenticated = false, userId }) {
 						"home",
 						"literature",
 						"newcomer",
+						"committees",
 						"schedule",
 						"news",
 						"shop"
 					].map((s) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("a", {
 						"aria-current": section === s ? "page" : void 0,
 						href: href(s === "home" ? "/" : `/${s}`),
-						children: s === "schedule" ? ct.schedule : s === "shop" ? ct.shop : t[s]
+						children: s === "schedule" ? ct.schedule : s === "shop" ? ct.shop : s === "committees" ? (t.committees || "МКО") : t[s]
 					}, s))
 				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "header-tools", children: [
@@ -35227,6 +35377,28 @@ function Site({ section, editor = false, authenticated = false, userId }) {
 							(0, import_jsx_runtime.jsx)("button", { className: "download-button", type: "button", onClick: async () => { try { const blob = checked(await client().storage.from("mayday-pdfs").download(b.object_key)); const url = URL.createObjectURL(blob); const a=document.createElement("a"); a.href=url; a.target="_blank"; a.download=(b.title||"booklet")+".pdf"; a.click(); } catch(e){} }, children: t.download || (lang==="uk"?"Відкрити PDF":lang==="en"?"Open PDF":"Открыть PDF") })
 						] })] }, b.id)) : (0, import_jsx_runtime.jsx)("p", { className: "muted", children: lang==="uk"?"Буклети з’являться тут.":lang==="en"?"Booklets will appear here.":"Буклеты появятся здесь." })
 					] }),
+
+					section === "committees" && (0, import_jsx_runtime.jsxs)("section", { className: "page lit-page", children: [
+						(0, import_jsx_runtime.jsx)("p", { className: "eyebrow", children: t.city }),
+						(0, import_jsx_runtime.jsx)("h1", { children: t.committeesTitle || t.committees || "МКО / подкомитеты" }),
+						(() => {
+							const list = ((settings.community&&settings.community.committees)||[]).slice();
+							const mains = list.filter((x)=>x.kind==="main");
+							const subs = list.filter((x)=>x.kind!=="main");
+							const empty = !list.length || list.every((x)=>!(x.title&&(x.title.ru||x.title.uk||x.title.en)));
+							if (empty) return (0, import_jsx_runtime.jsx)("p", { className: "page-intro", children: t.committeesEmpty || "" });
+							return (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+								mains.length ? (0, import_jsx_runtime.jsxs)("div", { className: "lit-block", children: [
+									(0, import_jsx_runtime.jsx)("h2", { className: "subhead", children: t.committeesMain || "МКО" }),
+									mains.map((item)=>(0, import_jsx_runtime.jsx)(CommitteeCard, { item, lang, t }, item.id))
+								] }) : null,
+								subs.length ? (0, import_jsx_runtime.jsxs)("div", { className: "lit-block", children: [
+									(0, import_jsx_runtime.jsx)("h2", { className: "subhead", children: t.committeesSubs || "Подкомитеты" }),
+									subs.map((item)=>(0, import_jsx_runtime.jsx)(CommitteeCard, { item, lang, t }, item.id))
+								] }) : null
+							] });
+						})()
+					] }),
 					section === "schedule" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Schedule, {
 						data: settings.community,
 						lang
@@ -35315,6 +35487,6 @@ function Empty({ icon, title, text }) {
 //#endregion
 //#region src/main.tsx
 var page = new URLSearchParams(location.search).get("page");
-var section = page === "news" || page === "literature" || page === "newcomer" || page === "admin" || page === "schedule" || page === "shop" ? page : "home";
+var section = page === "news" || page === "literature" || page === "newcomer" || page === "committees" || page === "admin" || page === "schedule" || page === "shop" ? page : "home";
 (0, import_client.createRoot)(document.getElementById("root")).render(/* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_react.StrictMode, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Site, { section }) }));
 //#endregion
