@@ -35016,7 +35016,7 @@ function CommitteeField({ value, lang }) {
 }
 function CommitteeCard({ item, lang, t }) {
 	const href = committeeHref(item.contact);
-	return (0, import_jsx_runtime.jsxs)("article", { className: "article committee-card", children: [
+	return (0, import_jsx_runtime.jsxs)("article", { className: "article", children: [
 		item.video ? (0, import_jsx_runtime.jsx)("video", { className: "news-media product-video", src: item.video, controls: true, playsInline: true, poster: item.image || undefined }) : item.image ? (0, import_jsx_runtime.jsx)("img", { className: "news-media", src: item.image, alt: "" }) : null,
 		(0, import_jsx_runtime.jsx)("h2", { children: (0, import_jsx_runtime.jsx)(CommitteeField, { value: item.title, lang }) }),
 		(pickLang(item.description, lang) || pickLang(item.description, "ru") || pickLang(item.description, "uk") || pickLang(item.description, "en")) ? (0, import_jsx_runtime.jsx)("p", { className: "page-intro", children: (0, import_jsx_runtime.jsx)(CommitteeField, { value: item.description, lang }) }) : null,
@@ -35495,36 +35495,7 @@ function Site({ section, editor = false, authenticated = false, userId }) {
 						] })] }, b.id)) : (0, import_jsx_runtime.jsx)("p", { className: "muted", children: lang==="uk"?"Буклети з’являться тут.":lang==="en"?"Booklets will appear here.":"Буклеты появятся здесь." })
 					] }),
 
-					section === "committees" && (0, import_jsx_runtime.jsxs)("section", { className: "page lit-page", children: [
-						(0, import_jsx_runtime.jsx)("p", { className: "eyebrow", children: t.city }),
-						(0, import_jsx_runtime.jsx)("h1", { children: (cmsCopy[lang]&&cmsCopy[lang].committeesTitle) || t.committeesTitle || t.committees }),
-						(() => {
-							const built = cmsCopy[lang] || {};
-							const ruCopy = cmsCopy.ru || {};
-							const label = (key, fallback) => {
-								const saved = t[key] && String(t[key]).trim();
-								const def = built[key] || fallback;
-								if (saved && !(lang !== "ru" && saved === ruCopy[key] && def && def !== saved)) return saved;
-								return def;
-							};
-							const list = ((settings.community&&settings.community.committees)||[]).slice();
-							const mains = list.filter((x)=>x.kind==="main");
-							const subs = list.filter((x)=>x.kind!=="main");
-							const empty = !list.length || list.every((x)=>!(x.title&&(x.title.ru||x.title.uk||x.title.en)));
-							if (empty) return (0, import_jsx_runtime.jsx)("p", { className: "page-intro", children: label("committeesEmpty", "") });
-							return (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
-								mains.length ? (0, import_jsx_runtime.jsxs)("div", { className: "lit-block", children: [
-									(0, import_jsx_runtime.jsx)("h2", { className: "subhead", children: label("committeesMain", lang==="en"?"MKO":"МКО") }),
-									mains.map((item)=>(0, import_jsx_runtime.jsx)(CommitteeCard, { item, lang, t }, item.id))
-								] }) : null,
-								subs.length ? (0, import_jsx_runtime.jsxs)("div", { className: "lit-block", children: [
-									(0, import_jsx_runtime.jsx)("h2", { className: "subhead", children: label("committeesSubs", lang==="en"?"Subcommittees":lang==="uk"?"Підкомітети":"Подкомитеты") }),
-									subs.map((item)=>(0, import_jsx_runtime.jsx)(CommitteeCard, { item, lang, t }, item.id))
-								] }) : null
-							] });
-						})()
-					] }),
-					section === "schedule" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Schedule, {
+					false && section === "schedule" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Schedule, {
 						data: settings.community,
 						lang
 					}),
@@ -35585,7 +35556,21 @@ function Site({ section, editor = false, authenticated = false, userId }) {
 								]
 							}, p.id);
 						})
-					})
+					}),
+					section === "committees" && (() => {
+						const list = ((settings.community&&settings.community.committees)||[]).slice();
+						const mains = list.filter((x)=>x.kind==="main");
+						const subs = list.filter((x)=>x.kind!=="main");
+						const built = cmsCopy[lang] || {};
+						const head = (key, fb) => (t[key] && String(t[key]).trim()) || built[key] || fb;
+						if (!list.length) return (0, import_jsx_runtime.jsx)("p", { className: "page-intro", children: head("committeesEmpty","") });
+						return (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+							mains.map((item)=>(0, import_jsx_runtime.jsx)(CommitteeCard, { item, lang, t }, item.id)),
+							subs.length ? (0, import_jsx_runtime.jsx)("h2", { className: "subhead", children: head("committeesSubs", lang==="en"?"Subcommittees":lang==="uk"?"Підкомітети":"Подкомитеты") }) : null,
+							subs.map((item)=>(0, import_jsx_runtime.jsx)(CommitteeCard, { item, lang, t }, item.id))
+						] });
+					})(),
+
 				]
 			})
 		}),
