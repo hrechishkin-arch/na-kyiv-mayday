@@ -467,3 +467,19 @@ html[data-theme="dark"] .hero-cta-mark{
   .committee-card{padding:16px}
   .header nav a{padding:8px 10px}
 }
+
+.page.lit-page .committee-card,
+.committee-card.article{
+  max-width:none;
+  width:100%;
+}
+.committee-card h2,
+.committee-card .page-intro,
+.committee-card p{
+  max-width:none !important;
+  width:100%;
+  white-space:pre-wrap;
+  overflow-wrap:break-word;
+  word-break:normal;
+  line-height:1.8;
+}
