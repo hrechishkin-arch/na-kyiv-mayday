@@ -10728,7 +10728,7 @@ function Location({ data, lang }) {
 function Schedule({ data, lang }) {
 	const community = withLabels(data);
 	communityCopy[lang];
-	const meetings = community.meetings.filter((m) => localText(m.name, lang));
+	const meetings = (community.meetings || []).filter((m) => m && localText(m.name || {ru:"",uk:"",en:""}, lang));
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
 		/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 			className: "page-intro",
@@ -35496,7 +35496,7 @@ function Site({ section, editor = false, authenticated = false, userId }) {
 						] })] }, b.id)) : (0, import_jsx_runtime.jsx)("p", { className: "muted", children: lang==="uk"?"Буклети з’являться тут.":lang==="en"?"Booklets will appear here.":"Буклеты появятся здесь." })
 					] }),
 
-					false && section === "schedule" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Schedule, {
+					section === "schedule" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Schedule, {
 						data: settings.community,
 						lang
 					}),
