@@ -35067,7 +35067,7 @@ function CommitteeManager({ lang, initial, reload }) {
 		const description = rec(item.description);
 		const body = rec(item.body);
 		return (0, import_jsx_runtime.jsxs)("form", { className: "manage-form", onSubmit: (e) => { e.preventDefault(); persist(); }, children: [
-			(0, import_jsx_runtime.jsx)("h3", { children: item.kind === "main" ? (t.committeesMain || "МКО") : (t.committeesSubs || "Подкомитет") }),
+			(0, import_jsx_runtime.jsx)("h3", { children: item.kind === "main" ? ((cmsCopy[editLang]||{}).committeesMain || (editLang==="en"?"MKO":"МКО")) : ((cmsCopy[editLang]||{}).committeesSubs || (editLang==="en"?"Subcommittee":editLang==="uk"?"Підкомітет":"Подкомитет")) }),
 			(0, import_jsx_runtime.jsxs)("div", { className: "languages", children: languages.map((l) => (0, import_jsx_runtime.jsx)("button", { type: "button", "aria-pressed": editLang===l, onClick: () => setEditLang(l), children: l.toUpperCase() }, l)) }),
 			(0, import_jsx_runtime.jsxs)("label", { children: [lang==="en"?"Title":lang==="uk"?"Назва":"Название", (0, import_jsx_runtime.jsx)("input", { value: title[editLang]||"", onChange: (e) => patch(item.id, (x) => ({ ...x, title: { ...title, [editLang]: e.target.value } })) })] }),
 			(0, import_jsx_runtime.jsxs)("label", { children: [lang==="en"?"Description":lang==="uk"?"Опис":"Описание", (0, import_jsx_runtime.jsx)("textarea", { rows: 2, value: description[editLang]||"", onChange: (e) => patch(item.id, (x) => ({ ...x, description: { ...description, [editLang]: e.target.value } })) })] }),
@@ -35497,20 +35497,28 @@ function Site({ section, editor = false, authenticated = false, userId }) {
 
 					section === "committees" && (0, import_jsx_runtime.jsxs)("section", { className: "page lit-page", children: [
 						(0, import_jsx_runtime.jsx)("p", { className: "eyebrow", children: t.city }),
-						(0, import_jsx_runtime.jsx)("h1", { children: t.committeesTitle || t.committees || "МКО / подкомитеты" }),
+						(0, import_jsx_runtime.jsx)("h1", { children: (cmsCopy[lang]&&cmsCopy[lang].committeesTitle) || t.committeesTitle || t.committees }),
 						(() => {
+							const built = cmsCopy[lang] || {};
+							const ruCopy = cmsCopy.ru || {};
+							const label = (key, fallback) => {
+								const saved = t[key] && String(t[key]).trim();
+								const def = built[key] || fallback;
+								if (saved && !(lang !== "ru" && saved === ruCopy[key] && def && def !== saved)) return saved;
+								return def;
+							};
 							const list = ((settings.community&&settings.community.committees)||[]).slice();
 							const mains = list.filter((x)=>x.kind==="main");
 							const subs = list.filter((x)=>x.kind!=="main");
 							const empty = !list.length || list.every((x)=>!(x.title&&(x.title.ru||x.title.uk||x.title.en)));
-							if (empty) return (0, import_jsx_runtime.jsx)("p", { className: "page-intro", children: t.committeesEmpty || "" });
+							if (empty) return (0, import_jsx_runtime.jsx)("p", { className: "page-intro", children: label("committeesEmpty", "") });
 							return (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
 								mains.length ? (0, import_jsx_runtime.jsxs)("div", { className: "lit-block", children: [
-									(0, import_jsx_runtime.jsx)("h2", { className: "subhead", children: t.committeesMain || "МКО" }),
+									(0, import_jsx_runtime.jsx)("h2", { className: "subhead", children: label("committeesMain", lang==="en"?"MKO":"МКО") }),
 									mains.map((item)=>(0, import_jsx_runtime.jsx)(CommitteeCard, { item, lang, t }, item.id))
 								] }) : null,
 								subs.length ? (0, import_jsx_runtime.jsxs)("div", { className: "lit-block", children: [
-									(0, import_jsx_runtime.jsx)("h2", { className: "subhead", children: t.committeesSubs || "Подкомитеты" }),
+									(0, import_jsx_runtime.jsx)("h2", { className: "subhead", children: label("committeesSubs", lang==="en"?"Subcommittees":lang==="uk"?"Підкомітети":"Подкомитеты") }),
 									subs.map((item)=>(0, import_jsx_runtime.jsx)(CommitteeCard, { item, lang, t }, item.id))
 								] }) : null
 							] });
