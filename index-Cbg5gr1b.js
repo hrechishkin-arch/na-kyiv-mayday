@@ -33089,20 +33089,7 @@ function validateCommunityPatch(data) {
 		}
 	}
 	if (data.printProducts) {
-		if (data.committees) {
-		if (!Array.isArray(data.committees) || data.committees.length > 40) throw Error("invalid");
-		for (const c of data.committees) {
-			validText(c.id, 100);
-			if (c.kind !== "main" && c.kind !== "sub") throw Error("invalid");
-			text(c.title, 180);
-			text(c.description, 800);
-			text(c.body, 8000);
-			if (c.contact && (typeof c.contact !== "string" || c.contact.length > 500)) throw Error("invalid");
-			if (c.image && !publicMediaUrl(c.image)) throw Error("invalid");
-			if (c.video && !publicMediaUrl(c.video)) throw Error("invalid");
-		}
-	}
-	if (data.printProducts.length > 100) throw Error("invalid");
+		if (data.printProducts.length > 100) throw Error("invalid");
 		for (const p of data.printProducts) {
 			validText(p.id, 100);
 			text(p.name, 180);
@@ -35015,13 +35002,25 @@ function committeeHref(contact) {
 	if (v.startsWith("t.me/") || v.startsWith("telegram.me/")) return "https://" + v;
 	return "https://t.me/" + v.replace(/^@/, "");
 }
+function pickLang(value, lang) {
+	if (!value) return "";
+	if (typeof value === "string") return value.trim();
+	const own = value[lang] && String(value[lang]).trim();
+	if (own) return own;
+	return "";
+}
+function CommitteeField({ value, lang }) {
+	const own = pickLang(value, lang);
+	if (own) return own;
+	return (0, import_jsx_runtime.jsx)(Field$1, { value, lang });
+}
 function CommitteeCard({ item, lang, t }) {
 	const href = committeeHref(item.contact);
 	return (0, import_jsx_runtime.jsxs)("article", { className: "article committee-card", children: [
 		item.video ? (0, import_jsx_runtime.jsx)("video", { className: "news-media product-video", src: item.video, controls: true, playsInline: true, poster: item.image || undefined }) : item.image ? (0, import_jsx_runtime.jsx)("img", { className: "news-media", src: item.image, alt: "" }) : null,
-		(0, import_jsx_runtime.jsx)("h2", { children: (0, import_jsx_runtime.jsx)(Field$1, { value: item.title, lang }) }),
-		(item.description && (item.description[lang] || item.description.ru)) ? (0, import_jsx_runtime.jsx)("p", { className: "page-intro", children: (0, import_jsx_runtime.jsx)(Field$1, { value: item.description, lang }) }) : null,
-		(item.body && (item.body[lang] || item.body.ru)) ? (0, import_jsx_runtime.jsx)("p", { children: (0, import_jsx_runtime.jsx)(Field$1, { value: item.body, lang }) }) : null,
+		(0, import_jsx_runtime.jsx)("h2", { children: (0, import_jsx_runtime.jsx)(CommitteeField, { value: item.title, lang }) }),
+		(pickLang(item.description, lang) || pickLang(item.description, "ru") || pickLang(item.description, "uk") || pickLang(item.description, "en")) ? (0, import_jsx_runtime.jsx)("p", { className: "page-intro", children: (0, import_jsx_runtime.jsx)(CommitteeField, { value: item.description, lang }) }) : null,
+		(pickLang(item.body, lang) || pickLang(item.body, "ru") || pickLang(item.body, "uk") || pickLang(item.body, "en")) ? (0, import_jsx_runtime.jsx)("p", { children: (0, import_jsx_runtime.jsx)(CommitteeField, { value: item.body, lang }) }) : null,
 		href ? (0, import_jsx_runtime.jsx)("a", { className: "button shop-order", href, target: "_blank", rel: "noopener noreferrer", children: t.committeesContact || (lang==="uk"?"Зв’язок":lang==="en"?"Contact":"Связь") }) : null
 	] }, item.id);
 }
@@ -35044,8 +35043,19 @@ function CommitteeManager({ lang, initial, reload }) {
 	async function persist() {
 		setBusy(true); setMessage("");
 		try {
-			const body = JSON.stringify({ committees: items });
+			const normalized = items.map((x) => ({
+				...x,
+				kind: x.kind === "main" ? "main" : "sub",
+				title: rec(x.title),
+				description: rec(x.description),
+				body: rec(x.body),
+				contact: x.contact || "",
+				image: x.image || "",
+				video: x.video || ""
+			}));
+			const body = JSON.stringify({ committees: normalized });
 			await api("/api/community", { method: "POST", body });
+			setItems(normalized);
 			setMessage(lang==="uk"?"Збережено.":lang==="en"?"Saved.":"Сохранено.");
 			reload && reload();
 		} catch (e) {
