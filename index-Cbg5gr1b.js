@@ -33012,13 +33012,13 @@ function validateCommunityPatch(data) {
 		if (!x || languages.some((l) => typeof x[l] !== "string" || x[l].length > max)) throw Error("invalid");
 	};
 	if (data.meetings) {
-		if (data.meetings.length !== 2) throw Error("invalid");
+		if (!Array.isArray(data.meetings) || data.meetings.length < 1 || data.meetings.length > 80) throw Error("invalid");
 		for (const m of data.meetings) {
 			validText(m.id, 100);
 			text(m.name, 180);
-			text(m.schedule);
-			text(m.format);
-			text(m.details);
+			text(m.schedule, 2000);
+			text(m.format, 2000);
+			text(m.details, 20000);
 		}
 	}
 	if (data.labels) {
