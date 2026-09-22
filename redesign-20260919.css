@@ -483,3 +483,28 @@ html[data-theme="dark"] .hero-cta-mark{
   word-break:normal;
   line-height:1.8;
 }
+
+@media (max-width:760px){
+  .page.lit-page{
+    padding-left:4% !important;
+    padding-right:4% !important;
+  }
+  .page.lit-page .lit-block{
+    padding:8px 0 4px !important;
+    background:transparent;
+    border:0;
+    box-shadow:none;
+  }
+  .page.lit-page .committee-card,
+  .committee-card.article{
+    padding:20px 4px 24px !important;
+    margin-left:0;
+    margin-right:0;
+  }
+  .committee-card h2,
+  .committee-card .page-intro,
+  .committee-card p{
+    max-width:100% !important;
+    width:100% !important;
+  }
+}
