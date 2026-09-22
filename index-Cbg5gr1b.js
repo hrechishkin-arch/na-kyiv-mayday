@@ -32809,6 +32809,7 @@ async function api(url, options = {}) {
 				if (item.body.trim()) validText(item.body, 2e4);
 				if (hasMedia && item.mediaUrl && !String(item.mediaUrl).includes("/storage/v1/object/public/mayday-images/")) throw Error("invalid");
 				if (item.mediaKind && !["image", "video"].includes(item.mediaKind)) throw Error("invalid");
+				if (item.contact && (typeof item.contact !== "string" || item.contact.length > 500)) throw Error("invalid");
 				filled++;
 			}
 		}
@@ -34199,18 +34200,9 @@ function Feedback({ message, success }) {
 function NewsManager({ lang, posts, reload }) {
 	const t = cmsCopy[lang], b = copy[lang];
 	const blank = () => ({
-		ru: {
-			title: "",
-			body: ""
-		},
-		uk: {
-			title: "",
-			body: ""
-		},
-		en: {
-			title: "",
-			body: ""
-		}
+		ru: { title: "", body: "", contact: "" },
+		uk: { title: "", body: "", contact: "" },
+		en: { title: "", body: "", contact: "" }
 	});
 	const [id, setId] = (0, import_react.useState)("");
 	const [editLang, setEditLang] = (0, import_react.useState)(lang);
@@ -34264,6 +34256,8 @@ function NewsManager({ lang, posts, reload }) {
 				state.run(async () => {
 					let uploaded;
 					const translations = structuredClone(draft);
+					const newsContact = (draft[editLang] && draft[editLang].contact) || (draft.ru && draft.ru.contact) || (draft.uk && draft.uk.contact) || (draft.en && draft.en.contact) || "";
+					for (const l of languages) translations[l] = { ...translations[l], contact: newsContact };
 					try {
 						if (newsFile) {
 							uploaded = await uploadProductImage(newsFile);
@@ -34510,7 +34504,9 @@ function TextManager({ lang, initial, reload }) {
 						[key]: e.target.value
 					}
 				})
-			})] }, key)), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+			})] }, key)),
+					(0, import_jsx_runtime.jsxs)("label", { children: [lang==="uk"?"Telegram для кнопки «Зв’язок»":lang==="en"?"Telegram for Contact button":"Telegram для кнопки «Связь» (необязательно)", (0, import_jsx_runtime.jsx)("input", { value: (draft[editLang]&&draft[editLang].contact)||"", placeholder: "@mayday", onChange: (e) => setDraft({ ...draft, [editLang]: { ...draft[editLang], contact: e.target.value } }) })] }),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 				className: "button",
 				disabled: state.busy,
 				children: state.busy ? b.saving : t.save
@@ -35540,7 +35536,8 @@ function Site({ section, editor = false, authenticated = false, userId }) {
 										className: "news-media",
 										src: p.translations[shown].mediaUrl,
 										alt: ""
-									}) : null
+									}) : null,
+									(() => { const c = (p.translations[lang]&&p.translations[lang].contact) || (p.translations.ru&&p.translations.ru.contact) || (p.translations.uk&&p.translations.uk.contact) || (p.translations.en&&p.translations.en.contact) || ""; const href = committeeHref(c); return href ? (0, import_jsx_runtime.jsx)("a", { className: "button shop-order mko-contact", href, target: "_blank", rel: "noopener noreferrer", children: lang==="uk"?"Зв’язок":lang==="en"?"Contact":"Связь" }) : null; })()
 								]
 							}, p.id);
 						})
