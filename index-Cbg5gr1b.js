@@ -35021,7 +35021,7 @@ function CommitteeCard({ item, lang, t }) {
 		(0, import_jsx_runtime.jsx)("h2", { children: (0, import_jsx_runtime.jsx)(CommitteeField, { value: item.title, lang }) }),
 		(pickLang(item.description, lang) || pickLang(item.description, "ru") || pickLang(item.description, "uk") || pickLang(item.description, "en")) ? (0, import_jsx_runtime.jsx)("p", { className: "page-intro", children: (0, import_jsx_runtime.jsx)(CommitteeField, { value: item.description, lang }) }) : null,
 		(pickLang(item.body, lang) || pickLang(item.body, "ru") || pickLang(item.body, "uk") || pickLang(item.body, "en")) ? (0, import_jsx_runtime.jsx)("p", { children: (0, import_jsx_runtime.jsx)(CommitteeField, { value: item.body, lang }) }) : null,
-		href ? (0, import_jsx_runtime.jsx)("a", { className: "button shop-order", href, target: "_blank", rel: "noopener noreferrer", children: t.committeesContact || (lang==="uk"?"Зв’язок":lang==="en"?"Contact":"Связь") }) : null
+		href ? (0, import_jsx_runtime.jsx)("a", { className: "button shop-order mko-contact", href, target: "_blank", rel: "noopener noreferrer", children: t.committeesContact || (lang==="uk"?"Зв’язок":lang==="en"?"Contact":"Связь") }) : null
 	] }, item.id);
 }
 function CommitteeManager({ lang, initial, reload }) {
