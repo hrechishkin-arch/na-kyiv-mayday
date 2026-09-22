@@ -508,3 +508,12 @@ html[data-theme="dark"] .hero-cta-mark{
     width:100% !important;
   }
 }
+
+a.mko-contact,
+a.button.mko-contact,
+a.shop-order.mko-contact{
+  background:#000 !important;
+  background-color:#000 !important;
+  border-color:#000 !important;
+  color:#fff !important;
+}
