@@ -10729,7 +10729,7 @@ function Location({ data, lang }) {
 function Schedule({ data, lang }) {
 	const community = withLabels(data);
 	communityCopy[lang];
-	const meetings = (community.meetings || []).filter((m) => m && localText(m.name || {ru:"",uk:"",en:""}, lang));
+	const meetings = (community.meetings || []).filter((m) => m && (pickLang(m.name, lang) || pickLang(m.schedule, lang) || pickLang(m.format, lang) || pickLang(m.details, lang)));
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
 		/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 			className: "page-intro",
@@ -10740,32 +10740,20 @@ function Schedule({ data, lang }) {
 			children: meetings.length ? meetings.map((m) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("article", {
 				className: "meeting-card",
 				children: [
-					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Field$1, {
-						value: m.name,
-						lang
-					}) }),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", { children: pickLang(m.name, lang) }),
 					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("dl", { children: [
 						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("dt", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Field$1, {
 							value: community.labels.when,
 							lang
 						}) }),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("dd", { children: localText(m.schedule, lang) ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Field$1, {
-							value: m.schedule,
-							lang
-						}) : "—" }),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("dd", { children: pickLang(m.schedule, lang) || "—" }),
 						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("dt", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Field$1, {
 							value: community.labels.format,
 							lang
 						}) }),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("dd", { children: localText(m.format, lang) ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Field$1, {
-							value: m.format,
-							lang
-						}) : "—" })
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("dd", { children: pickLang(m.format, lang) || "—" })
 					] }),
-					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Field$1, {
-						value: m.details,
-						lang
-					}) })
+					pickLang(m.details, lang) ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { children: pickLang(m.details, lang) }) : null
 				]
 			}, m.id)) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Field$1, {
 				value: community.labels.empty,
