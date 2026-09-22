@@ -517,3 +517,11 @@ a.shop-order.mko-contact{
   border-color:#000 !important;
   color:#fff !important;
 }
+
+.article .news-media{margin-bottom:18px;display:block}
+.article a.mko-contact{
+  margin-top:8px;
+  display:inline-flex;
+  position:relative;
+  z-index:1;
+}
