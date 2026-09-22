@@ -35440,7 +35440,7 @@ function Site({ section, editor = false, authenticated = false, userId }) {
 					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", { children: section === "admin" ? c.panel : section === "schedule" ? ct.schedule : section === "shop" ? ct.shop : t[section] }),
 					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 						className: "page-intro",
-						children: section === "literature" ? t.resourceText : section === "news" ? t.newsText : section === "schedule" ? (lang==="ru"?"Время собраний указано по Киеву.":lang==="uk"?"Час зібрань вказано за Києвом.":"Meeting times are in Kyiv local time.") : ""
+						children: section === "literature" ? t.resourceText : section === "news" ? t.newsText : ""
 					}),
 					section === "schedule" && (0, import_jsx_runtime.jsx)(Schedule, { data: (settings.community || defaultCommunity), lang }),
 					section === "literature" && (materialState === "loading" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { children: c.loading }) : materialState === "error" ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
