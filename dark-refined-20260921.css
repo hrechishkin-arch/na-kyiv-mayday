@@ -106,3 +106,8 @@ html[data-theme="dark"] .header nav a[aria-current]:focus,
 html[data-theme="dark"] .header nav a[aria-current]:active{
  background:#222833!important;color:#edf0f4!important;border-color:#465365!important;box-shadow:none!important;
 }
+.page .lit-page .download-button{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:14px 22px;border-radius:12px;font:inherit;font-weight:600;cursor:pointer}
+html[data-theme="dark"] .page .lit-page .download-button{background:#222833!important;background-color:#222833!important;color:#edf0f4!important;border:1px solid #667184!important;box-shadow:0 5px 15px #0003!important}
+@media (hover:hover) and (pointer:fine){html[data-theme="dark"] .page .lit-page .download-button:hover{background:#2d3543!important;border-color:#91a3bc!important}}
+.page .lit-page .download-button:disabled{opacity:.55;cursor:wait}
+
