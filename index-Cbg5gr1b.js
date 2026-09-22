@@ -35136,13 +35136,23 @@ function VisitStats({ lang }) {
 	return (0, import_jsx_runtime.jsxs)("section", { children: [
 		(0, import_jsx_runtime.jsx)("h2", { children: lang==="uk"?"Відвідування":lang==="en"?"Visits":"Посещения" }),
 		(0, import_jsx_runtime.jsx)("p", { children: lang==="uk"?"Без імен і IP. Один захід з однієї вкладки браузера.":lang==="en"?"No names or IPs. One count per browser tab session.":"Без имён и IP. Один заход с одной вкладки браузера." }),
-		(0, import_jsx_runtime.jsx)("button", { type: "button", onClick: async () => setData(await loadVisits()), children: lang==="en"?"Refresh":"Обновить" }),
+		(0, import_jsx_runtime.jsx)("button", { type: "button", onClick: async () => setData(await loadVisits()), children: lang==="uk"?"Запис входу":lang==="en"?"Visit log":"Запись входа" }),
+		(0, import_jsx_runtime.jsx)("button", { type: "button", onClick: async () => {
+			if (!confirm(lang==="en"?"Reset visit counter?":"Сбросить счётчик посещений?")) return;
+			const db = client();
+			const empty = { total: 0, days: {} };
+			const found = await db.from("mayday_settings").select("value").eq("key", "visits");
+			if (found && found.data && found.data[0]) await db.from("mayday_settings").update({ value: empty }).eq("key", "visits");
+			else await db.from("mayday_settings").insert({ key: "visits", value: empty });
+			try { Object.keys(localStorage).forEach((k) => { if (k.indexOf("mayday-hit-") === 0) localStorage.removeItem(k); }); } catch (e) {}
+			setData(empty);
+		}, children: lang==="en"?"Reset":"Сбросить счётчик" }),
 		(0, import_jsx_runtime.jsxs)("p", { children: [lang==="en"?"Total: ":"Всего: ", String(data.total || 0)] }),
 		(0, import_jsx_runtime.jsx)("div", { className: "manage-list", children: days.length ? days.map((d) => (0, import_jsx_runtime.jsxs)("div", { className: "manage-row", children: [(0, import_jsx_runtime.jsx)("strong", { children: d }), (0, import_jsx_runtime.jsx)("span", { children: String(data.days[d]) }) ] }, d)) : (0, import_jsx_runtime.jsx)("p", { children: lang==="en"?"No visits yet.":"Пока нет данных." }) })
 	] });
 }
 function Site({ section, editor = false, authenticated = false, userId }) {
-	(0, import_react.useEffect)(() => { recordVisit(); }, []);
+	(0, import_react.useEffect)(() => { if (section !== "admin") recordVisit(); }, []);
 	const [settings, setSettings] = (0, import_react.useState)((()=>{try{const raw=sessionStorage.getItem("mayday-settings");if(raw)return JSON.parse(raw);}catch(e){}return{content:defaultContent,appearance:defaultAppearance,community:structuredClone(defaultCommunity)};})());
 	const [materials, setMaterials] = (0, import_react.useState)([]);
 	const [materialState, setMaterialState] = (0, import_react.useState)("loading");
