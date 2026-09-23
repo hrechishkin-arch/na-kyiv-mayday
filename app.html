@@ -8,10 +8,10 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="theme-color" content="#111111" />
   <title>Mayday — чистое время</title>
-  <link rel="icon" href="./mayday-app-icon.png?v=2" />
-  <link rel="apple-touch-icon" sizes="180x180" href="./mayday-app-icon-180.png?v=2" />
-  <link rel="apple-touch-icon" href="./mayday-app-icon.png?v=2" />
-  <link rel="apple-touch-icon-precomposed" href="./mayday-app-icon.png?v=2" />
+  <link rel="icon" href="./mayday-app-icon.png?v=3" />
+  <link rel="apple-touch-icon" sizes="180x180" href="./mayday-app-icon-180.png?v=3" />
+  <link rel="apple-touch-icon" href="./mayday-app-icon.png?v=3" />
+  <link rel="apple-touch-icon-precomposed" href="./mayday-app-icon.png?v=3" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@600;700&display=swap" rel="stylesheet" />
   <style>
@@ -35,12 +35,9 @@
       width: 52px; height: 52px; border-radius: 50%; display: block;
       background: #000; object-fit: cover;
     }
-    .brand-text { line-height: 1.1; }
-    .brand-text strong {
-      display: block; font-family: "IBM Plex Sans", sans-serif;
-      font-weight: 700; letter-spacing: .12em; font-size: 18px;
-    }
-    .brand-text span { display: block; margin-top: 4px; font-size: 11px; color: var(--muted); }
+    .brand-text { line-height: 1.05; min-width: 0; flex: 1; }
+    .brand-wordmark { display: block; width: min(210px, 58vw); height: 22px; color: #111; }
+    .brand-text span { display: block; margin-top: 5px; font-size: 11px; color: var(--muted); }
     .tabs {
       display: flex; width: 100%; gap: 4px; background: #ece8df;
       border-radius: 999px; padding: 4px;
@@ -93,7 +90,16 @@
     <div class="brand-row">
       <img src="./mayday-logo.png" alt="Mayday" />
       <div class="brand-text">
-        <strong>MAYDAY</strong>
+        <svg class="brand-wordmark" viewBox="0 0 900 90" role="img" aria-label="Mayday">
+          <g fill="currentColor" fill-rule="evenodd">
+            <path d="M0 85V8L68 45 136 8V85H116V39L68 65 20 39V85Z"/>
+            <path d="M157 85L233 0 309 85H282L265 66H201L184 85ZM218 47H248L233 30Z"/>
+            <path d="M319 7H339V17Q339 40 377 40Q415 40 415 17V7H435V18Q435 53 387 58V85H367V58Q319 53 319 18Z"/>
+            <path d="M464 7H527Q600 7 600 46Q600 85 527 85H464ZM484 24V68H526Q579 68 579 46Q579 24 526 24Z"/>
+            <path d="M620 85L696 0 772 85H745L728 66H664L647 85ZM681 47H711L696 30Z"/>
+            <path d="M784 7H804V17Q804 40 842 40Q880 40 880 17V7H900V18Q900 53 852 58V85H832V58Q784 53 784 18Z"/>
+          </g>
+        </svg>
         <span>Анонимные Наркоманы · Киев</span>
       </div>
     </div>
