@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#111111" />
+  <title>Mayday — чистое время</title>
+  <style>
+    :root {
+      --bg: #f4f1ea;
+      --ink: #161616;
+      --muted: #6b6b66;
+      --card: #fff;
+      --line: #e4e0d6;
+      --black: #111;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    body { padding: calc(18px + env(safe-area-inset-top)) 18px calc(28px + env(safe-area-inset-bottom)); }
+    header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
+    .brand { font-weight: 600; letter-spacing: .08em; font-size: 13px; }
+    .tabs { display: flex; gap: 6px; background: #ece8df; border-radius: 999px; padding: 3px; }
+    .tabs button {
+      border: 0; background: transparent; padding: 7px 12px; border-radius: 999px;
+      font-size: 12px; font-weight: 600; color: var(--muted);
+    }
+    .tabs button.on { background: var(--black); color: #fff; }
+    h1 { font-size: 28px; font-weight: 500; letter-spacing: -.03em; margin: 0 0 8px; }
+    .sub { color: var(--muted); font-size: 14px; margin: 0 0 22px; line-height: 1.45; }
+    .card {
+      background: var(--card); border-radius: 22px; padding: 22px 20px;
+      box-shadow: 0 8px 30px #2a2a2208; margin-bottom: 14px;
+    }
+    .count { font-size: 42px; font-weight: 500; letter-spacing: -.04em; line-height: 1; }
+    .count small { display: block; font-size: 14px; color: var(--muted); font-weight: 400; margin-top: 8px; letter-spacing: 0; }
+    label { display: block; font-size: 12px; color: var(--muted); margin: 16px 0 6px; }
+    input[type=date] {
+      width: 100%; border: 1px solid var(--line); border-radius: 12px; padding: 12px;
+      font: inherit; background: #fafaf7;
+    }
+    .day { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+    .quote { font-size: 20px; line-height: 1.35; margin: 0 0 14px; font-weight: 500; }
+    .body { font-size: 16px; line-height: 1.6; margin: 0; }
+    .note { font-size: 12px; color: var(--muted); margin-top: 14px; }
+    a.btn, button.btn {
+      display: block; width: 100%; text-align: center; text-decoration: none;
+      background: var(--black); color: #fff; border: 0; border-radius: 14px;
+      padding: 14px 16px; font-size: 15px; font-weight: 600; margin-top: 10px;
+    }
+    a.btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--ink); }
+    .screen { display: none; }
+    .screen.on { display: block; }
+    .hint { font-size: 12px; color: var(--muted); margin-top: 18px; line-height: 1.5; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">MAYDAY</div>
+    <div class="tabs" id="tabs">
+      <button class="on" data-tab="time">Время</button>
+      <button data-tab="day">Сегодня</button>
+      <button data-tab="help">Связь</button>
+    </div>
+  </header>
+
+  <section class="screen on" id="time">
+    <h1>Чистое время</h1>
+    <p class="sub">Черновик приложения для группы. Дата хранится только на этом телефоне.</p>
+    <div class="card">
+      <div class="count" id="count">—<small>укажите дату начала</small></div>
+      <label for="since">Дата последнего употребления / первый день чистоты</label>
+      <input id="since" type="date" />
+    </div>
+  </section>
+
+  <section class="screen" id="day">
+    <h1>На сегодня</h1>
+    <p class="sub" id="today-label"></p>
+    <div class="card">
+      <div class="day">Размышление · черновик</div>
+      <p class="quote">Один день. Один шаг.</p>
+      <p class="body">Это место для ежедневного текста из книги, которую выберете группа. Сейчас здесь заглушка — официальные размышления АН подключаются только с разрешённым текстом.</p>
+      <p class="note">План: 365 коротких чтений по дате, языки РУС / УКР / ENG как на сайте.</p>
+    </div>
+  </section>
+
+  <section class="screen" id="help">
+    <h1>Связь с группой</h1>
+    <p class="sub">Кнопки можно будет менять из панели, как на сайте.</p>
+    <a class="btn" href="https://t.me/mayday" target="_blank" rel="noopener">Telegram группы</a>
+    <a class="btn ghost" href="https://hrechishkin-arch.github.io/na-kyiv-mayday/" target="_blank" rel="noopener">Сайт Mayday</a>
+    <a class="btn ghost" href="https://hrechishkin-arch.github.io/na-kyiv-mayday/?page=schedule" target="_blank" rel="noopener">Расписание собраний</a>
+    <p class="hint">На iPhone: «Поделиться» → «На экран Домой» — откроется как простое приложение.</p>
+  </section>
+
+  <script>
+    const tabs = document.querySelectorAll('#tabs button');
+    tabs.forEach((b) => b.onclick = () => {
+      tabs.forEach((x) => x.classList.toggle('on', x === b));
+      document.querySelectorAll('.screen').forEach((s) => s.classList.toggle('on', s.id === b.dataset.tab));
+    });
+    const input = document.getElementById('since');
+    const count = document.getElementById('count');
+    const saved = localStorage.getItem('mayday-clean-since');
+    if (saved) input.value = saved;
+    function daysBetween(a, b) {
+      const ms = 86400000;
+      return Math.max(0, Math.floor((Date.UTC(b.getFullYear(), b.getMonth(), b.getDate()) - Date.UTC(a.getFullYear(), a.getMonth(), a.getDate())) / ms));
+    }
+    function render() {
+      if (!input.value) {
+        count.innerHTML = '—<small>укажите дату начала</small>';
+        return;
+      }
+      localStorage.setItem('mayday-clean-since', input.value);
+      const start = new Date(input.value + 'T00:00:00');
+      const now = new Date();
+      const days = daysBetween(start, now);
+      const years = Math.floor(days / 365);
+      const rest = days - years * 365;
+      const months = Math.floor(rest / 30);
+      const d = rest - months * 30;
+      const parts = [];
+      if (years) parts.push(years + ' г.');
+      if (months) parts.push(months + ' мес.');
+      parts.push(d + ' дн.');
+      count.innerHTML = days + ' дн.<small>' + parts.join(' · ') + '</small>';
+    }
+    input.onchange = render;
+    render();
+    const t = new Date();
+    document.getElementById('today-label').textContent =
+      t.toLocaleDateString('ru-UA', { weekday: 'long', day: 'numeric', month: 'long' });
+  </script>
+</body>
+</html>
