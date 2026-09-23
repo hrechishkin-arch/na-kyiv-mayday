@@ -8,6 +8,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="theme-color" content="#111111" />
   <title>Mayday — чистое время</title>
+  <meta name="cache-bust" content="20260923-tab2" />
   <link rel="icon" href="./icon-md.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="./icon-md-180.png" />
   <link rel="apple-touch-icon" href="./icon-md.png" />
@@ -43,8 +44,9 @@
       border-radius: 999px; padding: 4px;
     }
     .tabs button {
-      flex: 1; border: 0; background: transparent; padding: 9px 4px;
+      flex: 1; border: 0; background: transparent; padding: 8px 6px;
       border-radius: 999px; font-size: 11px; font-weight: 600; color: var(--muted);
+      line-height: 1.15; white-space: nowrap;
     }
     .tabs button.on { background: var(--black); color: #fff; }
     h1 { font-size: 28px; font-weight: 500; letter-spacing: -.03em; margin: 0 0 8px; }
@@ -104,7 +106,7 @@
       </div>
     </div>
     <div class="tabs" id="tabs">
-      <button class="on" data-tab="time">Чистое время</button>
+      <button class="on" data-tab="time">Чистота</button>
       <button data-tab="day">Ежедневник</button>
       <button data-tab="help">Связь</button>
     </div>
@@ -128,8 +130,8 @@
     <div class="card">
       <div class="day">Размышление · черновик</div>
       <p class="quote">Один день. Один шаг.</p>
-      <p class="body">Это место для ежедневного текста из книги, которую выберете группа. Сейчас здесь заглушка — официальные размышления АН подключаются только с разрешённым текстом.</p>
-      <p class="note">План: 365 коротких чтений по дате, языки РУС / УКР / ENG как на сайте.</p>
+      <p class="body">Тут будут ежедневные размышления.</p>
+      <p class="note"></p>
     </div>
   </section>
 
@@ -139,7 +141,7 @@
     <a class="btn" href="https://t.me/mayday" target="_blank" rel="noopener">Telegram группы</a>
     <a class="btn ghost" href="https://hrechishkin-arch.github.io/na-kyiv-mayday/" target="_blank" rel="noopener">Сайт Mayday</a>
     <a class="btn ghost" href="https://hrechishkin-arch.github.io/na-kyiv-mayday/?page=schedule" target="_blank" rel="noopener">Расписание собраний</a>
-    <p class="hint">Чтобы обновить иконку на экране Домой: удалите старый ярлык и снова «Поделиться → На экран Домой».</p>
+    <p class="hint">Кнопки будут утверждаться на рабочем собрании.</p>
   </section>
 
   <script>
