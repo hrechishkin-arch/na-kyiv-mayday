@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex" />
+  <title>Демо-картка — не документ</title>
+  <style>
+    :root { --bg:#ece7d8; --card:#e6e0cf; --ink:#1c1c1c; --accent:#6b5340; --white:#f7f4ea; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100dvh; background: var(--bg); color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      padding: calc(16px + env(safe-area-inset-top)) 16px 28px;
+    }
+    .warn {
+      font-size: 11px; letter-spacing: .06em; text-transform: uppercase;
+      text-align: center; color: #7a3b2e; margin: 0 0 14px;
+    }
+    .stage { perspective: 900px; }
+    .flip {
+      position: relative; width: 100%; min-height: 520px;
+      transform-style: preserve-3d; transition: transform .7s ease;
+    }
+    .flip.on { transform: rotateY(180deg); }
+    .face {
+      position: absolute; inset: 0; backface-visibility: hidden;
+      background: var(--card); border-radius: 18px; padding: 18px 16px 20px;
+      border: 1px solid #d5ceb8; overflow: hidden;
+    }
+    .back { transform: rotateY(180deg); display: flex; flex-direction: column; align-items: center; justify-content: center; background: #f4f1e8; }
+    .title { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+    .title input {
+      border: 0; background: transparent; font: 600 22px/1.1 inherit; width: 70%;
+    }
+    .badge {
+      font-size: 10px; font-weight: 700; letter-spacing: .08em;
+      border: 1px dashed #8a7a62; padding: 6px 8px; border-radius: 8px; color: #6a5c48;
+    }
+    .row { display: flex; gap: 14px; margin-top: 16px; align-items: flex-start; }
+    .photo-wrap {
+      width: 42%; aspect-ratio: 3/4; background: #fff; border-radius: 10px;
+      overflow: hidden; position: relative;
+    }
+    .photo-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .photo-wrap input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+    .photo-wrap span {
+      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+      font-size: 12px; color: #888; pointer-events: none; text-align: center; padding: 8px;
+    }
+    .meta { flex: 1; padding-top: 6px; }
+    .meta label { display: block; font-size: 13px; color: #5c5c5c; }
+    .meta input {
+      width: 100%; border: 0; background: transparent; font: 600 18px inherit; margin: 4px 0 12px;
+    }
+    .ticker {
+      margin: 16px -16px 0; background: var(--accent); color: #f3ece3;
+      font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; padding: 8px 0;
+    }
+    .ticker span { display: inline-block; padding-left: 100%; animation: run 14s linear infinite; }
+    @keyframes run { to { transform: translateX(-100%); } }
+    .name { margin-top: 16px; }
+    .name small { display: block; font-size: 13px; color: #5c5c5c; margin-bottom: 4px; }
+    .name textarea {
+      width: 100%; border: 0; background: transparent; font: 600 26px/1.15 inherit;
+      resize: none; min-height: 88px;
+    }
+    .qr-box {
+      width: min(260px, 78vw); aspect-ratio: 1; background:
+        repeating-conic-gradient(#111 0 25%, #fff 0 50%) 0 0 / 12px 12px;
+      border-radius: 8px; position: relative;
+    }
+    .qr-box::after {
+      content: "ДЕМО"; position: absolute; inset: 38%; background: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; letter-spacing: .08em; font-size: 14px;
+    }
+    .qr-cap { margin-bottom: 14px; font-size: 14px; text-align: center; }
+    .edit {
+      margin-top: 16px; background: #fff; border-radius: 16px; padding: 14px;
+      border: 1px solid #d5ceb8;
+    }
+    .edit label { display: block; font-size: 12px; color: #666; margin: 8px 0 4px; }
+    .edit input, .edit textarea {
+      width: 100%; border: 1px solid #ddd4c2; border-radius: 10px; padding: 10px;
+      font: 15px inherit; background: #faf7ef;
+    }
+    button.flip-btn {
+      width: 100%; margin-top: 12px; border: 0; background: #1c1c1c; color: #fff;
+      border-radius: 14px; padding: 14px; font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <p class="warn">Демо-макет · не документ · не Резерв+ · дані лише на цьому телефоні</p>
+  <div class="stage">
+    <div class="flip" id="flip">
+      <section class="face">
+        <div class="title">
+          <input id="title" value="Картка" />
+          <div class="badge">DEMO</div>
+        </div>
+        <div class="row">
+          <div class="photo-wrap">
+            <img id="photo" alt="" hidden />
+            <span id="photoHint">Натисніть — додати фото</span>
+            <input id="file" type="file" accept="image/*" />
+          </div>
+          <div class="meta">
+            <label>Підпис поля</label>
+            <input id="fieldLabel" value="Дата" />
+            <label>Значення</label>
+            <input id="fieldValue" value="" placeholder="впишіть" />
+          </div>
+        </div>
+        <div class="ticker"><span id="tickerText">Рядок для власного тексту · це не офіційне повідомлення · </span></div>
+        <div class="name">
+          <small id="role">Підпис</small>
+          <textarea id="fio" rows="3" placeholder="Ім’я"></textarea>
+        </div>
+      </section>
+      <section class="face back">
+        <p class="qr-cap" id="qrCap">Умовний код · нікуди не веде</p>
+        <div class="qr-box" aria-hidden="true"></div>
+      </section>
+    </div>
+  </div>
+  <button class="flip-btn" id="flipBtn" type="button">Перевернути картку</button>
+  <div class="edit">
+    <label>Текст біжучого рядка</label>
+    <input id="tickerInput" value="Рядок для власного тексту · це не офіційне повідомлення" />
+    <label>Підпис під фото (роль / статус)</label>
+    <input id="roleInput" value="Підпис" />
+    <label>Колір рядка</label>
+    <input id="color" type="color" value="#6b5340" />
+  </div>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const KEY = "demo-card-v1";
+    function save() {
+      const data = {
+        title: $("title").value, fieldLabel: $("fieldLabel").value,
+        fieldValue: $("fieldValue").value, ticker: $("tickerInput").value,
+        role: $("roleInput").value, fio: $("fio").value, color: $("color").value,
+        photo: $("photo").src || ""
+      };
+      try { localStorage.setItem(KEY, JSON.stringify(data)); } catch (e) {}
+    }
+    function applyTicker() {
+      const t = ($("tickerInput").value || " ").trim() + " · ";
+      $("tickerText").textContent = t + t + t;
+    }
+    $("flipBtn").onclick = () => $("flip").classList.toggle("on");
+    $("file").onchange = (e) => {
+      const f = e.target.files && e.target.files[0];
+      if (!f) return;
+      const r = new FileReader();
+      r.onload = () => {
+        $("photo").src = r.result; $("photo").hidden = false; $("photoHint").hidden = true; save();
+      };
+      r.readAsDataURL(f);
+    };
+    ["title","fieldLabel","fieldValue","fio"].forEach((id) => $(id).addEventListener("input", save));
+    $("tickerInput").addEventListener("input", () => { applyTicker(); save(); });
+    $("roleInput").addEventListener("input", () => { $("role").textContent = $("roleInput").value; save(); });
+    $("color").addEventListener("input", () => {
+      document.documentElement.style.setProperty("--accent", $("color").value); save();
+    });
+    try {
+      const d = JSON.parse(localStorage.getItem(KEY) || "null");
+      if (d) {
+        $("title").value = d.title || $("title").value;
+        $("fieldLabel").value = d.fieldLabel || "";
+        $("fieldValue").value = d.fieldValue || "";
+        $("tickerInput").value = d.ticker || $("tickerInput").value;
+        $("roleInput").value = d.role || "Підпис";
+        $("role").textContent = $("roleInput").value;
+        $("fio").value = d.fio || "";
+        if (d.color) { $("color").value = d.color; document.documentElement.style.setProperty("--accent", d.color); }
+        if (d.photo) { $("photo").src = d.photo; $("photo").hidden = false; $("photoHint").hidden = true; }
+      }
+    } catch (e) {}
+    applyTicker();
+  </script>
+</body>
+</html>
